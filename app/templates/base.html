@@ -142,10 +142,91 @@
             font-weight: 600;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        /* Contenedor principal SIN padding */
+        .container-fluid {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* Body ajustes para sidebar */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background: #f8fafc !important; /* Fondo gris claro forzado */
+        }
+
+        /* Main sin padding */
+        main {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: #f8fafc !important;
+        }
+
+        /* Dropdown del perfil */
+        .dropdown-menu {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.6rem 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(142, 45, 226, 0.1);
+            color: #8E2DE2;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive para navbar */
+        @media (max-width: 768px) {
+            .navbar-text {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+            }
+            
+            .user-info small {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-text {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
         }
 
         .nav-link {
@@ -330,15 +411,36 @@
             </a>
             <div class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
-                    <span class="navbar-text me-3">
-                        <i class="fas fa-user-circle me-2"></i>
-                        {{ current_user.nombre }} {{ current_user.apellido }}
-                        <span style="opacity: 0.8;">({{ current_user.rol|title }})</span>
-                    </span>
-                    <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                        <i class="fas fa-sign-out-alt me-2"></i>
-                        Cerrar Sesión
-                    </a>
+                    <div class="dropdown">
+                        <span class="navbar-text dropdown-toggle" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="user-info">
+                                {{ current_user.nombre }} {{ current_user.apellido }}
+                                <small style="opacity: 0.8; margin-left: 0.25rem;">({{ current_user.rol|title }})</small>
+                            </span>
+                        </span>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user-cog me-2"></i>
+                                    Mi Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-cog me-2"></i>
+                                    Configuración
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>
+                                    Cerrar Sesión
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 {% else %}
                     <span class="navbar-text me-3">
                         <i class="fas fa-user-circle me-2"></i>

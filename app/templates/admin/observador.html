@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Observador del Estudiante - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-eye"></i> Observador del Estudiante</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="estudiante" class="form-label">Estudiante</label>
+                            <select class="form-select" id="estudiante">
+                                <option value="">Seleccionar estudiante</option>
+                                <!-- Opciones dinámicas de estudiantes -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="periodo" class="form-label">Periodo Académico</label>
+                            <select class="form-select" id="periodo">
+                                <option value="">Seleccionar periodo</option>
+                                <!-- Opciones dinámicas de periodos -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura">
+                                <option value="">Todas las asignaturas</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarObservaciones()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla de Observaciones -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estudiante</th>
+                                    <th>Docente</th>
+                                    <th>Asignatura</th>
+                                    <th>Observación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="observaciones-table">
+                                <!-- Datos dinámicos de observaciones -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nueva Observación -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nueva Observación</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nueva-observacion-form">
+                        <div class="mb-3">
+                            <label for="estudiante-nuevo" class="form-label">Estudiante</label>
+                            <select class="form-select" id="estudiante-nuevo" required>
+                                <option value="">Seleccionar estudiante</option>
+                                <!-- Opciones dinámicas de estudiantes -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="asignatura-nueva" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura-nueva" required>
+                                <option value="">Seleccionar asignatura</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observacion" class="form-label">Observación</label>
+                            <textarea class="form-control" id="observacion" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Observación
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funciones para manejar observaciones
+function cargarObservaciones() {
+    // Implementar carga de observaciones
+}
+
+function agregarObservacion() {
+    // Implementar lógica de agregar observación
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nueva-observacion-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarObservacion();
+});
+</script>
+{% endblock %}

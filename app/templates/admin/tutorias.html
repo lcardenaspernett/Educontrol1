@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Tutorías - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-hands-helping"></i> Gestión de Tutorías</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="fecha">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="estudiante" class="form-label">Estudiante</label>
+                            <select class="form-select" id="estudiante">
+                                <option value="">Seleccionar estudiante</option>
+                                <!-- Opciones dinámicas de estudiantes -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="docente" class="form-label">Docente</label>
+                            <select class="form-select" id="docente">
+                                <option value="">Seleccionar docente</option>
+                                <!-- Opciones dinámicas de docentes -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarTutorias()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tabla de Tutorías -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estudiante</th>
+                                    <th>Docente</th>
+                                    <th>Tipo de Tutoría</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tutorias-table">
+                                <!-- Datos dinámicos de tutorías -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nueva Tutoría -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nueva Tutoría</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nueva-tutoria-form">
+                        <div class="mb-3">
+                            <label for="fecha-nueva" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="fecha-nueva" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="estudiante-nuevo" class="form-label">Estudiante</label>
+                            <select class="form-select" id="estudiante-nuevo" required>
+                                <option value="">Seleccionar estudiante</option>
+                                <!-- Opciones dinámicas de estudiantes -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="docente-nuevo" class="form-label">Docente</label>
+                            <select class="form-select" id="docente-nuevo" required>
+                                <option value="">Seleccionar docente</option>
+                                <!-- Opciones dinámicas de docentes -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Tutoría</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="academica">Académica</option>
+                                <option value="personal">Personal</option>
+                                <option value="familiar">Familiar</option>
+                                <option value="conducta">Conducta</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="observaciones" class="form-label">Observaciones</label>
+                            <textarea class="form-control" id="observaciones" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Agendar Tutoría
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funciones para manejar tutorías
+function cargarTutorias() {
+    // Implementar carga de tutorías
+}
+
+function agregarTutoria() {
+    // Implementar lógica de agregar tutoría
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nueva-tutoria-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarTutoria();
+});
+</script>
+{% endblock %}

@@ -34,8 +34,10 @@ def create_app(config_name='default'):
     # Registrar blueprints
     from app.routes import main_bp
     from app.auth import auth_bp
+    from app.admin.routes import admin_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(admin_bp, url_prefix='/admin')
     
     return app

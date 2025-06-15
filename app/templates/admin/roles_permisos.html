@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Roles y Permisos - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-user-shield"></i> Gestión de Roles y Permisos</h2>
+            <hr>
+            
+            <!-- Lista de Roles -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Roles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Permisos</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roles-table">
+                                <!-- Datos dinámicos de roles -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Rol -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nuevo Rol</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nuevo-rol-form">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Rol</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Permisos</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_dashboard">
+                                        <label class="form-check-label" for="permiso_dashboard">
+                                            Acceso al Dashboard
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_usuarios">
+                                        <label class="form-check-label" for="permiso_usuarios">
+                                            Gestión de Usuarios
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_academico">
+                                        <label class="form-check-label" for="permiso_academico">
+                                            Gestión Académica
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_asistencia">
+                                        <label class="form-check-label" for="permiso_asistencia">
+                                            Gestión de Asistencia
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_convivencia">
+                                        <label class="form-check-label" for="permiso_convivencia">
+                                            Gestión de Convivencia
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_comunicaciones">
+                                        <label class="form-check-label" for="permiso_comunicaciones">
+                                            Gestión de Comunicaciones
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_contenidos">
+                                        <label class="form-check-label" for="permiso_contenidos">
+                                            Gestión de Contenidos
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_roles">
+                                        <label class="form-check-label" for="permiso_roles">
+                                            Gestión de Roles
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="checkbox" id="permiso_reportes">
+                                        <label class="form-check-label" for="permiso_reportes">
+                                            Generación de Reportes
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Rol
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Permisos -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Permisos Disponibles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Roles Asignados</th>
+                                </tr>
+                            </thead>
+                            <tbody id="permisos-table">
+                                <!-- Datos dinámicos de permisos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funciones para manejar roles y permisos
+function cargarRoles() {
+    // Implementar carga de roles
+}
+
+function cargarPermisos() {
+    // Implementar carga de permisos
+}
+
+function agregarRol() {
+    // Implementar lógica de agregar rol
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-rol-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarRol();
+});
+
+// Validación de nombre de rol
+const nombreInput = document.getElementById('nombre');
+nombreInput.addEventListener('input', function() {
+    const nombre = this.value.trim();
+    if (!nombre || nombre.length < 3) {
+        this.setCustomValidity('El nombre debe tener al menos 3 caracteres');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+</script>
+{% endblock %}

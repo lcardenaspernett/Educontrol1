@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Importar y Exportar - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-exchange-alt"></i> Importar y Exportar Datos</h2>
+            <hr>
+            
+            <!-- Importar Datos -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-download"></i> Importar Datos</h5>
+                </div>
+                <div class="card-body">
+                    <form id="importar-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="tipo_importacion" class="form-label">Tipo de Importación</label>
+                            <select class="form-select" id="tipo_importacion" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="usuarios">Usuarios</option>
+                                <option value="asignaturas">Asignaturas</option>
+                                <option value="cursos">Cursos</option>
+                                <option value="calificaciones">Calificaciones</option>
+                                <option value="asistencia">Asistencia</option>
+                                <option value="convivencia">Convivencia</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="archivo" class="form-label">Archivo</label>
+                            <input type="file" class="form-control" id="archivo" accept=".csv,.xlsx,.xls" required>
+                        </div>
+                        <div id="opciones-importacion">
+                            <!-- Opciones dinámicas según tipo de importación -->
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Importar Datos
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Exportar Datos -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-upload"></i> Exportar Datos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Usuarios</h5>
+                                    <p class="card-text">Exportar lista de usuarios del sistema</p>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="exportar_usuarios_activos">
+                                        <label class="form-check-label" for="exportar_usuarios_activos">
+                                            Incluir solo usuarios activos
+                                        </label>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" onclick="exportar('usuarios')">
+                                        <i class="fas fa-file-excel"></i> Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Calificaciones</h5>
+                                    <p class="card-text">Exportar calificaciones de estudiantes</p>
+                                    <div class="mb-3">
+                                        <label for="periodo_calificaciones" class="form-label">Periodo</label>
+                                        <select class="form-select" id="periodo_calificaciones">
+                                            <option value="">Seleccionar periodo</option>
+                                            <!-- Opciones dinámicas de periodos -->
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" onclick="exportar('calificaciones')">
+                                        <i class="fas fa-file-excel"></i> Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Asistencia</h5>
+                                    <p class="card-text">Exportar registro de asistencia</p>
+                                    <div class="mb-3">
+                                        <label for="fecha_inicio_asistencia" class="form-label">Fecha Inicio</label>
+                                        <input type="date" class="form-control" id="fecha_inicio_asistencia">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fecha_fin_asistencia" class="form-label">Fecha Fin</label>
+                                        <input type="date" class="form-control" id="fecha_fin_asistencia">
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary" onclick="exportar('asistencia')">
+                                        <i class="fas fa-file-excel"></i> Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plantillas de Importación -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-file-download"></i> Plantillas de Importación</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Usuarios</h5>
+                                    <p class="card-text">Plantilla para importar usuarios</p>
+                                    <button type="button" class="btn btn-outline-primary" onclick="descargarPlantilla('usuarios')">
+                                        <i class="fas fa-download"></i> Descargar Plantilla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Calificaciones</h5>
+                                    <p class="card-text">Plantilla para importar calificaciones</p>
+                                    <button type="button" class="btn btn-outline-primary" onclick="descargarPlantilla('calificaciones')">
+                                        <i class="fas fa-download"></i> Descargar Plantilla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Asistencia</h5>
+                                    <p class="card-text">Plantilla para importar asistencia</p>
+                                    <button type="button" class="btn btn-outline-primary" onclick="descargarPlantilla('asistencia')">
+                                        <i class="fas fa-download"></i> Descargar Plantilla
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Manejar el tipo de importación
+document.getElementById('tipo_importacion').addEventListener('change', function() {
+    const opcionesImportacion = document.getElementById('opciones-importacion');
+    opcionesImportacion.innerHTML = '';
+    
+    switch(this.value) {
+        case 'usuarios':
+            opcionesImportacion.innerHTML = `
+                <div class="mb-3">
+                    <label for="tipo_usuario" class="form-label">Tipo de Usuario</label>
+                    <select class="form-select" id="tipo_usuario">
+                        <option value="">Seleccionar tipo</option>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="docente">Docente</option>
+                        <option value="padre">Padre/Acudiente</option>
+                        <option value="directivo">Directivo</option>
+                    </select>
+                </div>
+            `;
+            break;
+        case 'asignaturas':
+            opcionesImportacion.innerHTML = `
+                <div class="mb-3">
+                    <label for="nivel" class="form-label">Nivel</label>
+                    <select class="form-select" id="nivel">
+                        <option value="">Seleccionar nivel</option>
+                        <option value="basica">Básica</option>
+                        <option value="media">Media</option>
+                        <option value="superior">Superior</option>
+                    </select>
+                </div>
+            `;
+            break;
+        case 'cursos':
+            opcionesImportacion.innerHTML = `
+                <div class="mb-3">
+                    <label for="grado" class="form-label">Grado</label>
+                    <input type="number" class="form-control" id="grado" min="1" max="12">
+                </div>
+                <div class="mb-3">
+                    <label for="seccion" class="form-label">Sección</label>
+                    <input type="text" class="form-control" id="seccion">
+                </div>
+            `;
+            break;
+    }
+});
+
+// Funciones para manejar importación y exportación
+function importar() {
+    // Implementar lógica de importación
+}
+
+function exportar(tipo) {
+    // Implementar lógica de exportación
+}
+
+function descargarPlantilla(tipo) {
+    // Implementar lógica para descargar plantillas
+}
+
+// Event listener para el formulario de importación
+const form = document.getElementById('importar-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    importar();
+});
+
+// Validación de archivo
+const archivoInput = document.getElementById('archivo');
+archivoInput.addEventListener('change', function() {
+    const archivo = this.files[0];
+    if (archivo) {
+        // Validar tipo de archivo
+        const tiposPermitidos = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                'application/vnd.ms-excel',
+                                'text/csv'];
+        
+        if (!tiposPermitidos.includes(archivo.type)) {
+            alert('Tipo de archivo no permitido. Solo se aceptan archivos CSV, XLS y XLSX');
+            this.value = '';
+            return;
+        }
+    }
+});
+</script>
+{% endblock %}

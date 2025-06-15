@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Estudiante - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-user-plus"></i> Nuevo Estudiante</h2>
+            <hr>
+            
+            <!-- Formulario de Nuevo Estudiante -->
+            <div class="card">
+                <div class="card-body">
+                    <form id="nuevo-estudiante-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="nombres" class="form-label">Nombres</label>
+                                    <input type="text" class="form-control" id="nombres" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="apellidos" class="form-label">Apellidos</label>
+                                    <input type="text" class="form-control" id="apellidos" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="documento" class="form-label">Número de Documento</label>
+                                    <input type="text" class="form-control" id="documento" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="fecha_nacimiento" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="grado" class="form-label">Grado</label>
+                                    <select class="form-select" id="grado" required>
+                                        <option value="">Seleccionar grado</option>
+                                        <!-- Opciones dinámicas de grados -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="seccion" class="form-label">Sección</label>
+                                    <select class="form-select" id="seccion" required>
+                                        <option value="">Seleccionar sección</option>
+                                        <!-- Opciones dinámicas de secciones -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="direccion" class="form-label">Dirección</label>
+                                    <input type="text" class="form-control" id="direccion">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="telefono">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Correo Electrónico</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="acudiente" class="form-label">Acudiente Principal</label>
+                                    <select class="form-select" id="acudiente">
+                                        <option value="">Seleccionar acudiente</option>
+                                        <!-- Opciones dinámicas de acudientes -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ficha_medica" class="form-label">Ficha Médica</label>
+                                    <textarea class="form-control" id="ficha_medica" rows="3"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="activo">
+                                        <label class="form-check-label" for="activo">
+                                            Estudiante Activo
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Registrar Estudiante
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funciones para manejar nuevo estudiante
+function registrarEstudiante() {
+    // Implementar lógica de registro
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-estudiante-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    registrarEstudiante();
+});
+
+// Validación de fecha de nacimiento
+const fechaNacimiento = document.getElementById('fecha_nacimiento');
+fechaNacimiento.addEventListener('change', function() {
+    const fecha = new Date(this.value);
+    const edad = new Date().getFullYear() - fecha.getFullYear();
+    if (edad < 4 || edad > 20) {
+        alert('La edad del estudiante debe estar entre 4 y 20 años');
+        this.value = '';
+    }
+});
+
+// Validación de documento
+const documento = document.getElementById('documento');
+documento.addEventListener('input', function() {
+    const doc = this.value.replace(/\D/g, '');
+    this.value = doc;
+    if (doc.length > 12) {
+        alert('El número de documento es demasiado largo');
+        this.value = doc.slice(0, 12);
+    }
+});
+
+// Validación de teléfono
+const telefono = document.getElementById('telefono');
+telefono.addEventListener('input', function() {
+    const tel = this.value.replace(/\D/g, '');
+    this.value = tel;
+    if (tel.length > 15) {
+        alert('El número de teléfono es demasiado largo');
+        this.value = tel.slice(0, 15);
+    }
+});
+</script>
+{% endblock %}

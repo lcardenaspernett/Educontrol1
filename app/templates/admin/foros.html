@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Foros - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-comments"></i> Gestión de Foros</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura">
+                                <option value="">Todas las asignaturas</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso">
+                                <option value="">Todos los cursos</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado">
+                                <option value="">Todos los estados</option>
+                                <option value="activo">Activo</option>
+                                <option value="cerrado">Cerrado</option>
+                                <option value="pendiente">Pendiente</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarForos()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Foros -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Foros Activos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Asignatura</th>
+                                    <th>Curso</th>
+                                    <th>Título</th>
+                                    <th>Estado</th>
+                                    <th>Participantes</th>
+                                    <th>Última Actividad</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="foros-table">
+                                <!-- Datos dinámicos de foros -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Foro -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nuevo Foro</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nuevo-foro-form">
+                        <div class="mb-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura" required>
+                                <option value="">Seleccionar asignatura</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso" required>
+                                <option value="">Seleccionar curso</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título del Foro</label>
+                            <input type="text" class="form-control" id="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_fin" class="form-label">Fecha de Cierre</label>
+                            <input type="date" class="form-control" id="fecha_fin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Foro</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="abierto">Abierto</option>
+                                <option value="moderado">Moderado</option>
+                                <option value="cerrado">Cerrado</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="anonimo">
+                                <label class="form-check-label" for="anonimo">
+                                    Permitir publicaciones anónimas
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="archivos">
+                                <label class="form-check-label" for="archivos">
+                                    Permitir subida de archivos
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Foro
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+<script>
+// Inicializar CKEditor para la descripción
+ClassicEditor
+    .create(document.querySelector('#descripcion'))
+    .catch(error => {
+        console.error(error);
+    });
+
+// Funciones para manejar foros
+function cargarForos() {
+    // Implementar carga de foros
+}
+
+function agregarForo() {
+    // Implementar lógica de agregar foro
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-foro-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarForo();
+});
+
+// Validación de fechas
+const fechaInicio = document.getElementById('fecha_inicio');
+const fechaFin = document.getElementById('fecha_fin');
+
+fechaInicio.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaFin.value && new Date(fechaFin.value) < new Date(this.value)) {
+        alert('La fecha de cierre no puede ser anterior a la fecha de inicio');
+        fechaFin.value = '';
+    }
+});
+
+fechaFin.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaInicio.value && new Date(this.value) < new Date(fechaInicio.value)) {
+        alert('La fecha de cierre no puede ser anterior a la fecha de inicio');
+        this.value = '';
+    }
+});
+</script>
+{% endblock %}

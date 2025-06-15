@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Backup - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-database"></i> Gestión de Backup</h2>
+            <hr>
+            
+            <!-- Estado del Sistema -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Estado del Sistema</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tamaño del Sistema</h5>
+                                    <p class="card-text" id="tamanio-sistema">Cargando...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Último Backup</h5>
+                                    <p class="card-text" id="ultimo-backup">Cargando...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body">
+                                    <h5 class="card-title">Estado del Servicio</h5>
+                                    <p class="card-text" id="estado-servicio">Cargando...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opciones de Backup -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Opciones de Backup</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Backup Completo</h5>
+                                    <p class="card-text">Realiza un backup completo de toda la base de datos</p>
+                                    <button type="button" class="btn btn-primary" onclick="realizarBackup('completo')">
+                                        <i class="fas fa-save"></i> Realizar Backup Completo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Backup Incremental</h5>
+                                    <p class="card-text">Realiza un backup de los cambios desde el último backup</p>
+                                    <button type="button" class="btn btn-success" onclick="realizarBackup('incremental')">
+                                        <i class="fas fa-sync"></i> Realizar Backup Incremental
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurar Backup -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Restaurar Backup</h5>
+                </div>
+                <div class="card-body">
+                    <form id="restaurar-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="archivo" class="form-label">Archivo de Backup</label>
+                            <input type="file" class="form-control" id="archivo" accept=".sql,.zip" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo_restauracion" class="form-label">Tipo de Restauración</label>
+                            <select class="form-select" id="tipo_restauracion" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="completo">Restauración Completa</option>
+                                <option value="parcial">Restauración Parcial</option>
+                            </select>
+                        </div>
+                        <div id="opciones-restauracion" style="display: none;">
+                            <!-- Opciones dinámicas según tipo de restauración -->
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-undo"></i> Restaurar Sistema
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Historial de Backups -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Historial de Backups</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Tipo</th>
+                                    <th>Tamaño</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="backups-table">
+                                <!-- Datos dinámicos de backups -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Manejar el tipo de restauración
+document.getElementById('tipo_restauracion').addEventListener('change', function() {
+    const opcionesRestauracion = document.getElementById('opciones-restauracion');
+    opcionesRestauracion.style.display = this.value === 'parcial' ? 'block' : 'none';
+    
+    if (this.value === 'parcial') {
+        opcionesRestauracion.innerHTML = `
+            <div class="mb-3">
+                <label for="modulos" class="form-label">Módulos a Restaurar</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="usuarios">
+                    <label class="form-check-label" for="usuarios">
+                        Usuarios
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="academicos">
+                    <label class="form-check-label" for="academicos">
+                        Datos Académicos
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="administrativos">
+                    <label class="form-check-label" for="administrativos">
+                        Datos Administrativos
+                    </label>
+                </div>
+            </div>
+        `;
+    }
+});
+
+// Funciones para manejar backup y restauración
+function realizarBackup(tipo) {
+    // Implementar lógica de backup
+}
+
+function restaurarBackup() {
+    // Implementar lógica de restauración
+}
+
+// Event listener para el formulario de restauración
+const form = document.getElementById('restaurar-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    restaurarBackup();
+});
+
+// Validación de archivo
+const archivoInput = document.getElementById('archivo');
+archivoInput.addEventListener('change', function() {
+    const archivo = this.files[0];
+    if (archivo) {
+        // Validar tipo de archivo
+        const tiposPermitidos = ['application/sql', 'application/zip'];
+        
+        if (!tiposPermitidos.includes(archivo.type)) {
+            alert('Tipo de archivo no permitido. Solo se aceptan archivos SQL y ZIP');
+            this.value = '';
+            return;
+        }
+    }
+});
+
+// Actualizar estado del sistema
+function actualizarEstado() {
+    // Implementar actualización del estado del sistema
+}
+
+// Inicializar estado del sistema
+window.addEventListener('load', actualizarEstado);
+</script>
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Actividades - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-tasks"></i> Gestión de Actividades</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura">
+                                <option value="">Todas las asignaturas</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso">
+                                <option value="">Todos los cursos</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo de Actividad</label>
+                            <select class="form-select" id="tipo">
+                                <option value="">Todos los tipos</option>
+                                <option value="individual">Individual</option>
+                                <option value="grupal">Grupal</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="proyecto">Proyecto</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarActividades()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Actividades -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actividades Recientes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Asignatura</th>
+                                    <th>Curso</th>
+                                    <th>Título</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="actividades-table">
+                                <!-- Datos dinámicos de actividades -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nueva Actividad -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nueva Actividad</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nueva-actividad-form">
+                        <div class="mb-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura" required>
+                                <option value="">Seleccionar asignatura</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso" required>
+                                <option value="">Seleccionar curso</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Actividad</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="individual">Individual</option>
+                                <option value="grupal">Grupal</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="proyecto">Proyecto</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_fin" class="form-label">Fecha de Entrega</label>
+                            <input type="date" class="form-control" id="fecha_fin" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="requisitos" class="form-label">Requisitos</label>
+                            <textarea class="form-control" id="requisitos" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="valor" class="form-label">Valor (puntos)</label>
+                            <input type="number" class="form-control" id="valor" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="publico">
+                                <label class="form-check-label" for="publico">
+                                    Actividad pública (visible para todos)
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Actividad
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+<script>
+// Inicializar CKEditor para la descripción y requisitos
+ClassicEditor
+    .create(document.querySelector('#descripcion'))
+    .catch(error => {
+        console.error(error);
+    });
+
+ClassicEditor
+    .create(document.querySelector('#requisitos'))
+    .catch(error => {
+        console.error(error);
+    });
+
+// Funciones para manejar actividades
+function cargarActividades() {
+    // Implementar carga de actividades
+}
+
+function agregarActividad() {
+    // Implementar lógica de agregar actividad
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nueva-actividad-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarActividad();
+});
+
+// Validación de fechas
+const fechaInicio = document.getElementById('fecha_inicio');
+const fechaFin = document.getElementById('fecha_fin');
+
+fechaInicio.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaFin.value && new Date(fechaFin.value) < new Date(this.value)) {
+        alert('La fecha de entrega no puede ser anterior a la fecha de inicio');
+        fechaFin.value = '';
+    }
+});
+
+fechaFin.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaInicio.value && new Date(this.value) < new Date(fechaInicio.value)) {
+        alert('La fecha de entrega no puede ser anterior a la fecha de inicio');
+        this.value = '';
+    }
+});
+</script>
+{% endblock %}

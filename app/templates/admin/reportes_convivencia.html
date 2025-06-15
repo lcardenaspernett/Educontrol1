@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes de Convivencia - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-clipboard-check"></i> Reportes de Convivencia</h2>
+            <hr>
+            
+            <!-- Filtros de Reportes -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo_reporte" class="form-label">Tipo de Reporte</label>
+                            <select class="form-select" id="tipo_reporte">
+                                <option value="">Seleccionar tipo</option>
+                                <option value="incidencias">Incidencias por Estudiante</option>
+                                <option value="conducta">Conducta por Curso</option>
+                                <option value="sanciones">Sanciones Aplicadas</option>
+                                <option value="recompensas">Recompensas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="generarReporte()">
+                                <i class="fas fa-file-excel"></i> Generar Reporte
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Gráficos y Estadísticas -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Incidencias por Tipo</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="incidencias-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Conducta por Curso</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="conducta-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Incidencias -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Incidencias Recientes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estudiante</th>
+                                    <th>Tipo de Incidencia</th>
+                                    <th>Descripción</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="incidencias-table">
+                                <!-- Datos dinámicos de incidencias -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Sanciones -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Sanciones Aplicadas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Estudiante</th>
+                                    <th>Tipo de Sanción</th>
+                                    <th>Duración</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sanciones-table">
+                                <!-- Datos dinámicos de sanciones -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Funciones para manejar reportes
+function generarReporte() {
+    // Implementar lógica de generación de reporte
+}
+
+// Configuración de gráficos
+const incidenciasChart = new Chart(document.getElementById('incidencias-chart'), {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: []
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+const conductaChart = new Chart(document.getElementById('conducta-chart'), {
+    type: 'line',
+    data: {
+        labels: [],
+        datasets: []
+    },
+    options: {
+        responsive: true
+    }
+});
+
+// Event listener para el botón de generar reporte
+const generarBtn = document.querySelector('[onclick="generarReporte()"]');
+generarBtn.addEventListener('click', function() {
+    generarReporte();
+});
+</script>
+{% endblock %}

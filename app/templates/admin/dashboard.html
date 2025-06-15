@@ -8,1513 +8,1641 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            /* Gradientes principales */
-            --gradient-primary: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
-            --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
-            --gradient-danger: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
-            --gradient-info: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-            
-            /* Colores sólidos */
-            --primary-color: #8E2DE2;
-            --secondary-color: #667eea;
-            --success-color: #10B981;
-            --warning-color: #F59E0B;
-            --danger-color: #EF4444;
-            --info-color: #3B82F6;
-            
-            /* Fondos */
-            --bg-main: #f8fafc;
-            --bg-card: rgba(255, 255, 255, 0.95);
-            --bg-sidebar: #1a1d29;
-            --bg-topbar: rgba(255, 255, 255, 0.98);
-            
-            /* Texto */
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --text-light: #94a3b8;
-            --text-white: #ffffff;
-            --text-sidebar: #e2e8f0;
-            
-            /* Sombras */
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-            
-            /* Transiciones */
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-fast: all 0.15s ease;
-            
-            /* Espaciado */
-            --spacing-xs: 0.25rem;
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            
-            /* Bordes */
-            --radius-sm: 6px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --radius-2xl: 20px;
-        }
+    :root {
+        /* Gradientes principales */
+        --gradient-primary: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        --gradient-secondary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+        --gradient-danger: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+        --gradient-info: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        
+        /* Colores sólidos */
+        --primary-color: #8E2DE2;
+        --secondary-color: #667eea;
+        --success-color: #10B981;
+        --warning-color: #F59E0B;
+        --danger-color: #EF4444;
+        --info-color: #3B82F6;
+        
+        /* Fondos */
+        --bg-main: #f8fafc;
+        --bg-card: rgba(255, 255, 255, 0.95);
+        --bg-sidebar: #1a1d29;
+        --bg-topbar: rgba(255, 255, 255, 0.98);
+        
+        /* Texto */
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --text-light: #94a3b8;
+        --text-white: #ffffff;
+        --text-sidebar: #e2e8f0;
+        
+        /* Sombras */
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        
+        /* Transiciones */
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-fast: all 0.15s ease;
+        
+        /* Espaciado */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        
+        /* Bordes */
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --radius-2xl: 20px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: var(--bg-main);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--bg-main);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
 
-        /* Layout principal */
-        .admin-layout {
-            display: flex;
-            min-height: 100vh;
-        }
+    /* Layout principal */
+    .admin-layout {
+        display: flex;
+        min-height: 100vh;
+    }
 
-        /* Sidebar moderno */
+    /* Sidebar moderno */
+    .sidebar {
+        width: 280px;
+        background: var(--bg-sidebar);
+        color: var(--text-sidebar);
+        position: fixed;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        z-index: 1000;
+        transition: var(--transition);
+        overflow-y: auto;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+    }
+
+    .sidebar-header {
+        padding: var(--spacing-lg);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, rgba(142, 45, 226, 0.1), rgba(74, 0, 224, 0.05));
+    }
+
+    .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        color: var(--text-white);
+        text-decoration: none;
+        font-size: 1.5rem;
+        font-weight: 800;
+        transition: var(--transition);
+    }
+
+    .sidebar-brand:hover {
+        color: var(--text-white);
+        transform: scale(1.02);
+    }
+
+    .sidebar-brand-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+
+    .sidebar-nav {
+        padding: var(--spacing-lg) 0;
+    }
+
+    .nav-section {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .nav-section-title {
+        padding: 0 var(--spacing-lg);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-light);
+        margin-bottom: var(--spacing-md);
+        position: relative;
+    }
+
+    .nav-section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: var(--spacing-lg);
+        width: 30px;
+        height: 2px;
+        background: var(--gradient-primary);
+        border-radius: 1px;
+    }
+
+    .nav-item {
+        margin-bottom: var(--spacing-xs);
+        position: relative;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-lg);
+        color: var(--text-sidebar);
+        text-decoration: none;
+        transition: var(--transition);
+        position: relative;
+        font-weight: 500;
+        border-radius: 0 25px 25px 0;
+        margin-right: var(--spacing-md);
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 0;
+        background: var(--gradient-primary);
+        border-radius: 0 2px 2px 0;
+        transition: var(--transition);
+    }
+
+    .nav-link:hover {
+        background: rgba(142, 45, 226, 0.1);
+        color: var(--text-white);
+        transform: translateX(4px);
+    }
+
+    .nav-link:hover::before {
+        height: 20px;
+    }
+
+    .nav-link.active {
+        background: var(--gradient-primary);
+        color: var(--text-white);
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .nav-link.active::before {
+        height: 100%;
+        width: 4px;
+    }
+
+    .nav-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+        transition: var(--transition);
+    }
+
+    .nav-link:hover .nav-icon {
+        transform: scale(1.1);
+    }
+
+    /* Submenú */
+    .nav-submenu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        background: rgba(0, 0, 0, 0.1);
+        margin: var(--spacing-xs) 0;
+        border-radius: var(--radius-md);
+    }
+
+    .nav-item.has-submenu.open .nav-submenu {
+        max-height: 500px;
+    }
+
+    .nav-submenu .nav-link {
+        padding-left: calc(var(--spacing-lg) + 32px);
+        font-size: 0.9rem;
+        font-weight: 400;
+        margin-right: 0;
+        border-radius: var(--radius-sm);
+    }
+
+    .nav-submenu .nav-link::before {
+        display: none;
+    }
+
+    .nav-toggle {
+        margin-left: auto;
+        transition: var(--transition);
+        font-size: 0.8rem;
+    }
+
+    .nav-item.open .nav-toggle {
+        transform: rotate(180deg);
+    }
+
+    /* Main content */
+    .main-content {
+        flex: 1;
+        margin-left: 280px;
+        transition: var(--transition);
+        background: var(--bg-main);
+    }
+
+    /* Topbar moderno */
+    .topbar {
+        background: var(--gradient-primary);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        padding: var(--spacing-md) var(--spacing-xl);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-lg);
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-white);
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.15);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-lg);
+        backdrop-filter: blur(10px);
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+    }
+
+    .topbar-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-lg);
+        border: none;
+        background: rgba(255, 255, 255, 0.15);
+        color: var(--text-white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+    }
+
+    .topbar-btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transition: var(--transition);
+        z-index: -1;
+    }
+
+    .topbar-btn:hover::before {
+        width: 100%;
+        height: 100%;
+    }
+
+    .topbar-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    /* User menu con tema morado */
+    .user-menu {
+        position: relative;
+    }
+
+    .user-menu-trigger {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: var(--transition);
+        background: rgba(255, 255, 255, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    .user-menu-trigger:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: rgba(255, 255, 255, 0.4);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.2;
+        color: var(--text-white);
+    }
+
+    .user-role {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.2;
+    }
+
+    .user-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: var(--text-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-xl);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        min-width: 200px;
+        z-index: 9999 !important;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: var(--transition);
+        backdrop-filter: blur(20px);
+        margin-top: var(--spacing-sm);
+    }
+
+    .user-menu.open .user-dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) var(--spacing-lg);
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+        border-radius: var(--radius-sm);
+        margin: var(--spacing-xs);
+    }
+
+    .dropdown-item:hover {
+        background: rgba(142, 45, 226, 0.1);
+        color: var(--primary-color);
+    }
+
+    .dropdown-divider {
+        height: 1px;
+        background: rgba(226, 232, 240, 0.5);
+        margin: var(--spacing-sm) 0;
+    }
+
+    /* Sidebar toggle button for mobile */
+    .sidebar-toggle {
+        color: var(--text-white) !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .sidebar-toggle:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+    }
+
+    /* Dashboard content */
+    .dashboard-content {
+        padding: var(--spacing-xl);
+    }
+
+    /* Stats cards mejoradas */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        backdrop-filter: blur(20px);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        transition: var(--transition);
+    }
+
+    .stat-card:nth-child(1)::before { background: var(--gradient-primary); }
+    .stat-card:nth-child(2)::before { background: var(--gradient-success); }
+    .stat-card:nth-child(3)::before { background: var(--gradient-warning); }
+    .stat-card:nth-child(4)::before { background: var(--gradient-info); }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .stat-card:hover::before {
+        height: 6px;
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .stat-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--text-white);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-card:nth-child(1) .stat-icon { background: var(--gradient-primary); }
+    .stat-card:nth-child(2) .stat-icon { background: var(--gradient-success); }
+    .stat-card:nth-child(3) .stat-icon { background: var(--gradient-warning); }
+    .stat-card:nth-child(4) .stat-icon { background: var(--gradient-info); }
+
+    .stat-icon::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .stat-value {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+        margin-bottom: var(--spacing-sm);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-change {
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        font-weight: 600;
+    }
+
+    .stat-change.positive { color: var(--success-color); }
+    .stat-change.negative { color: var(--danger-color); }
+    .stat-change.neutral { color: var(--text-secondary); }
+
+    /* Dashboard grid mejorado */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--spacing-xl);
+    }
+
+    .chart-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+    }
+
+    .chart-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Widgets laterales */
+    .sidebar-widgets {
+        display: grid;
+        gap: var(--spacing-lg);
+    }
+
+    .widget {
+        background: var(--bg-card);
+        border-radius: var(--radius-2xl);
+        padding: var(--spacing-xl);
+        box-shadow: var(--shadow-md);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+    }
+
+    .widget-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+    }
+
+    .widget-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* Actividad reciente */
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+        padding: var(--spacing-md);
+        border-radius: var(--radius-lg);
+        transition: var(--transition);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .activity-item:hover {
+        background: rgba(142, 45, 226, 0.05);
+        transform: translateX(4px);
+    }
+
+    .activity-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: var(--text-white);
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(142, 45, 226, 0.2);
+    }
+
+    .activity-avatar.primary {
+        background: var(--gradient-primary);
+    }
+    .activity-avatar.secondary {
+        background: var(--gradient-secondary);
+    }
+    .activity-avatar.success {
+        background: var(--gradient-success);
+    }
+    .activity-avatar.warning {
+        background: var(--gradient-warning);
+    }
+    .activity-avatar.danger {
+        background: var(--gradient-danger);
+    }
+    .activity-avatar.info {
+        background: var(--gradient-info);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-text {
+        font-size: 0.9rem;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .activity-time {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+
+    /* Acciones rápidas mejoradas */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .quick-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-xl);
+        background: var(--bg-card);
+        border: 1px solid rgba(226, 232, 240, 0.5);
+        cursor: pointer;
+        transition: var(--transition);
+        text-decoration: none;
+        color: var(--text-secondary);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .quick-action::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--gradient-primary);
+        opacity: 0;
+        transition: var(--transition);
+        z-index: -1;
+    }
+
+    .quick-action:hover::before {
+        opacity: 0.1;
+    }
+
+    .quick-action:hover {
+        color: var(--primary-color);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-color);
+    }
+
+    .quick-action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-lg);
+        background: rgba(142, 45, 226, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: var(--transition);
+    }
+
+    .quick-action:hover .quick-action-icon {
+        background: var(--gradient-primary);
+        color: var(--text-white);
+        transform: scale(1.1);
+    }
+
+    .quick-action-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    /* Responsive mejorado */
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
         .sidebar {
-            width: 280px;
-            background: var(--bg-sidebar);
-            color: var(--text-sidebar);
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            z-index: 1000;
-            transition: var(--transition);
-            overflow-y: auto;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
         }
-
-        .sidebar::-webkit-scrollbar {
-            width: 4px;
+        
+        .sidebar.open {
+            transform: translateX(0);
         }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-        }
-
-        .sidebar-header {
-            padding: var(--spacing-lg);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(135deg, rgba(142, 45, 226, 0.1), rgba(74, 0, 224, 0.05));
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 800;
-            transition: var(--transition);
-        }
-
-        .sidebar-brand:hover {
-            color: var(--text-white);
-            transform: scale(1.02);
-        }
-
-        .sidebar-brand-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--gradient-primary);
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
-        }
-
-        .sidebar-nav {
-            padding: var(--spacing-lg) 0;
-        }
-
-        .nav-section {
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .nav-section-title {
-            padding: 0 var(--spacing-lg);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-light);
-            margin-bottom: var(--spacing-md);
-            position: relative;
-        }
-
-        .nav-section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: var(--spacing-lg);
-            width: 30px;
-            height: 2px;
-            background: var(--gradient-primary);
-            border-radius: 1px;
-        }
-
-        .nav-item {
-            margin-bottom: var(--spacing-xs);
-            position: relative;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md) var(--spacing-lg);
-            color: var(--text-sidebar);
-            text-decoration: none;
-            transition: var(--transition);
-            position: relative;
-            font-weight: 500;
-            border-radius: 0 25px 25px 0;
-            margin-right: var(--spacing-md);
-        }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 0;
-            background: var(--gradient-primary);
-            border-radius: 0 2px 2px 0;
-            transition: var(--transition);
-        }
-
-        .nav-link:hover {
-            background: rgba(142, 45, 226, 0.1);
-            color: var(--text-white);
-            transform: translateX(4px);
-        }
-
-        .nav-link:hover::before {
-            height: 20px;
-        }
-
-        .nav-link.active {
-            background: var(--gradient-primary);
-            color: var(--text-white);
-            box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
-        }
-
-        .nav-link.active::before {
-            height: 100%;
-            width: 4px;
-        }
-
-        .nav-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 1.1rem;
-            transition: var(--transition);
-        }
-
-        .nav-link:hover .nav-icon {
-            transform: scale(1.1);
-        }
-
-        /* Submenú */
-        .nav-submenu {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-            background: rgba(0, 0, 0, 0.1);
-            margin: var(--spacing-xs) 0;
-            border-radius: var(--radius-md);
-        }
-
-        .nav-item.has-submenu.open .nav-submenu {
-            max-height: 500px;
-        }
-
-        .nav-submenu .nav-link {
-            padding-left: calc(var(--spacing-lg) + 32px);
-            font-size: 0.9rem;
-            font-weight: 400;
-            margin-right: 0;
-            border-radius: var(--radius-sm);
-        }
-
-        .nav-submenu .nav-link::before {
-            display: none;
-        }
-
-        .nav-toggle {
-            margin-left: auto;
-            transition: var(--transition);
-            font-size: 0.8rem;
-        }
-
-        .nav-item.open .nav-toggle {
-            transform: rotate(180deg);
-        }
-
-        /* Main content */
+        
         .main-content {
-            flex: 1;
-            margin-left: 280px;
-            transition: var(--transition);
-            background: var(--bg-main);
+            margin-left: 0;
         }
-
-        /* Topbar moderno */
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        
         .topbar {
-            background: var(--bg-topbar);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-            padding: var(--spacing-md) var(--spacing-xl);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            box-shadow: var(--shadow-sm);
+            padding: var(--spacing-md);
         }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-lg);
+        
+        .dashboard-content {
+            padding: var(--spacing-md);
         }
-
+        
         .page-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.5rem;
         }
-
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            background: rgba(142, 45, 226, 0.1);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-lg);
+        
+        .quick-actions {
+            grid-template-columns: 1fr;
         }
+    }
 
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-
-        .topbar-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: var(--radius-lg);
-            border: none;
-            background: rgba(142, 45, 226, 0.1);
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .topbar-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 0;
-            height: 0;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            transition: var(--transition);
-            z-index: -1;
-        }
-
-        .topbar-btn:hover::before {
-            width: 100%;
-            height: 100%;
-        }
-
-        .topbar-btn:hover {
-            color: var(--text-white);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        /* User menu con z-index corregido */
-        .user-menu {
-            position: relative;
-        }
-
-        .user-menu-trigger {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: var(--transition);
-            background: rgba(142, 45, 226, 0.1);
-            border: 1px solid transparent;
-        }
-
-        .user-menu-trigger:hover {
-            background: rgba(142, 45, 226, 0.15);
-            border-color: rgba(142, 45, 226, 0.3);
-            transform: translateY(-1px);
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: var(--text-white);
-            font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            line-height: 1.2;
-            color: var(--text-primary);
-        }
-
-        .user-role {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.2;
-        }
-
-        .user-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--text-white);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-xl);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            min-width: 200px;
-            z-index: 9999 !important; /* Z-index muy alto para estar sobre todo */
+    /* Animaciones de entrada */
+    @keyframes fadeInUp {
+        from {
             opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: var(--transition);
-            backdrop-filter: blur(20px);
-            margin-top: var(--spacing-sm);
+            transform: translateY(30px);
         }
-
-        .user-menu.open .user-dropdown {
+        to {
             opacity: 1;
-            visibility: visible;
             transform: translateY(0);
         }
+    }
 
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md) var(--spacing-lg);
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: var(--transition);
-            font-weight: 500;
-            border-radius: var(--radius-sm);
-            margin: var(--spacing-xs);
-        }
-
-        .dropdown-item:hover {
-            background: rgba(142, 45, 226, 0.1);
-            color: var(--primary-color);
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background: rgba(226, 232, 240, 0.5);
-            margin: var(--spacing-sm) 0;
-        }
-
-        /* Dashboard content */
-        .dashboard-content {
-            padding: var(--spacing-xl);
-        }
-
-        /* Stats cards mejoradas */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-lg);
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-2xl);
-            padding: var(--spacing-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-            backdrop-filter: blur(20px);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            transition: var(--transition);
-        }
-
-        .stat-card:nth-child(1)::before { background: var(--gradient-primary); }
-        .stat-card:nth-child(2)::before { background: var(--gradient-success); }
-        .stat-card:nth-child(3)::before { background: var(--gradient-warning); }
-        .stat-card:nth-child(4)::before { background: var(--gradient-info); }
-
-        .stat-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .stat-card:hover::before {
-            height: 6px;
-        }
-
-        .stat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .stat-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .stat-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: var(--radius-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--text-white);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card:nth-child(1) .stat-icon { background: var(--gradient-primary); }
-        .stat-card:nth-child(2) .stat-icon { background: var(--gradient-success); }
-        .stat-card:nth-child(3) .stat-icon { background: var(--gradient-warning); }
-        .stat-card:nth-child(4) .stat-icon { background: var(--gradient-info); }
-
-        .stat-icon::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 900;
-            color: var(--text-primary);
-            line-height: 1;
-            margin-bottom: var(--spacing-sm);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .stat-change {
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            font-weight: 600;
-        }
-
-        .stat-change.positive { color: var(--success-color); }
-        .stat-change.negative { color: var(--danger-color); }
-        .stat-change.neutral { color: var(--text-secondary); }
-
-        /* Dashboard grid mejorado */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: var(--spacing-xl);
-        }
-
-        .chart-card {
-            background: var(--bg-card);
-            border-radius: var(--radius-2xl);
-            padding: var(--spacing-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-        }
-
-        .chart-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
-        }
-
-        .chart-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Widgets laterales */
-        .sidebar-widgets {
-            display: grid;
-            gap: var(--spacing-lg);
-        }
-
-        .widget {
-            background: var(--bg-card);
-            border-radius: var(--radius-2xl);
-            padding: var(--spacing-xl);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(20px);
-        }
-
-        .widget-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: var(--spacing-lg);
-            padding-bottom: var(--spacing-md);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
-        }
-
-        .widget-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        /* Actividad reciente */
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--spacing-md);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-lg);
-            transition: var(--transition);
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .activity-item:hover {
-            background: rgba(142, 45, 226, 0.05);
-            transform: translateX(4px);
-        }
-
-        .activity-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text-white);
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(142, 45, 226, 0.2);
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-text {
-            font-size: 0.9rem;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-
-        .activity-time {
-            font-size: 0.75rem;
-            color: var(--text-light);
-        }
-
-        /* Acciones rápidas mejoradas */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: var(--spacing-md);
-        }
-
-        .quick-action {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: var(--spacing-md);
-            padding: var(--spacing-lg);
-            border-radius: var(--radius-xl);
-            background: var(--bg-card);
-            border: 1px solid rgba(226, 232, 240, 0.5);
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            color: var(--text-secondary);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quick-action::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--gradient-primary);
+    @keyframes slideInLeft {
+        from {
             opacity: 0;
-            transition: var(--transition);
-            z-index: -1;
+            transform: translateX(-30px);
         }
-
-        .quick-action:hover::before {
-            opacity: 0.1;
-        }
-
-        .quick-action:hover {
-            color: var(--primary-color);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-
-        .quick-action-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: var(--radius-lg);
-            background: rgba(142, 45, 226, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            transition: var(--transition);
-        }
-
-        .quick-action:hover .quick-action-icon {
-            background: var(--gradient-primary);
-            color: var(--text-white);
-            transform: scale(1.1);
-        }
-
-        .quick-action-text {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* Responsive mejorado */
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .topbar {
-                padding: var(--spacing-md);
-            }
-            
-            .dashboard-content {
-                padding: var(--spacing-md);
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Animaciones de entrada */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .stat-card {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .stat-card:nth-child(1) { animation-delay: 0.1s; }
-        .stat-card:nth-child(2) { animation-delay: 0.2s; }
-        .stat-card:nth-child(3) { animation-delay: 0.3s; }
-        .stat-card:nth-child(4) { animation-delay: 0.4s; }
-
-        .chart-card {
-            animation: fadeInUp 0.6s ease-out 0.5s both;
-        }
-
-        .widget {
-            animation: slideInLeft 0.6s ease-out 0.6s both;
-        }
-
-        .widget:nth-child(2) { animation-delay: 0.7s; }
-        .widget:nth-child(3) { animation-delay: 0.8s; }
-
-        /* Overlay para móvil */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .sidebar-overlay.active {
+        to {
             opacity: 1;
-            visibility: visible;
+            transform: translateX(0);
         }
+    }
 
-        /* Botón toggle para móvil */
+    .stat-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .chart-card {
+        animation: fadeInUp 0.6s ease-out 0.5s both;
+    }
+
+    .widget {
+        animation: slideInLeft 0.6s ease-out 0.6s both;
+    }
+
+    .widget:nth-child(2) { animation-delay: 0.7s; }
+    .widget:nth-child(3) { animation-delay: 0.8s; }
+
+    /* Overlay para móvil */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Botón toggle para móvil */
+    .sidebar-toggle {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
         .sidebar-toggle {
-            display: none;
+            display: flex;
         }
-
-        @media (max-width: 768px) {
-            .sidebar-toggle {
-                display: flex;
-            }
-        }
-    </style>
+    }
+</style>
+</style>
 </head>
 <body>
-    <div class="admin-layout">
-        <!-- Overlay para móvil -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-        <!-- Sidebar mejorado -->
-        <div class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a href="#" class="sidebar-brand">
-                    <div class="sidebar-brand-icon">
-                        <i class="fas fa-graduation-cap"></i>
+    <!-- Mostrar alertas Flask si existen -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 10001; max-width: 400px;">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }} alert-dismissible fade show" role="alert" style="margin-bottom: 10px; border-radius: 12px; backdrop-filter: blur(20px); box-shadow: 0 8px 25px rgba(0,0,0,0.15);">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    EduControl
-                </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+<div class="admin-layout">
+    <!-- Overlay para móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar mejorado -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('main.index') }}" class="sidebar-brand">
+                <div class="sidebar-brand-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                EduControl
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <!-- Inicio -->
+            <div class="nav-section">
+                <div class="nav-section-title">Inicio</div>
+                <div class="nav-item">
+                    <a href="{{ url_for('main.dashboard') }}" class="nav-link active">
+                        <i class="fas fa-tachometer-alt nav-icon"></i>
+                        Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Gestión de Usuarios -->
+            <div class="nav-section">
+                <div class="nav-section-title">Gestión de Usuarios</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-users nav-icon"></i>
+                        Usuarios
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="estudiantes">
+                            <i class="fas fa-user-graduate nav-icon"></i>
+                            Estudiantes
+                        </a>
+                        <a href="#" class="nav-link" data-route="docentes">
+                            <i class="fas fa-chalkboard-teacher nav-icon"></i>
+                            Docentes
+                        </a>
+                        <a href="#" class="nav-link" data-route="directivos">
+                            <i class="fas fa-user-tie nav-icon"></i>
+                            Directivos
+                        </a>
+                        <a href="#" class="nav-link" data-route="padres">
+                            <i class="fas fa-users-cog nav-icon"></i>
+                            Padres/Acudientes
+                        </a>
+                        <a href="#" class="nav-link" data-route="agregar_usuario">
+                            <i class="fas fa-user-plus nav-icon"></i>
+                            Agregar Usuario
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión Académica -->
+            <div class="nav-section">
+                <div class="nav-section-title">Gestión Académica</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-book-open nav-icon"></i>
+                        Académico
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="asignaturas">
+                            <i class="fas fa-books nav-icon"></i>
+                            Asignaturas
+                        </a>
+                        <a href="#" class="nav-link" data-route="evaluaciones">
+                            <i class="fas fa-clipboard-list nav-icon"></i>
+                            Evaluaciones y Calificaciones
+                        </a>
+                        <a href="#" class="nav-link" data-route="reportes_rendimiento">
+                            <i class="fas fa-chart-line nav-icon"></i>
+                            Reportes de Rendimiento
+                        </a>
+                        <a href="#" class="nav-link" data-route="nivelaciones">
+                            <i class="fas fa-level-up-alt nav-icon"></i>
+                            Nivelaciones
+                        </a>
+                        <a href="#" class="nav-link" data-route="boletines">
+                            <i class="fas fa-award nav-icon"></i>
+                            Promoción y Boletines
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asistencia y Convivencia -->
+            <div class="nav-section">
+                <div class="nav-section-title">Asistencia y Convivencia</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-user-check nav-icon"></i>
+                        Convivencia
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="asistencias">
+                            <i class="fas fa-calendar-check nav-icon"></i>
+                            Registro de Asistencias
+                        </a>
+                        <a href="#" class="nav-link" data-route="observador">
+                            <i class="fas fa-eye nav-icon"></i>
+                            Observador del Estudiante
+                        </a>
+                        <a href="#" class="nav-link" data-route="reportes_convivencia">
+                            <i class="fas fa-clipboard-check nav-icon"></i>
+                            Reportes de Convivencia
+                        </a>
+                        <a href="#" class="nav-link" data-route="tutorias">
+                            <i class="fas fa-hands-helping nav-icon"></i>
+                            Tutorías
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agenda y Comunicaciones -->
+            <div class="nav-section">
+                <div class="nav-section-title">Comunicaciones</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-comments nav-icon"></i>
+                        Comunicaciones
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="agenda">
+                            <i class="fas fa-calendar-alt nav-icon"></i>
+                            Agenda Institucional
+                        </a>
+                        <a href="#" class="nav-link" data-route="comunicados">
+                            <i class="fas fa-bullhorn nav-icon"></i>
+                            Comunicados / Circulares
+                        </a>
+                        <a href="#" class="nav-link" data-route="notificaciones">
+                            <i class="fas fa-bell nav-icon"></i>
+                            Notificaciones
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aula Virtual -->
+            <div class="nav-section">
+                <div class="nav-section-title">Aula Virtual</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-laptop nav-icon"></i>
+                        Aula Virtual
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="contenidos">
+                            <i class="fas fa-file-text nav-icon"></i>
+                            Contenidos
+                        </a>
+                        <a href="#" class="nav-link" data-route="materiales">
+                            <i class="fas fa-folder-open nav-icon"></i>
+                            Materiales
+                        </a>
+                        <a href="#" class="nav-link" data-route="actividades">
+                            <i class="fas fa-tasks nav-icon"></i>
+                            Actividades
+                        </a>
+                        <a href="#" class="nav-link" data-route="foros">
+                            <i class="fas fa-comments-o nav-icon"></i>
+                            Foros
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuración del Sistema -->
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <div class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
+                        <i class="fas fa-cog nav-icon"></i>
+                        Configuración
+                        <i class="fas fa-chevron-down nav-toggle"></i>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="#" class="nav-link" data-route="periodos">
+                            <i class="fas fa-calendar nav-icon"></i>
+                            Periodos
+                        </a>
+                        <a href="#" class="nav-link" data-route="roles_permisos">
+                            <i class="fas fa-shield-alt nav-icon"></i>
+                            Roles y Permisos
+                        </a>
+                        <a href="#" class="nav-link" data-route="calendario_academico">
+                            <i class="fas fa-calendar-week nav-icon"></i>
+                            Calendario Académico
+                        </a>
+                        <a href="#" class="nav-link" data-route="importar_exportar">
+                            <i class="fas fa-exchange-alt nav-icon"></i>
+                            Importar / Exportar
+                        </a>
+                        <a href="#" class="nav-link" data-route="backup">
+                            <i class="fas fa-database nav-icon"></i>
+                            Backup
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Topbar mejorado -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <button class="topbar-btn sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Dashboard</h1>
+                <div class="breadcrumb">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span>Dashboard</span>
+                </div>
             </div>
             
-            <nav class="sidebar-nav">
-                <!-- Inicio -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Inicio</div>
-                    <div class="nav-item">
-                        <a href="#" class="nav-link active">
-                            <i class="fas fa-tachometer-alt nav-icon"></i>
-                            Dashboard
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Gestión de Usuarios -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Gestión de Usuarios</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-users nav-icon"></i>
-                            Usuarios
-                            <i class="fas fa-chevron-down nav-toggle"></i>
-                        </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-user-graduate nav-icon"></i>
-                                Estudiantes
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-chalkboard-teacher nav-icon"></i>
-                                Docentes
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-user-tie nav-icon"></i>
-                                Directivos
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-users-cog nav-icon"></i>
-                                Padres/Acudientes
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-user-plus nav-icon"></i>
-                                Agregar Usuario
-                            </a>
+            <div class="topbar-right">
+                <button class="topbar-btn" title="Buscar">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="topbar-btn" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                </button>
+                <button class="topbar-btn" title="Configuración">
+                    <i class="fas fa-cog"></i>
+                </button>
+                
+                <div class="user-menu" id="userMenu">
+                    <div class="user-menu-trigger" onclick="toggleUserMenu()">
+                        <div class="user-avatar">
+                            {{ current_user.nombre[0] if current_user.nombre else 'U' }}
                         </div>
-                    </div>
-                </div>
-
-                <!-- Gestión Académica -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Gestión Académica</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-book-open nav-icon"></i>
-                            Académico
-                            <i class="fas fa-chevron-down nav-toggle"></i>
-                        </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-books nav-icon"></i>
-                                Asignaturas
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-clipboard-list nav-icon"></i>
-                                Evaluaciones y Calificaciones
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-chart-line nav-icon"></i>
-                                Reportes de Rendimiento
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-level-up-alt nav-icon"></i>
-                                Nivelaciones
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-award nav-icon"></i>
-                                Promoción y Boletines
-                            </a>
+                        <div class="user-info">
+                            <div class="user-name">{{ current_user.nombre }} {{ current_user.apellido }}</div>
+                            <div class="user-role">{{ current_user.rol|title }}</div>
                         </div>
+                        <i class="fas fa-chevron-down"></i>
                     </div>
-                </div>
-
-                <!-- Asistencia y Convivencia -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Asistencia y Convivencia</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-user-check nav-icon"></i>
-                            Convivencia
-                            <i class="fas fa-chevron-down nav-toggle"></i>
+                    <div class="user-dropdown">
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            Mi Perfil
                         </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-calendar-check nav-icon"></i>
-                                Registro de Asistencias
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-eye nav-icon"></i>
-                                Observador del Estudiante
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-clipboard-check nav-icon"></i>
-                                Reportes de Convivencia
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-hands-helping nav-icon"></i>
-                                Tutorías
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Agenda y Comunicaciones -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Comunicaciones</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-comments nav-icon"></i>
-                            Comunicaciones
-                            <i class="fas fa-chevron-down nav-toggle"></i>
-                        </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-calendar-alt nav-icon"></i>
-                                Agenda Institucional
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-bullhorn nav-icon"></i>
-                                Comunicados / Circulares
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-bell nav-icon"></i>
-                                Notificaciones
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Aula Virtual -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Aula Virtual</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-laptop nav-icon"></i>
-                            Aula Virtual
-                            <i class="fas fa-chevron-down nav-toggle"></i>
-                        </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-file-text nav-icon"></i>
-                                Contenidos
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-folder-open nav-icon"></i>
-                                Materiales
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-tasks nav-icon"></i>
-                                Actividades
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-comments-o nav-icon"></i>
-                                Foros
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Configuración del Sistema -->
-                <div class="nav-section">
-                    <div class="nav-section-title">Sistema</div>
-                    <div class="nav-item has-submenu">
-                        <a href="#" class="nav-link" onclick="toggleSubmenu(this)">
-                            <i class="fas fa-cog nav-icon"></i>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
                             Configuración
-                            <i class="fas fa-chevron-down nav-toggle"></i>
                         </a>
-                        <div class="nav-submenu">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-calendar nav-icon"></i>
-                                Periodos
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-shield-alt nav-icon"></i>
-                                Roles y Permisos
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-calendar-week nav-icon"></i>
-                                Calendario Académico
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-exchange-alt nav-icon"></i>
-                                Importar / Exportar
-                            </a>
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-database nav-icon"></i>
-                                Backup
-                            </a>
-                        </div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-question-circle"></i>
+                            Ayuda
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ url_for('auth.logout') }}" class="dropdown-item" onclick="logout(event)">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Cerrar Sesión
+                        </a>
                     </div>
                 </div>
-            </nav>
+            </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Topbar mejorado -->
-            <div class="topbar">
-                <div class="topbar-left">
-                    <button class="topbar-btn sidebar-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1 class="page-title">Dashboard</h1>
-                    <div class="breadcrumb">
-                        <i class="fas fa-home"></i>
-                        <span>Inicio</span>
-                        <i class="fas fa-chevron-right"></i>
-                        <span>Dashboard</span>
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Stats Cards con datos dinámicos -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Total Estudiantes</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" data-count="{{ stats.total_estudiantes if stats else 0 }}">{{ stats.total_estudiantes if stats else 0 }}</div>
+                    <div class="stat-change {{ 'positive' if stats and stats.crecimiento_estudiantes > 0 else 'neutral' if stats and stats.crecimiento_estudiantes == 0 else 'negative' }}">
+                        <i class="fas fa-{{ 'arrow-up' if stats and stats.crecimiento_estudiantes > 0 else 'minus' if stats and stats.crecimiento_estudiantes == 0 else 'arrow-down' }}"></i>
+                        <span>
+                            {% if stats and stats.crecimiento_estudiantes %}
+                                {{ '+' if stats.crecimiento_estudiantes > 0 else '' }}{{ stats.crecimiento_estudiantes }}% este mes
+                            {% else %}
+                                Listos para crecer
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
-                
-                <div class="topbar-right">
-                    <button class="topbar-btn" title="Buscar">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button class="topbar-btn" title="Notificaciones">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                    <button class="topbar-btn" title="Configuración">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    
-                    <div class="user-menu" id="userMenu">
-                        <div class="user-menu-trigger" onclick="toggleUserMenu()">
-                            <div class="user-avatar">A</div>
-                            <div class="user-info">
-                                <div class="user-name">Administrador Sistema</div>
-                                <div class="user-role">Admin</div>
-                            </div>
-                            <i class="fas fa-chevron-down"></i>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Docentes Activos</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
                         </div>
-                        <div class="user-dropdown">
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-user"></i>
-                                Mi Perfil
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-cog"></i>
-                                Configuración
-                            </a>
-                            <a href="#" class="dropdown-item">
-                                <i class="fas fa-question-circle"></i>
-                                Ayuda
-                            </a>
-                            <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item" onclick="logout(event)">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Cerrar Sesión
-                            </a>
+                    </div>
+                    <div class="stat-value" data-count="{{ stats.total_docentes if stats else 0 }}">{{ stats.total_docentes if stats else 0 }}</div>
+                    <div class="stat-change {{ 'positive' if stats and stats.crecimiento_docentes > 0 else 'neutral' if stats and stats.crecimiento_docentes == 0 else 'negative' }}">
+                        <i class="fas fa-{{ 'arrow-up' if stats and stats.crecimiento_docentes > 0 else 'minus' if stats and stats.crecimiento_docentes == 0 else 'arrow-down' }}"></i>
+                        <span>
+                            {% if stats and stats.crecimiento_docentes %}
+                                {{ '+' if stats.crecimiento_docentes > 0 else '' }}{{ stats.crecimiento_docentes }}% este mes
+                            {% else %}
+                                Equipo por formar
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Cursos Activos</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-book-open"></i>
                         </div>
+                    </div>
+                    <div class="stat-value" data-count="{{ stats.total_cursos if stats else 0 }}">{{ stats.total_cursos if stats else 0 }}</div>
+                    <div class="stat-change {{ 'positive' if stats and stats.crecimiento_cursos > 0 else 'neutral' if stats and stats.crecimiento_cursos == 0 else 'negative' }}">
+                        <i class="fas fa-{{ 'arrow-up' if stats and stats.crecimiento_cursos > 0 else 'minus' if stats and stats.crecimiento_cursos == 0 else 'arrow-down' }}"></i>
+                        <span>
+                            {% if stats and stats.crecimiento_cursos %}
+                                {{ '+' if stats.crecimiento_cursos > 0 else '' }}{{ stats.crecimiento_cursos }}% este mes
+                            {% else %}
+                                Próximamente
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-title">Promedio General</div>
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="stat-value" data-count="{{ '%.1f'|format(stats.promedio_general if stats and stats.promedio_general else 0.0) }}">
+                        {{ '%.1f'|format(stats.promedio_general if stats and stats.promedio_general else 0.0) }}
+                    </div>
+                    <div class="stat-change {{ 'positive' if stats and stats.variacion_promedio and stats.variacion_promedio > 0 else 'neutral' if stats and stats.variacion_promedio and stats.variacion_promedio == 0 else 'negative' }}">
+                        <i class="fas fa-{{ 'arrow-up' if stats and stats.variacion_promedio and stats.variacion_promedio > 0 else 'minus' if stats and stats.variacion_promedio and stats.variacion_promedio == 0 else 'arrow-down' }}"></i>
+                        <span>
+                            {% if stats and stats.variacion_promedio %}
+                                {{ '+' if stats.variacion_promedio > 0 else '' }}{{ '%.1f'|format(stats.variacion_promedio) }} puntos
+                            {% else %}
+                                Sistema activo
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
-                <!-- Stats Cards mejoradas -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-title">Total Estudiantes</div>
-                            <div class="stat-icon">
-                                <i class="fas fa-user-graduate"></i>
+            <!-- Dashboard Grid Principal -->
+            <div class="dashboard-grid">
+                <!-- Gráficos y Charts -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-chart-area"></i>
+                                Actividad del Sistema
+                            </h3>
+                            <div class="chart-actions">
+                                <button class="btn btn-sm btn-outline-primary active" onclick="updateChartData('7d')">7 días</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="updateChartData('30d')">30 días</button>
+                                <button class="btn btn-sm btn-outline-primary" onclick="updateChartData('90d')">90 días</button>
                             </div>
                         </div>
-                        <div class="stat-value">1,247</div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+12% este mes</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-title">Docentes Activos</div>
-                            <div class="stat-icon">
-                                <i class="fas fa-chalkboard-teacher"></i>
+                        <div class="chart-container">
+                            <div style="height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(142, 45, 226, 0.1), rgba(74, 0, 224, 0.05)); border-radius: 12px; border: 2px dashed rgba(142, 45, 226, 0.3);">
+                                <div style="text-align: center; color: var(--text-secondary);">
+                                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
+                                    <p style="font-size: 1.1rem; font-weight: 600;">Gráfico de Actividad</p>
+                                    <p style="font-size: 0.9rem;">Los datos se cargarán aquí</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="stat-value">84</div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+5% este mes</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-title">Cursos Activos</div>
-                            <div class="stat-icon">
-                                <i class="fas fa-book-open"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">32</div>
-                        <div class="stat-change neutral">
-                            <i class="fas fa-minus"></i>
-                            <span>Sin cambios</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-header">
-                            <div class="stat-title">Calificaciones Promedio</div>
-                            <div class="stat-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <div class="stat-value">4.2</div>
-                        <div class="stat-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+0.3 puntos</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Dashboard Grid Principal -->
-                <div class="dashboard-grid">
-                    <!-- Gráficos y Charts -->
-                    <div class="charts-section">
-                        <div class="chart-card">
-                            <div class="chart-header">
-                                <h3 class="chart-title">
-                                    <i class="fas fa-chart-area"></i>
-                                    Actividad del Sistema
-                                </h3>
-                                <div class="chart-actions">
-                                    <button class="btn btn-sm btn-outline-primary active">7 días</button>
-                                    <button class="btn btn-sm btn-outline-primary">30 días</button>
-                                    <button class="btn btn-sm btn-outline-primary">90 días</button>
-                                </div>
-                            </div>
-                            <div class="chart-container">
-                                <div style="height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(142, 45, 226, 0.1), rgba(74, 0, 224, 0.05)); border-radius: 12px; border: 2px dashed rgba(142, 45, 226, 0.3);">
-                                    <div style="text-align: center; color: var(--text-secondary);">
-                                        <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
-                                        <p style="font-size: 1.1rem; font-weight: 600;">Gráfico de Actividad</p>
-                                        <p style="font-size: 0.9rem;">Los datos se cargarán aquí</p>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Widgets Laterales -->
+                <div class="sidebar-widgets">
+                    <!-- Actividad Reciente -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">
+                                <i class="fas fa-clock"></i>
+                                Actividad Reciente
+                            </h3>
+                            <button class="topbar-btn">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
                         </div>
-                    </div>
-
-                    <!-- Widgets Laterales -->
-                    <div class="sidebar-widgets">
-                        <!-- Actividad Reciente -->
-                        <div class="widget">
-                            <div class="widget-header">
-                                <h3 class="widget-title">
-                                    <i class="fas fa-clock"></i>
-                                    Actividad Reciente
-                                </h3>
-                                <button class="topbar-btn">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                            <div class="widget-content">
+                        <div class="widget-content">
+                            {% if actividades_recientes %}
+                                {% for actividad in actividades_recientes %}
                                 <div class="activity-item">
-                                    <div class="activity-avatar">M</div>
+                                    <div class="activity-avatar">{{ actividad.usuario[0] if actividad.usuario else 'S' }}</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">María González registró calificaciones para Matemáticas</p>
-                                        <p class="activity-time">Hace 5 minutos</p>
+                                        <p class="activity-text">{{ actividad.descripcion }}</p>
+                                        <p class="activity-time">{{ actividad.tiempo_relativo }}</p>
                                     </div>
                                 </div>
+                                {% endfor %}
+                            {% else %}
                                 <div class="activity-item">
-                                    <div class="activity-avatar">J</div>
+                                    <div class="activity-avatar">{{ current_user.nombre[0] if current_user.nombre else 'A' }}</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Juan Pérez se conectó al aula virtual</p>
-                                        <p class="activity-time">Hace 15 minutos</p>
-                                    </div>
-                                </div>
-                                <div class="activity-item">
-                                    <div class="activity-avatar">L</div>
-                                    <div class="activity-content">
-                                        <p class="activity-text">Laura Martínez subió material de estudio</p>
-                                        <p class="activity-time">Hace 1 hora</p>
+                                        <p class="activity-text">{{ current_user.nombre }} {{ current_user.apellido }} inició sesión en el sistema</p>
+                                        <p class="activity-time">Hace unos momentos</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
                                     <div class="activity-avatar">S</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Sistema: Backup automático completado</p>
-                                        <p class="activity-time">Hace 2 horas</p>
+                                        <p class="activity-text">Sistema iniciado correctamente</p>
+                                        <p class="activity-time">Hoy</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
-                                    <div class="activity-avatar">R</div>
+                                    <div class="activity-avatar">B</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Roberto Silva generó reporte de asistencia</p>
-                                        <p class="activity-time">Hace 3 horas</p>
+                                        <p class="activity-text">Base de datos conectada</p>
+                                        <p class="activity-time">Hoy</p>
                                     </div>
                                 </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Acciones Rápidas -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">
+                                <i class="fas fa-bolt"></i>
+                                Acciones Rápidas
+                            </h3>
+                        </div>
+                        <div class="widget-content">
+                            <div class="quick-actions">
+                                <a href="#" class="quick-action" data-route="nuevo_estudiante">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <span class="quick-action-text">Nuevo Estudiante</span>
+                                </a>
+                                <a href="#" class="quick-action" data-route="nuevo_docente">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-chalkboard-teacher"></i>
+                                    </div>
+                                    <span class="quick-action-text">Nuevo Docente</span>
+                                </a>
+                                <a href="#" class="quick-action" data-route="nueva_asignatura">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <span class="quick-action-text">Nueva Asignatura</span>
+                                </a>
+                                <a href="#" class="quick-action" data-route="generar_reporte">
+                                    <div class="quick-action-icon">
+                                        <i class="fas fa-file-export"></i>
+                                    </div>
+                                    <span class="quick-action-text">Generar Reporte</span>
+                                </a>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Acciones Rápidas -->
-                        <div class="widget">
-                            <div class="widget-header">
-                                <h3 class="widget-title">
-                                    <i class="fas fa-bolt"></i>
-                                    Acciones Rápidas
-                                </h3>
-                            </div>
-                            <div class="widget-content">
-                                <div class="quick-actions">
-                                    <a href="#" class="quick-action">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-user-plus"></i>
-                                        </div>
-                                        <span class="quick-action-text">Nuevo Estudiante</span>
-                                    </a>
-                                    <a href="#" class="quick-action">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-chalkboard-teacher"></i>
-                                        </div>
-                                        <span class="quick-action-text">Nuevo Docente</span>
-                                    </a>
-                                    <a href="#" class="quick-action">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-book"></i>
-                                        </div>
-                                        <span class="quick-action-text">Nueva Asignatura</span>
-                                    </a>
-                                    <a href="#" class="quick-action">
-                                        <div class="quick-action-icon">
-                                            <i class="fas fa-file-export"></i>
-                                        </div>
-                                        <span class="quick-action-text">Generar Reporte</span>
-                                    </a>
-                                </div>
-                            </div>
+                    <!-- Próximas Tareas -->
+                    <div class="widget">
+                        <div class="widget-header">
+                            <h3 class="widget-title">
+                                <i class="fas fa-tasks"></i>
+                                Próximas Tareas
+                            </h3>
                         </div>
-
-                        <!-- Próximas Tareas -->
-                        <div class="widget">
-                            <div class="widget-header">
-                                <h3 class="widget-title">
-                                    <i class="fas fa-tasks"></i>
-                                    Próximas Tareas
-                                </h3>
-                            </div>
-                            <div class="widget-content">
+                        <div class="widget-content">
+                            {% if proximas_tareas %}
+                                {% for tarea in proximas_tareas %}
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-warning);">!</div>
+                                    <div class="activity-avatar {{ tarea.tipo }}">{{ tarea.icono }}</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Cierre de calificaciones período 2</p>
-                                        <p class="activity-time">En 3 días</p>
+                                        <p class="activity-text">{{ tarea.descripcion }}</p>
+                                        <p class="activity-time">{{ tarea.fecha_relativa }}</p>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="activity-item">
+                                    <div class="activity-avatar" style="background: var(--gradient-info);">🚀</div>
+                                    <div class="activity-content">
+                                        <p class="activity-text">Configurar sistema educativo</p>
+                                        <p class="activity-time">Prioridad alta</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-info);">R</div>
+                                    <div class="activity-avatar" style="background: var(--gradient-success);">👥</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Reunión consejo académico</p>
-                                        <p class="activity-time">Viernes 9:00 AM</p>
+                                        <p class="activity-text">Registrar primeros usuarios</p>
+                                        <p class="activity-time">Paso siguiente</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-success);">✓</div>
+                                    <div class="activity-avatar" style="background: var(--gradient-warning);">📚</div>
                                     <div class="activity-content">
-                                        <p class="activity-text">Envío de boletines</p>
-                                        <p class="activity-time">Próxima semana</p>
+                                        <p class="activity-text">Crear estructura académica</p>
+                                        <p class="activity-time">Planificar</p>
                                     </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Toggle submenu
-        function toggleSubmenu(element) {
-            const navItem = element.parentElement;
-            const isOpen = navItem.classList.contains('open');
-            
-            // Cerrar todos los submenús
-            document.querySelectorAll('.nav-item.has-submenu').forEach(item => {
-                item.classList.remove('open');
-            });
-            
-            // Si no estaba abierto, abrirlo
-            if (!isOpen) {
-                navItem.classList.add('open');
-            }
-        }
-
-        // Toggle user menu con z-index corregido
-        function toggleUserMenu() {
-            const userMenu = document.getElementById('userMenu');
-            userMenu.classList.toggle('open');
-        }
-
-        // Toggle sidebar para móvil
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            sidebar.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-
-        // Cerrar menú de usuario al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            const userMenu = document.getElementById('userMenu');
-            if (!userMenu.contains(event.target)) {
-                userMenu.classList.remove('open');
-            }
+<script>
+    // Toggle submenu
+    function toggleSubmenu(element) {
+        const navItem = element.parentElement;
+        const isOpen = navItem.classList.contains('open');
+        
+        // Cerrar todos los submenús
+        document.querySelectorAll('.nav-item.has-submenu').forEach(item => {
+            item.classList.remove('open');
         });
+        
+        // Si no estaba abierto, abrirlo
+        if (!isOpen) {
+            navItem.classList.add('open');
+        }
+    }
 
-        // Cerrar sidebar en móvil al hacer clic en overlay
-        document.getElementById('sidebarOverlay').addEventListener('click', function() {
-            toggleSidebar();
-        });
+    // Toggle user menu con z-index corregido
+    function toggleUserMenu() {
+        const userMenu = document.getElementById('userMenu');
+        userMenu.classList.toggle('open');
+    }
 
-        // Manejar enlaces del sidebar
-        document.querySelectorAll('.nav-link:not([onclick])').forEach(link => {
-            link.addEventListener('click', function(e) {
+    // Toggle sidebar para móvil
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+
+    // Cerrar menú de usuario al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const userMenu = document.getElementById('userMenu');
+        if (!userMenu.contains(event.target)) {
+            userMenu.classList.remove('open');
+        }
+    });
+
+    // Cerrar sidebar en móvil al hacer clic en overlay
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+        toggleSidebar();
+    });
+
+    // Manejar enlaces del sidebar con notificaciones
+    document.querySelectorAll('.nav-link:not([onclick])').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Solo prevenir si el href es '#'
+            if (this.getAttribute('href') === '#') {
                 e.preventDefault();
                 
-                // Remover active de todos los enlaces
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                
-                // Agregar active al enlace clickeado
-                this.classList.add('active');
-                
-                // Si es móvil, cerrar sidebar
-                if (window.innerWidth <= 768) {
-                    toggleSidebar();
+                // Mostrar notificación para rutas no implementadas
+                const route = this.getAttribute('data-route');
+                if (route) {
+                    showNotification(`Funcionalidad "${this.textContent.trim()}" próximamente disponible`, 'info');
                 }
-            });
+            }
+            
+            // Remover active de todos los enlaces
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
+            // Agregar active al enlace clickeado
+            this.classList.add('active');
+            
+            // Si es móvil, cerrar sidebar
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
         });
+    });
 
-        // Animaciones adicionales
-        window.addEventListener('load', function() {
-            // Animar contadores
-            const statValues = document.querySelectorAll('.stat-value');
-            statValues.forEach(stat => {
-                const finalValue = stat.textContent;
-                let currentValue = 0;
-                const increment = finalValue / 50;
+    // Manejar acciones rápidas
+    document.querySelectorAll('.quick-action').forEach(action => {
+        action.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+                const route = this.getAttribute('data-route');
+                if (route) {
+                    showNotification(`Funcionalidad "${this.querySelector('.quick-action-text').textContent}" próximamente disponible`, 'info');
+                }
+            }
+        });
+    });
+
+    // Animaciones de contadores mejoradas
+    window.addEventListener('load', function() {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+            const finalValue = parseFloat(stat.getAttribute('data-count')) || 0;
+            let currentValue = 0;
+            const isDecimal = finalValue % 1 !== 0;
+            const increment = finalValue / (isDecimal ? 20 : 50);
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    currentValue = finalValue;
+                    clearInterval(timer);
+                }
                 
-                const timer = setInterval(() => {
-                    currentValue += increment;
-                    if (currentValue >= finalValue) {
-                        currentValue = finalValue;
-                        clearInterval(timer);
-                    }
+                if (isDecimal) {
+                    stat.textContent = currentValue.toFixed(1);
+                } else {
                     stat.textContent = Math.floor(currentValue);
-                }, 20);
-            });
+                }
+            }, isDecimal ? 50 : 20);
         });
+    });
 
-        // Notificaciones simuladas
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `alert alert-${type} alert-dismissible fade show`;
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.zIndex = '10000';
-            notification.style.minWidth = '300px';
-            notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
+    // Notificaciones simuladas
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            min-width: 300px;
+            max-width: 400px;
+        `;
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
                 notification.remove();
-            }, 5000);
+            }
+        }, 5000);
+    }
+
+    // Función de logout mejorada
+    function logout(event) {
+        event.preventDefault();
+        
+        // Mostrar notificación de cierre de sesión
+        showNotification('Cerrando sesión...', 'info');
+        
+        // Proceso de logout directo con animación suave
+        setTimeout(() => {
+            window.location.href = '{{ url_for("auth.logout") }}';
+        }, 800);
+    }
+
+    // Función para actualizar datos del gráfico (placeholder)
+    function updateChartData(period) {
+        // Actualizar botones activos
+        document.querySelectorAll('.chart-actions .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Encontrar el botón clickeado y marcarlo como activo
+        const clickedButton = document.querySelector(`[onclick="updateChartData('${period}')"]`);
+        if (clickedButton) {
+            clickedButton.classList.add('active');
         }
-
-        // Función de logout
-        function logout(event) {
-            event.preventDefault();
-            
-            // Mostrar notificación de cierre de sesión
-            showNotification('Cerrando sesión...', 'info');
-            
-            // Proceso de logout directo con animación suave
-            setTimeout(() => {
-                // Ruta correcta para logout usando el blueprint auth
-                window.location.href = '/auth/logout';
-            }, 800);
-        }
-
-
-    </script>
+        
+        // Aquí podrías hacer una llamada AJAX para obtener datos reales
+        console.log('Actualizando gráfico para período:', period);
+        showNotification(`Datos actualizados para ${period}`, 'success');
+    }
+</script>
 </body>
 </html>

@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Calendario Académico - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-calendar-alt"></i> Calendario Académico</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="anio" class="form-label">Año Académico</label>
+                            <select class="form-select" id="anio">
+                                <option value="">Seleccionar año</option>
+                                <!-- Opciones dinámicas de años -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo_evento" class="form-label">Tipo de Evento</label>
+                            <select class="form-select" id="tipo_evento">
+                                <option value="">Todos los eventos</option>
+                                <option value="periodo">Periodo Académico</option>
+                                <option value="examen">Exámenes</option>
+                                <option value="feriado">Feriados</option>
+                                <option value="actividad">Actividades Especiales</option>
+                                <option value="vaca">Vacaciones</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarEventos()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Calendario -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Vista del Calendario</h5>
+                </div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+
+            <!-- Lista de Eventos -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Eventos del Calendario</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Fecha</th>
+                                    <th>Descripción</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="eventos-table">
+                                <!-- Datos dinámicos de eventos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Evento -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nuevo Evento</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nuevo-evento-form">
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Evento</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="periodo">Periodo Académico</option>
+                                <option value="examen">Exámenes</option>
+                                <option value="feriado">Feriados</option>
+                                <option value="actividad">Actividades Especiales</option>
+                                <option value="vaca">Vacaciones</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" class="form-control" id="fecha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repetitivo">
+                                <label class="form-check-label" for="repetitivo">
+                                    Evento Repetitivo
+                                </label>
+                            </div>
+                            <div id="repetitivo-container" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="frecuencia" class="form-label">Frecuencia</label>
+                                    <select class="form-select" id="frecuencia">
+                                        <option value="">Seleccionar frecuencia</option>
+                                        <option value="diario">Diario</option>
+                                        <option value="semanal">Semanal</option>
+                                        <option value="mensual">Mensual</option>
+                                        <option value="anual">Anual</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="fecha_fin">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Agregar Evento
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.11.3/main.min.css' rel='stylesheet' />
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.11.3/main.min.css' rel='stylesheet' />
+<link href='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@5.11.3/main.min.css' rel='stylesheet' />
+
+<!-- FullCalendar JS -->
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/core@5.11.3/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.11.3/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@5.11.3/main.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@5.11.3/main.min.js'></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: function(info, successCallback, failureCallback) {
+            // Implementar carga de eventos
+        },
+        eventClick: function(info) {
+            // Implementar acción al hacer clic en evento
+        },
+        eventDidMount: function(info) {
+            // Implementar estilo de eventos
+        }
+    });
+    calendar.render();
+});
+
+// Manejar el checkbox de repetición
+document.getElementById('repetitivo').addEventListener('change', function() {
+    const repetitivoContainer = document.getElementById('repetitivo-container');
+    repetitivoContainer.style.display = this.checked ? 'block' : 'none';
+});
+
+// Funciones para manejar eventos
+function cargarEventos() {
+    // Implementar carga de eventos
+}
+
+function agregarEvento() {
+    // Implementar lógica de agregar evento
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-evento-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarEvento();
+});
+
+// Validación de fechas
+const fechaInput = document.getElementById('fecha');
+const fechaFinInput = document.getElementById('fecha_fin');
+
+fechaFinInput.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea anterior a la fecha de inicio
+    if (fechaInput.value && new Date(this.value) < new Date(fechaInput.value)) {
+        alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+        this.value = '';
+    }
+});
+</script>
+{% endblock %}

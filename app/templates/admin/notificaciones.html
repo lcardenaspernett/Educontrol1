@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Notificaciones - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-bell"></i> Gestión de Notificaciones</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo de Notificación</label>
+                            <select class="form-select" id="tipo">
+                                <option value="">Todos los tipos</option>
+                                <option value="sistema">Sistema</option>
+                                <option value="usuario">Usuario</option>
+                                <option value="evento">Evento</option>
+                                <option value="recordatorio">Recordatorio</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarNotificaciones()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Notificaciones -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Notificaciones Recientes</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Título</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="notificaciones-table">
+                                <!-- Datos dinámicos de notificaciones -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nueva Notificación -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nueva Notificación</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nueva-notificacion-form">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Notificación</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="sistema">Sistema</option>
+                                <option value="usuario">Usuario</option>
+                                <option value="evento">Evento</option>
+                                <option value="recordatorio">Recordatorio</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="datetime-local" class="form-control" id="fecha" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="destinatarios" class="form-label">Destinatarios</label>
+                            <select class="form-select" id="destinatarios" required>
+                                <option value="">Seleccionar destinatarios</option>
+                                <option value="todos">Todos</option>
+                                <option value="estudiantes">Estudiantes</option>
+                                <option value="padres">Padres/Acudientes</option>
+                                <option value="docentes">Docentes</option>
+                                <option value="directivos">Directivos</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contenido" class="form-label">Contenido</label>
+                            <textarea class="form-control" id="contenido" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="repetir">
+                                <label class="form-check-label" for="repetir">
+                                    Repetir notificación
+                                </label>
+                            </div>
+                            <div id="repetir-container" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="frecuencia" class="form-label">Frecuencia</label>
+                                    <select class="form-select" id="frecuencia">
+                                        <option value="">Seleccionar frecuencia</option>
+                                        <option value="diario">Diario</option>
+                                        <option value="semanal">Semanal</option>
+                                        <option value="mensual">Mensual</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fecha_fin_repetir" class="form-label">Fecha Fin</label>
+                                    <input type="date" class="form-control" id="fecha_fin_repetir">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enviar Notificación
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Manejar el checkbox de repetición
+document.getElementById('repetir').addEventListener('change', function() {
+    const repetirContainer = document.getElementById('repetir-container');
+    repetirContainer.style.display = this.checked ? 'block' : 'none';
+});
+
+// Funciones para manejar notificaciones
+function cargarNotificaciones() {
+    // Implementar carga de notificaciones
+}
+
+function agregarNotificacion() {
+    // Implementar lógica de agregar notificación
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nueva-notificacion-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarNotificacion();
+});
+</script>
+{% endblock %}

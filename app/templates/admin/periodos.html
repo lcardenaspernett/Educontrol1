@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Periodos Académicos - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-calendar"></i> Gestión de Periodos Académicos</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="anio" class="form-label">Año Académico</label>
+                            <select class="form-select" id="anio">
+                                <option value="">Todos los años</option>
+                                <!-- Opciones dinámicas de años -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select" id="estado">
+                                <option value="">Todos los estados</option>
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                                <option value="cerrado">Cerrado</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo de Periodo</label>
+                            <select class="form-select" id="tipo">
+                                <option value="">Todos los tipos</option>
+                                <option value="semestre">Semestre</option>
+                                <option value="trimestre">Trimestre</option>
+                                <option value="cuatrimestre">Cuatrimestre</option>
+                                <option value="periodo">Periodo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarPeriodos()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Periodos -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Periodos Académicos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Año Académico</th>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>Estado</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="periodos-table">
+                                <!-- Datos dinámicos de periodos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Periodo -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nuevo Periodo Académico</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nuevo-periodo-form">
+                        <div class="mb-3">
+                            <label for="anio" class="form-label">Año Académico</label>
+                            <input type="number" class="form-control" id="anio" min="2000" max="2099" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Periodo</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="semestre">Semestre</option>
+                                <option value="trimestre">Trimestre</option>
+                                <option value="cuatrimestre">Cuatrimestre</option>
+                                <option value="periodo">Periodo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre del Periodo</label>
+                            <input type="text" class="form-control" id="nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha_fin" class="form-label">Fecha de Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin" required>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="activo">
+                                <label class="form-check-label" for="activo">
+                                    Periodo Activo
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cerrado">
+                                <label class="form-check-label" for="cerrado">
+                                    Periodo Cerrado
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Crear Periodo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Funciones para manejar periodos
+function cargarPeriodos() {
+    // Implementar carga de periodos
+}
+
+function agregarPeriodo() {
+    // Implementar lógica de agregar periodo
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-periodo-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarPeriodo();
+});
+
+// Validación de fechas
+const fechaInicio = document.getElementById('fecha_inicio');
+const fechaFin = document.getElementById('fecha_fin');
+
+fechaInicio.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaFin.value && new Date(fechaFin.value) < new Date(this.value)) {
+        alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+        fechaFin.value = '';
+    }
+});
+
+fechaFin.addEventListener('change', function() {
+    // Validar que la fecha de fin no sea antes que la de inicio
+    if (fechaInicio.value && new Date(this.value) < new Date(fechaInicio.value)) {
+        alert('La fecha de fin no puede ser anterior a la fecha de inicio');
+        this.value = '';
+    }
+});
+
+// Validación de año académico
+const anioInput = document.getElementById('anio');
+anioInput.addEventListener('input', function() {
+    const anio = parseInt(this.value);
+    if (isNaN(anio) || anio < 2000 || anio > 2099) {
+        this.setCustomValidity('Ingrese un año válido (2000-2099)');
+    } else {
+        this.setCustomValidity('');
+    }
+});
+</script>
+{% endblock %}

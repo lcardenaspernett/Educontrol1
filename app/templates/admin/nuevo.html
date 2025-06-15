@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Registro - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-plus"></i> Nuevo Registro</h2>
+            <hr>
+            
+            <!-- Lista de opciones para nuevo registro -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Nuevo Estudiante</h5>
+                                    <p class="card-text">Crear un nuevo registro de estudiante</p>
+                                    <a href="{{ url_for('admin.estudiantes_nuevo') }}" class="btn btn-primary w-100">
+                                        <i class="fas fa-user-graduate"></i> Estudiante
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Nuevo Docente</h5>
+                                    <p class="card-text">Crear un nuevo registro de docente</p>
+                                    <a href="{{ url_for('admin.docentes_nuevo') }}" class="btn btn-success w-100">
+                                        <i class="fas fa-chalkboard-teacher"></i> Docente
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Nuevo Directivo</h5>
+                                    <p class="card-text">Crear un nuevo registro de directivo</p>
+                                    <a href="{{ url_for('admin.directivos_nuevo') }}" class="btn btn-info w-100">
+                                        <i class="fas fa-user-tie"></i> Directivo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Nuevo Padre/Acudiente</h5>
+                                    <p class="card-text">Crear un nuevo registro de padre o acudiente</p>
+                                    <a href="{{ url_for('admin.padres_nuevo') }}" class="btn btn-warning w-100">
+                                        <i class="fas fa-user-plus"></i> Padre/Acudiente
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

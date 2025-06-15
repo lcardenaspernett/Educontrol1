@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Contenidos - EduControl{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-file-text"></i> Gestión de Contenidos</h2>
+            <hr>
+            
+            <!-- Filtros y Búsqueda -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form class="row g-3">
+                        <div class="col-md-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura">
+                                <option value="">Todas las asignaturas</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso">
+                                <option value="">Todos los cursos</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipo" class="form-label">Tipo de Contenido</label>
+                            <select class="form-select" id="tipo">
+                                <option value="">Todos los tipos</option>
+                                <option value="teorico">Teórico</option>
+                                <option value="practico">Práctico</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="material">Material de Apoyo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-primary" onclick="cargarContenidos()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Contenidos -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Contenidos Disponibles</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Asignatura</th>
+                                    <th>Curso</th>
+                                    <th>Título</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contenidos-table">
+                                <!-- Datos dinámicos de contenidos -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario de Nuevo Contenido -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0"><i class="fas fa-plus"></i> Nuevo Contenido</h5>
+                </div>
+                <div class="card-body">
+                    <form id="nuevo-contenido-form">
+                        <div class="mb-3">
+                            <label for="asignatura" class="form-label">Asignatura</label>
+                            <select class="form-select" id="asignatura" required>
+                                <option value="">Seleccionar asignatura</option>
+                                <!-- Opciones dinámicas de asignaturas -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="curso" class="form-label">Curso</label>
+                            <select class="form-select" id="curso" required>
+                                <option value="">Seleccionar curso</option>
+                                <!-- Opciones dinámicas de cursos -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label">Título</label>
+                            <input type="text" class="form-control" id="titulo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipo" class="form-label">Tipo de Contenido</label>
+                            <select class="form-select" id="tipo" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="teorico">Teórico</option>
+                                <option value="practico">Práctico</option>
+                                <option value="evaluacion">Evaluación</option>
+                                <option value="material">Material de Apoyo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contenido" class="form-label">Contenido</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipo-contenido" id="texto" value="texto" checked>
+                                <label class="form-check-label" for="texto">
+                                    Texto
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tipo-contenido" id="archivo" value="archivo">
+                                <label class="form-check-label" for="archivo">
+                                    Archivo
+                                </label>
+                            </div>
+                            <div id="texto-container">
+                                <textarea class="form-control mt-2" id="texto-contenido" rows="6"></textarea>
+                            </div>
+                            <div id="archivo-container" style="display: none;">
+                                <input type="file" class="form-control mt-2" id="archivo-contenido">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Publicar Contenido
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+
+<script>
+// Manejar el tipo de contenido
+document.querySelectorAll('input[name="tipo-contenido"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        document.getElementById('texto-container').style.display = this.value === 'texto' ? 'block' : 'none';
+        document.getElementById('archivo-container').style.display = this.value === 'archivo' ? 'block' : 'none';
+    });
+});
+
+// Inicializar CKEditor para el contenido de texto
+ClassicEditor
+    .create(document.querySelector('#texto-contenido'))
+    .catch(error => {
+        console.error(error);
+    });
+
+// Funciones para manejar contenidos
+function cargarContenidos() {
+    // Implementar carga de contenidos
+}
+
+function agregarContenido() {
+    // Implementar lógica de agregar contenido
+}
+
+// Event listener para el formulario
+const form = document.getElementById('nuevo-contenido-form');
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    agregarContenido();
+});
+</script>
+{% endblock %}
