@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Bienvenido a EduControl{% endblock %}
+
+{% block content %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
+        color: var(--texto-blanco);
+        padding: 4rem 2rem;
+        border-radius: 20px;
+        margin-bottom: 3rem;
+        text-align: center;
+        box-shadow: var(--sombra-media);
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .hero-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: var(--texto-blanco);
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transicion);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .hero-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .features-section {
+        padding: 4rem 0;
+    }
+
+    .feature-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--sombra-suave);
+        transition: var(--transicion);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--sombra-media);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--degradado-inicio);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: var(--color-primario);
+    }
+
+    .feature-description {
+        color: var(--texto-gris);
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<!-- Sección Hero -->
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="fas fa-graduation-cap me-2"></i>
+            EduControl
+        </h1>
+        <p class="hero-subtitle">Sistema de Gestión Educativa Completo</p>
+        
+        <div class="hero-buttons">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.dashboard') }}" class="hero-button">
+                <i class="fas fa-tachometer-alt"></i>
+                Ir al Dashboard
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="hero-button">
+                <i class="fas fa-sign-in-alt"></i>
+                Iniciar Sesión
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Sección Características -->
+<div class="features-section">
+    <div class="container">
+        <h2 class="text-center mb-5" style="font-size: 2.5rem; color: var(--color-primario);">
+            <i class="fas fa-star me-2"></i>
+            Características Principales
+        </h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h3 class="feature-title">Gestión de Usuarios</h3>
+                    <p class="feature-description">
+                        Administra usuarios, roles y permisos con facilidad y seguridad.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-graduation-cap feature-icon"></i>
+                    <h3 class="feature-title">Control Académico</h3>
+                    <p class="feature-description">
+                        Gestiona estudiantes, docentes y cursos de manera eficiente.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line feature-icon"></i>
+                    <h3 class="feature-title">Sistema de Calificaciones</h3>
+                    <p class="feature-description">
+                        Registra y gestiona calificaciones con reportes detallados.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sección Información -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h2 style="font-size: 2rem; color: var(--color-primario); margin-bottom: 1.5rem;">
+                <i class="fas fa-info-circle me-2"></i>
+                ¿Qué es EduControl?
+            </h2>
+            <p class="lead" style="color: var(--texto-gris);">
+                EduControl es un sistema de gestión educativa completo que facilita la administración
+                académica de instituciones educativas. Con una interfaz moderna y fácil de usar,
+                permite gestionar todos los aspectos relacionados con estudiantes, docentes y cursos.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <div class="card" style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 2rem; box-shadow: var(--sombra-suave);">
+                <h3 style="color: var(--color-primario); margin-bottom: 1.5rem;">Contacto</h3>
+                <p style="color: var(--texto-gris);">
+                    <i class="fas fa-envelope me-2"></i>contacto@educontrol.com<br>
+                    <i class="fas fa-phone me-2"></i>+51 999 888 777<br>
+                    <i class="fas fa-map-marker-alt me-2"></i>Lima, Perú
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
