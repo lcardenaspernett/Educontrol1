@@ -12,8 +12,8 @@
             --color-secundario: #0ea5e9;
             --degradado-inicio: #8E2DE2;
             --degradado-fin: #4A00E0;
-            --purpura-fuerte: #7C3AED;
-            --azul-degradado: #2563EB;
+            --hero-gradient: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+            --navbar-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --texto-blanco: #ffffff;
             --texto-gris: #64748b;
             --borde-radius: 12px;
@@ -30,13 +30,13 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--purpura-fuerte) 0%, var(--azul-degradado) 100%);
+            background: var(--hero-gradient);
             min-height: 100vh;
         }
 
         /* Ocultar navbar en páginas de login */
         .login-page .navbar-custom {
-            display: none;
+            display: none !important;
         }
 
         /* Logo flotante para páginas de login */
@@ -46,16 +46,18 @@
             left: 2rem;
             z-index: 1000;
             background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 0.75rem;
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 0.75rem 1rem;
             border: 1px solid rgba(255, 255, 255, 0.3);
             transition: var(--transicion);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .login-logo:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
         }
 
         .login-logo a {
@@ -66,56 +68,117 @@
             gap: 0.5rem;
             font-weight: 700;
             font-size: 1.1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .login-logo i {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            background: var(--hero-gradient);
             padding: 0.4rem;
-            border-radius: 8px;
+            border-radius: 10px;
             color: white;
             font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(142, 45, 226, 0.4);
         }
 
-        /* Navbar personalizada */
+        /* Navbar ultra moderno con gradiente */
         .navbar-custom {
-            background: rgba(30, 41, 59, 0.95) !important;
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--navbar-gradient) !important;
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+            position: relative;
+        }
+
+        /* Efecto de brillo sutil en el navbar */
+        .navbar-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
         }
 
         .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
+            font-weight: 800;
+            font-size: 1.6rem;
             color: var(--texto-blanco) !important;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: var(--transicion);
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            color: var(--texto-blanco) !important;
         }
 
         .navbar-brand i {
-            background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
-            padding: 0.5rem;
-            border-radius: 8px;
+            background: var(--hero-gradient);
+            padding: 0.6rem;
+            border-radius: 12px;
             color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(142, 45, 226, 0.4);
+            transition: var(--transicion);
+        }
+
+        .navbar-brand:hover i {
+            transform: rotate(5deg) scale(1.1);
         }
 
         .navbar-text {
-            color: rgba(255, 255, 255, 0.8) !important;
-            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .nav-link {
             color: var(--texto-blanco) !important;
-            font-weight: 500;
+            font-weight: 600;
             transition: var(--transicion);
-            border-radius: 8px;
-            padding: 0.5rem 1rem !important;
+            border-radius: 25px;
+            padding: 0.7rem 1.5rem !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2) !important;
             color: var(--texto-blanco) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* Contenedor principal */
@@ -130,42 +193,127 @@
             padding: 0;
         }
 
-        /* Alertas personalizadas */
+        /* Alertas personalizadas con mejor diseño y visibilidad */
         .alert {
             border: none;
-            border-radius: var(--borde-radius);
-            box-shadow: var(--sombra-suave);
+            border-radius: 16px;
+            box-shadow: var(--sombra-media);
+            backdrop-filter: blur(15px);
+            border-left: 5px solid;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: alertShimmer 2s ease-in-out;
+        }
+
+        @keyframes alertShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .alert-danger {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(239, 68, 68, 0.15);
             color: #dc2626;
-            border-left: 4px solid #dc2626;
+            border-left-color: #dc2626;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.2);
         }
 
         .alert-success {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-            border-left: 4px solid #16a34a;
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border-left-color: #059669;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            border: 2px solid rgba(16, 185, 129, 0.3);
         }
 
         .alert-info {
-            background: rgba(59, 130, 246, 0.1);
-            color: #2563eb;
-            border-left: 4px solid #2563eb;
+            background: linear-gradient(135deg, rgba(142, 45, 226, 0.15), rgba(74, 0, 224, 0.1));
+            color: var(--degradado-inicio);
+            border-left-color: var(--degradado-inicio);
+            box-shadow: 0 8px 25px rgba(142, 45, 226, 0.3);
+            border: 2px solid rgba(142, 45, 226, 0.2);
         }
 
-        /* Responsive para logo flotante */
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+            border-left-color: #d97706;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Mejoras responsive */
         @media (max-width: 768px) {
             .login-logo {
                 top: 1rem;
                 left: 1rem;
-                padding: 0.5rem;
+                padding: 0.5rem 0.75rem;
             }
 
             .login-logo a {
                 font-size: 1rem;
             }
+
+            .navbar-brand {
+                font-size: 1.4rem;
+            }
+
+            .navbar-text {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .nav-link {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animación de entrada para elementos */
+        .navbar-custom,
+        .main-container {
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover effect para mejor interactividad */
+        .container {
+            transition: var(--transicion);
+        }
+
+        /* Mejora del botón close de alertas */
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: var(--transicion);
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -173,7 +321,7 @@
     <!-- Logo flotante para páginas de login -->
     {% block login_logo %}{% endblock %}
 
-    <!-- Navbar normal para otras páginas -->
+    <!-- Navbar ultra moderno -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">
@@ -183,20 +331,21 @@
             <div class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
                     <span class="navbar-text me-3">
-                        <i class="fas fa-user-circle me-1"></i>
-                        {{ current_user.nombre }} {{ current_user.apellido }} ({{ current_user.rol|title }})
+                        <i class="fas fa-user-circle me-2"></i>
+                        {{ current_user.nombre }} {{ current_user.apellido }}
+                        <span style="opacity: 0.8;">({{ current_user.rol|title }})</span>
                     </span>
                     <a class="nav-link" href="{{ url_for('auth.logout') }}">
-                        <i class="fas fa-sign-out-alt me-1"></i>
+                        <i class="fas fa-sign-out-alt me-2"></i>
                         Cerrar Sesión
                     </a>
                 {% else %}
                     <span class="navbar-text me-3">
-                        <i class="fas fa-user-circle me-1"></i>
+                        <i class="fas fa-user-circle me-2"></i>
                         Invitado
                     </span>
                     <a class="nav-link" href="{{ url_for('auth.login') }}">
-                        <i class="fas fa-sign-in-alt me-1"></i>
+                        <i class="fas fa-sign-in-alt me-2"></i>
                         Iniciar Sesión
                     </a>
                 {% endif %}
@@ -212,7 +361,7 @@
                         <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                             <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'info-circle' }} me-2"></i>
                             {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     {% endfor %}
                 {% endif %}

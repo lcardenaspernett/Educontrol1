@@ -4,198 +4,488 @@
 
 {% block content %}
 <style>
+    /* Variables con tus colores favoritos */
+    :root {
+        --hero-gradient: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        --color-secundario: #4A00E0;
+        --color-azul-hover: #3B82F6;
+        --purpura-principal: #8E2DE2;
+        --purpura-oscuro: #4A00E0;
+        --texto-blanco: #ffffff;
+        --texto-gris: #64748b;
+        --borde-radius: 16px;
+        --transicion: all 0.3s ease;
+        --sombra-suave: 0 8px 25px rgba(0,0,0,0.1);
+        --sombra-intensa: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    /* Eliminar TODOS los márgenes y padding del body y html */
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: var(--hero-gradient) !important;
+        overflow-x: hidden;
+    }
+
+    /* Override del contenedor principal para eliminar TODO padding */
+    .main-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        min-height: 100vh;
+        background: transparent !important;
+    }
+
+    .container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+
+    /* Hero Section moderno y elegante */
     .hero-section {
-        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
+        background: var(--hero-gradient);
         color: var(--texto-blanco);
-        padding: 4rem 2rem;
-        border-radius: 20px;
-        margin-bottom: 3rem;
+        padding: 8rem 2rem 6rem;
         text-align: center;
-        box-shadow: var(--sombra-media);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin: 0;
+        background-attachment: fixed;
+    }
+
+    /* Efecto de partículas flotantes modernas */
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                    radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 1px, transparent 1px),
+                    radial-gradient(circle at 40% 60%, rgba(255,255,255,0.06) 1px, transparent 1px);
+        background-size: 100px 100px, 150px 150px, 200px 200px;
+        animation: float 20s ease-in-out infinite;
+        z-index: 1;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 1000px;
+        margin: 0 auto;
     }
 
     .hero-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        line-height: 1.2;
+        font-size: 4.5rem;
+        font-weight: 900;
+        margin-bottom: 2rem;
+        line-height: 1.1;
+        text-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        letter-spacing: -3px;
+        color: var(--texto-blanco);
     }
 
     .hero-subtitle {
-        font-size: 1.5rem;
-        font-weight: 500;
-        margin-bottom: 2rem;
-        opacity: 0.9;
-    }
-
-    .hero-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        margin-top: 2rem;
+        font-size: 1.3rem;
+        font-weight: 400;
+        margin-bottom: 3rem;
+        opacity: 0.95;
+        line-height: 1.7;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 3rem;
     }
 
     .hero-button {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
         color: var(--texto-blanco);
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.1rem;
         text-decoration: none;
         transition: var(--transicion);
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .hero-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.8s ease;
+    }
+
+    .hero-button:hover::before {
+        left: 100%;
     }
 
     .hero-button:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.6);
+        color: var(--texto-blanco);
+        text-decoration: none;
     }
 
+    /* Sección de características ultra moderna */
     .features-section {
-        padding: 4rem 0;
+        padding: 6rem 2rem;
+        background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+        position: relative;
+        width: 100%;
+        margin: 0;
+    }
+
+    .section-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--purpura-oscuro);
+        margin-bottom: 4rem;
+        text-align: center;
+        position: relative;
+        background: var(--hero-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 5px;
+        background: var(--hero-gradient);
+        border-radius: 10px;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
     .feature-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        padding: 2.5rem;
-        margin-bottom: 2rem;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        text-align: center;
         box-shadow: var(--sombra-suave);
         transition: var(--transicion);
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(142, 45, 226, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--hero-gradient);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .feature-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--hero-gradient);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: -1;
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-card:hover::after {
+        opacity: 0.05;
     }
 
     .feature-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--sombra-media);
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: var(--sombra-intensa);
+        border-color: rgba(142, 45, 226, 0.3);
     }
 
     .feature-icon {
-        font-size: 2.5rem;
-        color: var(--degradado-inicio);
+        font-size: 3.5rem;
         margin-bottom: 1.5rem;
+        display: block;
+        transition: var(--transicion);
+        background: var(--hero-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.2) rotate(10deg);
     }
 
     .feature-title {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 700;
         margin-bottom: 1rem;
-        color: var(--color-primario);
+        color: var(--purpura-oscuro);
+        transition: color 0.3s ease;
+    }
+
+    .feature-card:hover .feature-title {
+        color: var(--purpura-principal);
     }
 
     .feature-description {
         color: var(--texto-gris);
-        line-height: 1.6;
+        line-height: 1.7;
+        font-size: 0.95rem;
+    }
+
+    /* Footer moderno y elegante */
+    .footer-section {
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        color: var(--texto-blanco);
+        text-align: center;
+        padding: 4rem 2rem 2rem;
+        margin: 0;
+        width: 100%;
+        position: relative;
+    }
+
+    .footer-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--hero-gradient);
+    }
+
+    .footer-logo-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .footer-logo-icon {
+        background: var(--hero-gradient);
+        color: var(--texto-blanco);
+        font-weight: 800;
+        padding: 0.8rem;
+        margin-right: 1rem;
+        border-radius: 16px;
+        font-size: 1.3rem;
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+
+    .footer-description {
+        display: none;
+    }
+
+    .footer-copyright {
+        opacity: 0.7;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+        margin-top: 2rem;
+    }
+
+    /* Responsive ultra optimizado */
+    @media (max-width: 1200px) {
+        .features-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
 
     @media (max-width: 768px) {
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 3rem;
         }
 
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
-        .hero-buttons {
-            flex-direction: column;
+        .hero-section {
+            padding: 6rem 1rem 4rem;
+        }
+
+        .features-section {
+            padding: 4rem 1rem;
+        }
+
+        .features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .hero-button {
+            padding: 1rem 2rem;
+            font-size: 1rem;
         }
     }
 </style>
 
-<!-- Sección Hero -->
+<!-- Hero Section ultra moderno -->
 <div class="hero-section">
-    <div class="container">
-        <h1 class="hero-title">
-            <i class="fas fa-graduation-cap me-2"></i>
-            EduControl
-        </h1>
-        <p class="hero-subtitle">Sistema de Gestión Educativa Completo</p>
+    <div class="hero-content">
+        <h1 class="hero-title">EduControl</h1>
+        <p class="hero-subtitle">
+            La plataforma educativa del futuro. Gestiona estudiantes, docentes, cursos y calificaciones 
+            con tecnología de vanguardia, diseño intuitivo y eficiencia absoluta.
+        </p>
         
-        <div class="hero-buttons">
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('main.dashboard') }}" class="hero-button">
-                <i class="fas fa-tachometer-alt"></i>
-                Ir al Dashboard
-            </a>
-            {% else %}
-            <a href="{{ url_for('auth.login') }}" class="hero-button">
-                <i class="fas fa-sign-in-alt"></i>
-                Iniciar Sesión
-            </a>
-            {% endif %}
-        </div>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.dashboard') }}" class="hero-button">
+            <i class="fas fa-rocket"></i>
+            Dashboard
+        </a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="hero-button">
+            <i class="fas fa-sign-in-alt"></i>
+            Acceder
+        </a>
+        {% endif %}
     </div>
 </div>
 
-<!-- Sección Características -->
+<!-- Sección Características modernas -->
 <div class="features-section">
-    <div class="container">
-        <h2 class="text-center mb-5" style="font-size: 2.5rem; color: var(--color-primario);">
-            <i class="fas fa-star me-2"></i>
-            Características Principales
-        </h2>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <i class="fas fa-users feature-icon"></i>
-                    <h3 class="feature-title">Gestión de Usuarios</h3>
-                    <p class="feature-description">
-                        Administra usuarios, roles y permisos con facilidad y seguridad.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <i class="fas fa-graduation-cap feature-icon"></i>
-                    <h3 class="feature-title">Control Académico</h3>
-                    <p class="feature-description">
-                        Gestiona estudiantes, docentes y cursos de manera eficiente.
-                    </p>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <h3 class="feature-title">Sistema de Calificaciones</h3>
-                    <p class="feature-description">
-                        Registra y gestiona calificaciones con reportes detallados.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Sección Información -->
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-8">
-            <h2 style="font-size: 2rem; color: var(--color-primario); margin-bottom: 1.5rem;">
-                <i class="fas fa-info-circle me-2"></i>
-                ¿Qué es EduControl?
-            </h2>
-            <p class="lead" style="color: var(--texto-gris);">
-                EduControl es un sistema de gestión educativa completo que facilita la administración
-                académica de instituciones educativas. Con una interfaz moderna y fácil de usar,
-                permite gestionar todos los aspectos relacionados con estudiantes, docentes y cursos.
+    <h2 class="section-title">
+        <i class="fas fa-star me-2"></i>
+        Características Principales
+    </h2>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <i class="fas fa-book-open feature-icon"></i>
+            <h3 class="feature-title">Gestión de Cursos</h3>
+            <p class="feature-description">
+                Organiza y administra cursos con herramientas intuitivas y potentes.
             </p>
         </div>
-        <div class="col-md-4">
-            <div class="card" style="background: rgba(255, 255, 255, 0.95); border-radius: 16px; padding: 2rem; box-shadow: var(--sombra-suave);">
-                <h3 style="color: var(--color-primario); margin-bottom: 1.5rem;">Contacto</h3>
-                <p style="color: var(--texto-gris);">
-                    <i class="fas fa-envelope me-2"></i>contacto@educontrol.com<br>
-                    <i class="fas fa-phone me-2"></i>+51 999 888 777<br>
-                    <i class="fas fa-map-marker-alt me-2"></i>Lima, Perú
-                </p>
-            </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-user-graduate feature-icon"></i>
+            <h3 class="feature-title">Control de Estudiantes</h3>
+            <p class="feature-description">
+                Seguimiento completo del progreso académico en tiempo real.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-clipboard-list feature-icon"></i>
+            <h3 class="feature-title">Calificaciones</h3>
+            <p class="feature-description">
+                Sistema avanzado de evaluación y seguimiento académico.
+            </p>
+        </div>
+        
+        <div class="feature-card">
+            <i class="fas fa-chart-line feature-icon"></i>
+            <h3 class="feature-title">Reportes</h3>
+            <p class="feature-description">
+                Análisis detallados y estadísticas para decisiones inteligentes.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-bolt feature-icon"></i>
+            <h3 class="feature-title">Eficiencia Total</h3>
+            <p class="feature-description">
+                Automatización completa de procesos administrativos.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3 class="feature-title">Seguridad</h3>
+            <p class="feature-description">
+                Protección máxima con autenticación multifactor.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-cloud feature-icon"></i>
+            <h3 class="feature-title">En la Nube</h3>
+            <p class="feature-description">
+                Acceso desde cualquier lugar, en cualquier momento.
+            </p>
+        </div>
+
+        <div class="feature-card">
+            <i class="fas fa-mobile-alt feature-icon"></i>
+            <h3 class="feature-title">Multiplataforma</h3>
+            <p class="feature-description">
+                Compatible con todos los dispositivos y navegadores.
+            </p>
         </div>
     </div>
 </div>
+
+<!-- Footer minimalista -->
+<footer class="footer-section">
+    <div class="footer-logo-section">
+        <div class="footer-logo-icon">🚀</div>
+        EduControl
+    </div>
+    <p>&copy; 2025 EduControl. Todos los derechos reservados.</p>
+</footer>
 {% endblock %}

@@ -74,14 +74,28 @@
 
     .login-card {
         background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(15px);
+        backdrop-filter: blur(20px);
         border-radius: 24px;
         padding: 3rem 2.5rem;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.1),
+            0 0 0 1px rgba(255, 255, 255, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.2);
         position: relative;
         overflow: hidden;
         width: 100%;
+        animation: cardEntry 1s ease-out;
+    }
+
+    @keyframes cardEntry {
+        from {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
     }
 
     .login-card::before {
@@ -92,6 +106,24 @@
         right: 0;
         height: 4px;
         background: var(--hero-gradient);
+    }
+
+    /* Efecto de ondas en el fondo de la tarjeta */
+    .login-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(142, 45, 226, 0.03) 0%, transparent 70%);
+        animation: wave 8s ease-in-out infinite;
+        z-index: -1;
+    }
+
+    @keyframes wave {
+        0%, 100% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.1); }
     }
 
     .login-header {

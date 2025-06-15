@@ -4,230 +4,425 @@
 
 {% block content %}
 <style>
-    .dashboard-header {
-        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
-        color: var(--texto-blanco);
-        padding: 2rem;
-        border-radius: 20px;
-        margin-bottom: 2rem;
-        text-align: center;
-        box-shadow: var(--sombra-media);
+    /* Variables específicas para el dashboard */
+    :root {
+        --hero-gradient: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+        --card-gradient: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.95));
+        --accent-blue: #3B82F6;
+        --accent-green: #10B981;
+        --accent-orange: #F59E0B;
+        --accent-red: #EF4444;
+        --text-dark: #1e293b;
+        --text-light: #64748b;
+        --border-radius: 20px;
+        --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
-    .dashboard-title {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
+    /* Contenedor principal sin padding para full-width */
+    .main-container {
+        padding: 0 !important;
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
     }
 
-    .dashboard-subtitle {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin: 0;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .dashboard-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: var(--sombra-suave);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        transition: var(--transicion);
-        backdrop-filter: blur(10px);
+    /* Hero section del dashboard */
+    .dashboard-hero {
+        background: var(--hero-gradient);
+        color: white;
+        padding: 3rem 2rem;
         position: relative;
         overflow: hidden;
+        margin-bottom: 2rem;
     }
 
-    .dashboard-card::before {
+    .dashboard-hero::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
+        bottom: 0;
+        background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+        animation: heroFloat 15s ease-in-out infinite;
     }
 
-    .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--sombra-media);
+    @keyframes heroFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(1deg); }
     }
 
-    .card-header {
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 2;
+    }
+
+    .welcome-section {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
 
-    .card-icon {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
+    .welcome-text h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .welcome-text p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 2rem;
+        background: rgba(255,255,255,0.1);
+        padding: 1.5rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-stat {
+        text-align: center;
+    }
+
+    .hero-stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        display: block;
+        margin-bottom: 0.25rem;
+    }
+
+    .hero-stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    /* Grid de estadísticas principales */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .stat-card {
+        background: var(--card-gradient);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        transition: var(--transition);
+    }
+
+    .stat-card.primary::before { background: var(--hero-gradient); }
+    .stat-card.blue::before { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+    .stat-card.green::before { background: linear-gradient(135deg, #10B981, #047857); }
+    .stat-card.orange::before { background: linear-gradient(135deg, #F59E0B, #D97706); }
+
+    .stat-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
-        color: var(--texto-blanco);
-        margin-right: 1rem;
-        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+        font-size: 1.3rem;
+        color: white;
+        transition: var(--transition);
     }
 
-    .card-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--color-primario);
-        margin: 0;
-    }
+    .stat-card.primary .stat-icon { background: var(--hero-gradient); }
+    .stat-card.blue .stat-icon { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+    .stat-card.green .stat-icon { background: linear-gradient(135deg, #10B981, #047857); }
+    .stat-card.orange .stat-icon { background: linear-gradient(135deg, #F59E0B, #D97706); }
 
-    .card-description {
-        color: var(--texto-gris);
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
-        font-size: 1rem;
-    }
-
-    .card-button {
-        background: linear-gradient(135deg, var(--degradado-inicio), var(--degradado-fin));
-        color: var(--texto-blanco);
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 10px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: var(--transicion);
-        font-size: 0.95rem;
-    }
-
-    .card-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(142, 45, 226, 0.4);
-        color: var(--texto-blanco);
-        text-decoration: none;
-    }
-
-    .stats-section {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--sombra-suave);
-        backdrop-filter: blur(10px);
-    }
-
-    .stats-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--color-primario);
-        margin-bottom: 1.5rem;
-        text-align: center;
-    }
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 1.5rem;
-    }
-
-    .stat-item {
-        text-align: center;
-        padding: 1rem;
-        border-radius: 12px;
-        background: linear-gradient(135deg, rgba(142, 45, 226, 0.05), rgba(74, 0, 224, 0.05));
-        border: 1px solid rgba(142, 45, 226, 0.1);
+    .stat-card:hover .stat-icon {
+        transform: rotate(10deg) scale(1.1);
     }
 
     .stat-number {
-        font-size: 2rem;
+        font-size: 2.5rem;
         font-weight: 800;
-        color: var(--degradado-inicio);
-        display: block;
+        color: var(--text-dark);
         margin-bottom: 0.5rem;
     }
 
     .stat-label {
-        font-size: 1rem;
-        color: var(--texto-gris);
-        font-weight: 500;
+        color: var(--text-light);
+        font-weight: 600;
+        margin-bottom: 1rem;
     }
 
-    .quick-actions {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: var(--sombra-suave);
-        backdrop-filter: blur(10px);
+    .stat-change {
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
     }
 
-    .quick-actions-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--color-primario);
-        margin-bottom: 1.5rem;
+    .stat-change.positive { color: var(--accent-green); }
+    .stat-change.negative { color: var(--accent-red); }
+
+    /* Grid de módulos principales */
+    .modules-section {
+        margin: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 2rem;
         text-align: center;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: var(--hero-gradient);
+        border-radius: 2px;
+    }
+
+    .modules-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .module-card {
+        background: var(--card-gradient);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: var(--transition);
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .module-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: var(--hero-gradient);
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .module-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .module-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+
+    .module-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .module-icon {
+        width: 70px;
+        height: 70px;
+        background: var(--hero-gradient);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        color: white;
+        margin-right: 1.5rem;
+        transition: var(--transition);
+        box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+    }
+
+    .module-card:hover .module-icon {
+        transform: rotate(5deg) scale(1.1);
+    }
+
+    .module-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .module-description {
+        color: var(--text-light);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+    }
+
+    .module-button {
+        background: var(--hero-gradient);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: var(--transition);
+        font-size: 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .module-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .module-button:hover::before {
+        left: 100%;
+    }
+
+    .module-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(142, 45, 226, 0.5);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Acciones rápidas mejoradas */
+    .quick-actions {
+        margin: 2rem;
+        background: var(--card-gradient);
+        border-radius: var(--border-radius);
+        padding: 2.5rem;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     }
 
     .actions-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
     }
 
     .action-button {
-        background: rgba(255, 255, 255, 1);
+        background: white;
         border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 1rem;
+        border-radius: 16px;
+        padding: 1.5rem 1rem;
         text-align: center;
-        transition: var(--transicion);
+        transition: var(--transition);
         text-decoration: none;
-        color: var(--texto-gris);
+        color: var(--text-light);
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.75rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
 
     .action-button:hover {
-        border-color: var(--degradado-inicio);
+        border-color: var(--hero-gradient);
         background: linear-gradient(135deg, rgba(142, 45, 226, 0.05), rgba(74, 0, 224, 0.05));
-        color: var(--degradado-inicio);
+        color: #8E2DE2;
         text-decoration: none;
-        transform: translateY(-2px);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     }
 
     .action-icon {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        font-size: 2rem;
+        transition: var(--transition);
+    }
+
+    .action-button:hover .action-icon {
+        transform: scale(1.2);
     }
 
     .action-text {
         font-weight: 600;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
 
-    /* Responsive */
+    /* Responsive design */
     @media (max-width: 768px) {
-        .dashboard-title {
+        .dashboard-hero {
+            padding: 2rem 1rem;
+        }
+
+        .welcome-section {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .welcome-text h1 {
             font-size: 2rem;
         }
 
-        .dashboard-grid {
+        .stats-grid,
+        .modules-grid {
+            margin: 1rem;
             grid-template-columns: 1fr;
         }
 
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
+        .quick-actions {
+            margin: 1rem;
         }
 
         .actions-grid {
@@ -236,169 +431,219 @@
     }
 
     @media (max-width: 480px) {
-        .dashboard-header {
-            padding: 1.5rem 1rem;
-        }
-
-        .dashboard-card {
-            padding: 1.5rem;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
         .actions-grid {
             grid-template-columns: 1fr;
+        }
+
+        .module-card {
+            padding: 2rem 1.5rem;
         }
     }
 </style>
 
-<!-- Header del Dashboard -->
-<div class="dashboard-header">
-    <h1 class="dashboard-title">
-        <i class="fas fa-tachometer-alt me-2"></i>
-        Dashboard Administrador
-    </h1>
-    <p class="dashboard-subtitle">
-        Bienvenido al panel de control principal de EduControl
-    </p>
+<!-- Hero section del dashboard -->
+<div class="dashboard-hero">
+    <div class="hero-content">
+        <div class="welcome-section">
+            <div class="welcome-text">
+                <h1>
+                    <i class="fas fa-crown me-2"></i>
+                    Dashboard Administrador
+                </h1>
+                <p>Bienvenido al centro de control de EduControl</p>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number">24/7</span>
+                    <span class="hero-stat-label">Disponible</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">100%</span>
+                    <span class="hero-stat-label">Seguro</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number">∞</span>
+                    <span class="hero-stat-label">Potencial</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Estadísticas rápidas -->
-<div class="stats-section">
-    <h2 class="stats-title">
-        <i class="fas fa-chart-bar me-2"></i>
-        Estadísticas del Sistema
-    </h2>
-    <div class="stats-grid">
-        <div class="stat-item">
-            <span class="stat-number">0</span>
-            <span class="stat-label">Estudiantes</span>
+<!-- Estadísticas principales -->
+<div class="stats-grid">
+    <div class="stat-card primary">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-number">0</span>
-            <span class="stat-label">Docentes</span>
+        <div class="stat-number">0</div>
+        <div class="stat-label">Estudiantes Activos</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            Listo para crecer
         </div>
-        <div class="stat-item">
-            <span class="stat-number">0</span>
-            <span class="stat-label">Cursos</span>
+    </div>
+
+    <div class="stat-card blue">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-number">1</span>
-            <span class="stat-label">Usuarios</span>
+        <div class="stat-number">0</div>
+        <div class="stat-label">Docentes</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            Esperando talento
+        </div>
+    </div>
+
+    <div class="stat-card green">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+        </div>
+        <div class="stat-number">0</div>
+        <div class="stat-label">Cursos</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            Infinitas posibilidades
+        </div>
+    </div>
+
+    <div class="stat-card orange">
+        <div class="stat-header">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-number">{{ current_user.nombre|length if current_user.is_authenticated else 1 }}</div>
+        <div class="stat-label">Usuarios Registrados</div>
+        <div class="stat-change positive">
+            <i class="fas fa-arrow-up"></i>
+            Comenzando fuerte
         </div>
     </div>
 </div>
 
 <!-- Módulos principales -->
-<div class="dashboard-grid">
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
+<div class="modules-section">
+    <h2 class="section-title">
+        <i class="fas fa-rocket me-2"></i>
+        Módulos del Sistema
+    </h2>
+    
+    <div class="modules-grid">
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3 class="module-title">Gestión de Usuarios</h3>
+            </div>
+            <p class="module-description">
+                Control total sobre usuarios, roles y permisos. Administra el acceso 
+                y las funcionalidades con seguridad avanzada.
+            </p>
+            <a href="{{ url_for('main.admin_usuarios') }}" class="module-button">
+                <i class="fas fa-user-shield"></i>
+                Administrar Usuarios
+            </a>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h3 class="module-title">Control Estudiantil</h3>
+            </div>
+            <p class="module-description">
+                Gestión completa del alumnado con seguimiento académico en tiempo real 
+                y herramientas avanzadas de monitoreo.
+            </p>
+            <a href="#" class="module-button">
+                <i class="fas fa-user-graduate"></i>
+                Gestionar Estudiantes
+            </a>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <h3 class="module-title">Personal Docente</h3>
+            </div>
+            <p class="module-description">
+                Administración del cuerpo docente con asignación inteligente 
+                de materias y evaluación de desempeño.
+            </p>
+            <a href="#" class="module-button">
                 <i class="fas fa-users"></i>
-            </div>
-            <h3 class="card-title">Gestión de Usuarios</h3>
+                Gestionar Docentes
+            </a>
         </div>
-        <p class="card-description">
-            Administra usuarios del sistema, asigna roles y permisos. 
-            Controla el acceso y las funcionalidades disponibles para cada tipo de usuario.
-        </p>
-        <a href="{{ url_for('main.admin_usuarios') }}" class="card-button">
-            <i class="fas fa-user-cog"></i>
-            Administrar Usuarios
-        </a>
-    </div>
 
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-graduation-cap"></i>
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3 class="module-title">Cursos Académicos</h3>
             </div>
-            <h3 class="card-title">Gestión de Estudiantes</h3>
+            <p class="module-description">
+                Creación y gestión de cursos con planificación académica 
+                avanzada y asignación automática de recursos.
+            </p>
+            <a href="#" class="module-button">
+                <i class="fas fa-plus-circle"></i>
+                Gestionar Cursos
+            </a>
         </div>
-        <p class="card-description">
-            Registra nuevos estudiantes, actualiza información personal 
-            y académica, gestiona inscripciones y seguimiento estudiantil.
-        </p>
-        <a href="#" class="card-button">
-            <i class="fas fa-user-graduate"></i>
-            Gestionar Estudiantes
-        </a>
-    </div>
 
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-chalkboard-teacher"></i>
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="module-title">Sistema de Evaluación</h3>
             </div>
-            <h3 class="card-title">Gestión de Docentes</h3>
+            <p class="module-description">
+                Plataforma integral de calificaciones con análisis predictivo 
+                y reportes automatizados de rendimiento.
+            </p>
+            <a href="#" class="module-button">
+                <i class="fas fa-clipboard-check"></i>
+                Ver Calificaciones
+            </a>
         </div>
-        <p class="card-description">
-            Administra el personal docente, asigna materias y horarios, 
-            gestiona perfiles profesionales y evaluaciones de desempeño.
-        </p>
-        <a href="#" class="card-button">
-            <i class="fas fa-users-cog"></i>
-            Gestionar Docentes
-        </a>
-    </div>
 
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-book-open"></i>
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-icon">
+                    <i class="fas fa-analytics"></i>
+                </div>
+                <h3 class="module-title">Analytics & Reportes</h3>
             </div>
-            <h3 class="card-title">Gestión de Cursos</h3>
+            <p class="module-description">
+                Business Intelligence educativo con dashboards interactivos 
+                y métricas clave para la toma de decisiones.
+            </p>
+            <a href="#" class="module-button">
+                <i class="fas fa-download"></i>
+                Generar Reportes
+            </a>
         </div>
-        <p class="card-description">
-            Crea y organiza cursos, define planes de estudio, 
-            asigna docentes y estudiantes, gestiona horarios y aulas.
-        </p>
-        <a href="#" class="card-button">
-            <i class="fas fa-plus-circle"></i>
-            Gestionar Cursos
-        </a>
-    </div>
-
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-clipboard-list"></i>
-            </div>
-            <h3 class="card-title">Sistema de Calificaciones</h3>
-        </div>
-        <p class="card-description">
-            Gestiona el sistema de evaluación, registra calificaciones, 
-            genera reportes de notas y seguimiento académico.
-        </p>
-        <a href="#" class="card-button">
-            <i class="fas fa-chart-line"></i>
-            Ver Calificaciones
-        </a>
-    </div>
-
-    <div class="dashboard-card">
-        <div class="card-header">
-            <div class="card-icon">
-                <i class="fas fa-file-alt"></i>
-            </div>
-            <h3 class="card-title">Reportes y Estadísticas</h3>
-        </div>
-        <p class="card-description">
-            Genera reportes detallados, estadísticas institucionales 
-            y análisis de rendimiento académico para toma de decisiones.
-        </p>
-        <a href="#" class="card-button">
-            <i class="fas fa-download"></i>
-            Generar Reportes
-        </a>
     </div>
 </div>
 
 <!-- Acciones rápidas -->
 <div class="quick-actions">
-    <h2 class="quick-actions-title">
+    <h2 class="section-title">
         <i class="fas fa-bolt me-2"></i>
         Acciones Rápidas
     </h2>
@@ -425,7 +670,7 @@
         </a>
         <a href="#" class="action-button">
             <i class="fas fa-database action-icon"></i>
-            <span class="action-text">Backup DB</span>
+            <span class="action-text">Backup</span>
         </a>
     </div>
 </div>
