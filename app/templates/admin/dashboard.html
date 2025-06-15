@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
     :root {
         /* Gradientes principales */
@@ -640,6 +642,62 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+    }
+
+    .chart-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+    }
+
+    .chart-actions .btn {
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-lg);
+        border: 2px solid rgba(142, 45, 226, 0.3);
+        background: transparent;
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: var(--transition);
+        cursor: pointer;
+    }
+
+    .chart-actions .btn:hover,
+    .chart-actions .btn.active {
+        background: var(--gradient-primary);
+        color: var(--text-white);
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+    }
+
+    .chart-container {
+        position: relative;
+        height: 350px;
+        width: 100%;
+    }
+
+    .chart-loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--text-secondary);
+        text-align: center;
+    }
+
+    .chart-loading i {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
     /* Widgets laterales */
@@ -670,6 +728,9 @@
         font-size: 1.1rem;
         font-weight: 700;
         color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
     }
 
     /* Actividad reciente */
@@ -700,25 +761,7 @@
         color: var(--text-white);
         flex-shrink: 0;
         box-shadow: 0 4px 12px rgba(142, 45, 226, 0.2);
-    }
-
-    .activity-avatar.primary {
         background: var(--gradient-primary);
-    }
-    .activity-avatar.secondary {
-        background: var(--gradient-secondary);
-    }
-    .activity-avatar.success {
-        background: var(--gradient-success);
-    }
-    .activity-avatar.warning {
-        background: var(--gradient-warning);
-    }
-    .activity-avatar.danger {
-        background: var(--gradient-danger);
-    }
-    .activity-avatar.info {
-        background: var(--gradient-info);
     }
 
     .activity-content {
@@ -852,6 +895,15 @@
         .quick-actions {
             grid-template-columns: 1fr;
         }
+
+        .chart-actions {
+            flex-wrap: wrap;
+        }
+
+        .chart-actions .btn {
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
+        }
     }
 
     /* Animaciones de entrada */
@@ -927,7 +979,6 @@
         }
     }
 </style>
-</style>
 </head>
 <body>
     <!-- Mostrar alertas Flask si existen -->
@@ -965,7 +1016,7 @@
             <div class="nav-section">
                 <div class="nav-section-title">Inicio</div>
                 <div class="nav-item">
-                    <a href="{{ url_for('main.dashboard') }}" class="nav-link active">
+                    <a href="{{ url_for('admin.dashboard') }}" class="nav-link active">
                         <i class="fas fa-tachometer-alt nav-icon"></i>
                         Dashboard
                     </a>
@@ -982,23 +1033,23 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="estudiantes">
+                        <a href="{{ url_for('admin.estudiantes') }}" class="nav-link">
                             <i class="fas fa-user-graduate nav-icon"></i>
                             Estudiantes
                         </a>
-                        <a href="#" class="nav-link" data-route="docentes">
+                        <a href="{{ url_for('admin.docentes') }}" class="nav-link">
                             <i class="fas fa-chalkboard-teacher nav-icon"></i>
                             Docentes
                         </a>
-                        <a href="#" class="nav-link" data-route="directivos">
+                        <a href="{{ url_for('admin.directivos') }}" class="nav-link">
                             <i class="fas fa-user-tie nav-icon"></i>
                             Directivos
                         </a>
-                        <a href="#" class="nav-link" data-route="padres">
+                        <a href="{{ url_for('admin.padres') }}" class="nav-link">
                             <i class="fas fa-users-cog nav-icon"></i>
                             Padres/Acudientes
                         </a>
-                        <a href="#" class="nav-link" data-route="agregar_usuario">
+                        <a href="{{ url_for('admin.agregar_usuario') }}" class="nav-link">
                             <i class="fas fa-user-plus nav-icon"></i>
                             Agregar Usuario
                         </a>
@@ -1016,23 +1067,23 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="asignaturas">
+                        <a href="{{ url_for('admin.asignaturas') }}" class="nav-link">
                             <i class="fas fa-books nav-icon"></i>
                             Asignaturas
                         </a>
-                        <a href="#" class="nav-link" data-route="evaluaciones">
+                        <a href="{{ url_for('admin.evaluaciones') }}" class="nav-link">
                             <i class="fas fa-clipboard-list nav-icon"></i>
                             Evaluaciones y Calificaciones
                         </a>
-                        <a href="#" class="nav-link" data-route="reportes_rendimiento">
+                        <a href="{{ url_for('admin.reportes_rendimiento') }}" class="nav-link">
                             <i class="fas fa-chart-line nav-icon"></i>
                             Reportes de Rendimiento
                         </a>
-                        <a href="#" class="nav-link" data-route="nivelaciones">
+                        <a href="{{ url_for('admin.nivelaciones') }}" class="nav-link">
                             <i class="fas fa-level-up-alt nav-icon"></i>
                             Nivelaciones
                         </a>
-                        <a href="#" class="nav-link" data-route="boletines">
+                        <a href="{{ url_for('admin.boletines') }}" class="nav-link">
                             <i class="fas fa-award nav-icon"></i>
                             Promoción y Boletines
                         </a>
@@ -1050,19 +1101,19 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="asistencias">
+                        <a href="{{ url_for('admin.asistencias') }}" class="nav-link">
                             <i class="fas fa-calendar-check nav-icon"></i>
                             Registro de Asistencias
                         </a>
-                        <a href="#" class="nav-link" data-route="observador">
+                        <a href="{{ url_for('admin.observador') }}" class="nav-link">
                             <i class="fas fa-eye nav-icon"></i>
                             Observador del Estudiante
                         </a>
-                        <a href="#" class="nav-link" data-route="reportes_convivencia">
+                        <a href="{{ url_for('admin.reportes_convivencia') }}" class="nav-link">
                             <i class="fas fa-clipboard-check nav-icon"></i>
                             Reportes de Convivencia
                         </a>
-                        <a href="#" class="nav-link" data-route="tutorias">
+                        <a href="{{ url_for('admin.tutorias') }}" class="nav-link">
                             <i class="fas fa-hands-helping nav-icon"></i>
                             Tutorías
                         </a>
@@ -1080,15 +1131,15 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="agenda">
+                        <a href="{{ url_for('admin.agenda') }}" class="nav-link">
                             <i class="fas fa-calendar-alt nav-icon"></i>
                             Agenda Institucional
                         </a>
-                        <a href="#" class="nav-link" data-route="comunicados">
+                        <a href="{{ url_for('admin.comunicados') }}" class="nav-link">
                             <i class="fas fa-bullhorn nav-icon"></i>
                             Comunicados / Circulares
                         </a>
-                        <a href="#" class="nav-link" data-route="notificaciones">
+                        <a href="{{ url_for('admin.notificaciones') }}" class="nav-link">
                             <i class="fas fa-bell nav-icon"></i>
                             Notificaciones
                         </a>
@@ -1106,19 +1157,19 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="contenidos">
+                        <a href="{{ url_for('admin.contenidos') }}" class="nav-link">
                             <i class="fas fa-file-text nav-icon"></i>
                             Contenidos
                         </a>
-                        <a href="#" class="nav-link" data-route="materiales">
+                        <a href="{{ url_for('admin.materiales') }}" class="nav-link">
                             <i class="fas fa-folder-open nav-icon"></i>
                             Materiales
                         </a>
-                        <a href="#" class="nav-link" data-route="actividades">
+                        <a href="{{ url_for('admin.actividades') }}" class="nav-link">
                             <i class="fas fa-tasks nav-icon"></i>
                             Actividades
                         </a>
-                        <a href="#" class="nav-link" data-route="foros">
+                        <a href="{{ url_for('admin.foros') }}" class="nav-link">
                             <i class="fas fa-comments-o nav-icon"></i>
                             Foros
                         </a>
@@ -1136,23 +1187,23 @@
                         <i class="fas fa-chevron-down nav-toggle"></i>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-link" data-route="periodos">
+                        <a href="{{ url_for('admin.periodos') }}" class="nav-link">
                             <i class="fas fa-calendar nav-icon"></i>
                             Periodos
                         </a>
-                        <a href="#" class="nav-link" data-route="roles_permisos">
+                        <a href="{{ url_for('admin.roles_permisos') }}" class="nav-link">
                             <i class="fas fa-shield-alt nav-icon"></i>
                             Roles y Permisos
                         </a>
-                        <a href="#" class="nav-link" data-route="calendario_academico">
+                        <a href="{{ url_for('admin.calendario_academico') }}" class="nav-link">
                             <i class="fas fa-calendar-week nav-icon"></i>
                             Calendario Académico
                         </a>
-                        <a href="#" class="nav-link" data-route="importar_exportar">
+                        <a href="{{ url_for('admin.importar_exportar') }}" class="nav-link">
                             <i class="fas fa-exchange-alt nav-icon"></i>
                             Importar / Exportar
                         </a>
-                        <a href="#" class="nav-link" data-route="backup">
+                        <a href="{{ url_for('admin.backup') }}" class="nav-link">
                             <i class="fas fa-database nav-icon"></i>
                             Backup
                         </a>
@@ -1313,28 +1364,43 @@
 
             <!-- Dashboard Grid Principal -->
             <div class="dashboard-grid">
-                <!-- Gráficos y Charts -->
+                <!-- Gráfico Principal con Chart.js -->
                 <div class="charts-section">
                     <div class="chart-card">
                         <div class="chart-header">
                             <h3 class="chart-title">
                                 <i class="fas fa-chart-area"></i>
-                                Actividad del Sistema
+                                Crecimiento del Sistema
                             </h3>
                             <div class="chart-actions">
-                                <button class="btn btn-sm btn-outline-primary active" onclick="updateChartData('7d')">7 días</button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="updateChartData('30d')">30 días</button>
-                                <button class="btn btn-sm btn-outline-primary" onclick="updateChartData('90d')">90 días</button>
+                                <button class="btn active" onclick="updateChartData('7d')" data-period="7d">7 días</button>
+                                <button class="btn" onclick="updateChartData('30d')" data-period="30d">30 días</button>
+                                <button class="btn" onclick="updateChartData('90d')" data-period="90d">90 días</button>
                             </div>
                         </div>
                         <div class="chart-container">
-                            <div style="height: 300px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(142, 45, 226, 0.1), rgba(74, 0, 224, 0.05)); border-radius: 12px; border: 2px dashed rgba(142, 45, 226, 0.3);">
-                                <div style="text-align: center; color: var(--text-secondary);">
-                                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; color: var(--primary-color);"></i>
-                                    <p style="font-size: 1.1rem; font-weight: 600;">Gráfico de Actividad</p>
-                                    <p style="font-size: 0.9rem;">Los datos se cargarán aquí</p>
-                                </div>
+                            <div class="chart-loading" id="chartLoading">
+                                <i class="fas fa-spinner"></i>
+                                <p>Cargando datos...</p>
                             </div>
+                            <canvas id="mainChart" style="display: none;"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Segundo gráfico: Distribución de Calificaciones -->
+                    <div class="chart-card" style="margin-top: var(--spacing-lg);">
+                        <div class="chart-header">
+                            <h3 class="chart-title">
+                                <i class="fas fa-chart-pie"></i>
+                                Distribución de Calificaciones
+                            </h3>
+                        </div>
+                        <div class="chart-container" style="height: 250px;">
+                            <div class="chart-loading" id="pieChartLoading">
+                                <i class="fas fa-spinner"></i>
+                                <p>Cargando distribución...</p>
+                            </div>
+                            <canvas id="pieChart" style="display: none;"></canvas>
                         </div>
                     </div>
                 </div>
@@ -1399,25 +1465,25 @@
                         </div>
                         <div class="widget-content">
                             <div class="quick-actions">
-                                <a href="#" class="quick-action" data-route="nuevo_estudiante">
+                                <a href="{{ url_for('admin.estudiantes_nuevo') }}" class="quick-action">
                                     <div class="quick-action-icon">
                                         <i class="fas fa-user-plus"></i>
                                     </div>
                                     <span class="quick-action-text">Nuevo Estudiante</span>
                                 </a>
-                                <a href="#" class="quick-action" data-route="nuevo_docente">
+                                <a href="{{ url_for('admin.docentes_nuevo') }}" class="quick-action">
                                     <div class="quick-action-icon">
                                         <i class="fas fa-chalkboard-teacher"></i>
                                     </div>
                                     <span class="quick-action-text">Nuevo Docente</span>
                                 </a>
-                                <a href="#" class="quick-action" data-route="nueva_asignatura">
+                                <a href="{{ url_for('admin.asignaturas_nueva') }}" class="quick-action">
                                     <div class="quick-action-icon">
                                         <i class="fas fa-book"></i>
                                     </div>
                                     <span class="quick-action-text">Nueva Asignatura</span>
                                 </a>
-                                <a href="#" class="quick-action" data-route="generar_reporte">
+                                <a href="{{ url_for('admin.reportes_rendimiento') }}" class="quick-action">
                                     <div class="quick-action-icon">
                                         <i class="fas fa-file-export"></i>
                                     </div>
@@ -1439,7 +1505,7 @@
                             {% if proximas_tareas %}
                                 {% for tarea in proximas_tareas %}
                                 <div class="activity-item">
-                                    <div class="activity-avatar {{ tarea.tipo }}">{{ tarea.icono }}</div>
+                                    <div class="activity-avatar">{{ tarea.icono }}</div>
                                     <div class="activity-content">
                                         <p class="activity-text">{{ tarea.descripcion }}</p>
                                         <p class="activity-time">{{ tarea.fecha_relativa }}</p>
@@ -1448,21 +1514,21 @@
                                 {% endfor %}
                             {% else %}
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-info);">🚀</div>
+                                    <div class="activity-avatar">🚀</div>
                                     <div class="activity-content">
                                         <p class="activity-text">Configurar sistema educativo</p>
                                         <p class="activity-time">Prioridad alta</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-success);">👥</div>
+                                    <div class="activity-avatar">👥</div>
                                     <div class="activity-content">
                                         <p class="activity-text">Registrar primeros usuarios</p>
                                         <p class="activity-time">Paso siguiente</p>
                                     </div>
                                 </div>
                                 <div class="activity-item">
-                                    <div class="activity-avatar" style="background: var(--gradient-warning);">📚</div>
+                                    <div class="activity-avatar">📚</div>
                                     <div class="activity-content">
                                         <p class="activity-text">Crear estructura académica</p>
                                         <p class="activity-time">Planificar</p>
@@ -1478,6 +1544,272 @@
 </div>
 
 <script>
+    // Variables globales para los gráficos
+    let mainChart = null;
+    let pieChart = null;
+    let currentPeriod = '7d';
+
+    // Configuración base para Chart.js
+    Chart.defaults.font.family = 'Inter';
+    Chart.defaults.color = '#64748b';
+
+    // Inicializar cuando cargue la página
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCharts();
+        animateStatCounters();
+    });
+
+    // Función para inicializar los gráficos
+    function initializeCharts() {
+        // Cargar gráfico principal
+        loadMainChart('7d');
+        
+        // Cargar gráfico de calificaciones
+        loadPieChart();
+    }
+
+    // Función para cargar el gráfico principal
+    async function loadMainChart(period) {
+        const loading = document.getElementById('chartLoading');
+        const canvas = document.getElementById('mainChart');
+        
+        loading.style.display = 'block';
+        canvas.style.display = 'none';
+        
+        try {
+            const response = await fetch(`/admin/api/chart-data/${period}`);
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Destruir gráfico anterior si existe
+                if (mainChart) {
+                    mainChart.destroy();
+                }
+                
+                // Crear nuevo gráfico
+                const ctx = canvas.getContext('2d');
+                mainChart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    font: {
+                                        weight: '600'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                titleColor: '#1e293b',
+                                bodyColor: '#64748b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                cornerRadius: 12,
+                                titleFont: {
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                grid: {
+                                    color: 'rgba(226, 232, 240, 0.6)',
+                                    borderDash: [5, 5]
+                                },
+                                ticks: {
+                                    font: {
+                                        weight: '500'
+                                    }
+                                }
+                            },
+                            y: {
+                                display: true,
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(226, 232, 240, 0.6)',
+                                    borderDash: [5, 5]
+                                },
+                                ticks: {
+                                    font: {
+                                        weight: '500'
+                                    }
+                                }
+                            }
+                        },
+                        elements: {
+                            point: {
+                                radius: 6,
+                                hoverRadius: 8,
+                                borderWidth: 3,
+                                backgroundColor: '#ffffff'
+                            },
+                            line: {
+                                borderWidth: 3
+                            }
+                        }
+                    }
+                });
+                
+                loading.style.display = 'none';
+                canvas.style.display = 'block';
+                
+            } else {
+                throw new Error(data.error || 'Error cargando datos');
+            }
+        } catch (error) {
+            console.error('Error cargando gráfico:', error);
+            loading.innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                <p>Error cargando datos</p>
+            `;
+        }
+    }
+
+    // Función para cargar el gráfico de calificaciones
+    async function loadPieChart() {
+        const loading = document.getElementById('pieChartLoading');
+        const canvas = document.getElementById('pieChart');
+        
+        loading.style.display = 'block';
+        canvas.style.display = 'none';
+        
+        try {
+            const response = await fetch('/admin/api/calificaciones-chart');
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Destruir gráfico anterior si existe
+                if (pieChart) {
+                    pieChart.destroy();
+                }
+                
+                // Crear nuevo gráfico
+                const ctx = canvas.getContext('2d');
+                pieChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    font: {
+                                        weight: '600',
+                                        size: 12
+                                    },
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                titleColor: '#1e293b',
+                                bodyColor: '#64748b',
+                                borderColor: '#e2e8f0',
+                                borderWidth: 1,
+                                cornerRadius: 12,
+                                titleFont: {
+                                    weight: '600'
+                                },
+                                bodyFont: {
+                                    weight: '500'
+                                },
+                                callbacks: {
+                                    label: function(context) {
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((context.parsed * 100) / total).toFixed(1);
+                                        return `${context.label}: ${context.parsed} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '60%',
+                        elements: {
+                            arc: {
+                                borderWidth: 3,
+                                borderColor: '#ffffff'
+                            }
+                        }
+                    }
+                });
+                
+                loading.style.display = 'none';
+                canvas.style.display = 'block';
+                
+            } else {
+                throw new Error(data.error || 'Error cargando datos');
+            }
+        } catch (error) {
+            console.error('Error cargando gráfico de calificaciones:', error);
+            loading.innerHTML = `
+                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                <p>Error cargando distribución</p>
+            `;
+        }
+    }
+
+    // Función para actualizar datos del gráfico
+    function updateChartData(period) {
+        currentPeriod = period;
+        
+        // Actualizar botones activos
+        document.querySelectorAll('.chart-actions .btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        const clickedButton = document.querySelector(`[data-period="${period}"]`);
+        if (clickedButton) {
+            clickedButton.classList.add('active');
+        }
+        
+        // Recargar gráfico
+        loadMainChart(period);
+        
+        // Mostrar notificación
+        showNotification(`Datos actualizados para ${period}`, 'success');
+    }
+
+    // Animaciones de contadores mejoradas
+    function animateStatCounters() {
+        const statValues = document.querySelectorAll('.stat-value');
+        statValues.forEach(stat => {
+            const finalValue = parseFloat(stat.getAttribute('data-count')) || 0;
+            let currentValue = 0;
+            const isDecimal = finalValue % 1 !== 0;
+            const increment = finalValue / (isDecimal ? 20 : 50);
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    currentValue = finalValue;
+                    clearInterval(timer);
+                }
+                
+                if (isDecimal) {
+                    stat.textContent = currentValue.toFixed(1);
+                } else {
+                    stat.textContent = Math.floor(currentValue);
+                }
+            }, isDecimal ? 50 : 20);
+        });
+    }
+
     // Toggle submenu
     function toggleSubmenu(element) {
         const navItem = element.parentElement;
@@ -1494,7 +1826,7 @@
         }
     }
 
-    // Toggle user menu con z-index corregido
+    // Toggle user menu
     function toggleUserMenu() {
         const userMenu = document.getElementById('userMenu');
         userMenu.classList.toggle('open');
@@ -1522,72 +1854,7 @@
         toggleSidebar();
     });
 
-    // Manejar enlaces del sidebar con notificaciones
-    document.querySelectorAll('.nav-link:not([onclick])').forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Solo prevenir si el href es '#'
-            if (this.getAttribute('href') === '#') {
-                e.preventDefault();
-                
-                // Mostrar notificación para rutas no implementadas
-                const route = this.getAttribute('data-route');
-                if (route) {
-                    showNotification(`Funcionalidad "${this.textContent.trim()}" próximamente disponible`, 'info');
-                }
-            }
-            
-            // Remover active de todos los enlaces
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            
-            // Agregar active al enlace clickeado
-            this.classList.add('active');
-            
-            // Si es móvil, cerrar sidebar
-            if (window.innerWidth <= 768) {
-                toggleSidebar();
-            }
-        });
-    });
-
-    // Manejar acciones rápidas
-    document.querySelectorAll('.quick-action').forEach(action => {
-        action.addEventListener('click', function(e) {
-            if (this.getAttribute('href') === '#') {
-                e.preventDefault();
-                const route = this.getAttribute('data-route');
-                if (route) {
-                    showNotification(`Funcionalidad "${this.querySelector('.quick-action-text').textContent}" próximamente disponible`, 'info');
-                }
-            }
-        });
-    });
-
-    // Animaciones de contadores mejoradas
-    window.addEventListener('load', function() {
-        const statValues = document.querySelectorAll('.stat-value');
-        statValues.forEach(stat => {
-            const finalValue = parseFloat(stat.getAttribute('data-count')) || 0;
-            let currentValue = 0;
-            const isDecimal = finalValue % 1 !== 0;
-            const increment = finalValue / (isDecimal ? 20 : 50);
-            
-            const timer = setInterval(() => {
-                currentValue += increment;
-                if (currentValue >= finalValue) {
-                    currentValue = finalValue;
-                    clearInterval(timer);
-                }
-                
-                if (isDecimal) {
-                    stat.textContent = currentValue.toFixed(1);
-                } else {
-                    stat.textContent = Math.floor(currentValue);
-                }
-            }, isDecimal ? 50 : 20);
-        });
-    });
-
-    // Notificaciones simuladas
+    // Notificaciones mejoradas
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `alert alert-${type} alert-dismissible fade show`;
@@ -1598,14 +1865,23 @@
             z-index: 10000;
             min-width: 300px;
             max-width: 400px;
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         `;
+        
+        const icon = type === 'success' ? 'check-circle' : 
+                    type === 'error' ? 'exclamation-triangle' : 'info-circle';
+        
         notification.innerHTML = `
+            <i class="fas fa-${icon} me-2"></i>
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
         `;
         
         document.body.appendChild(notification);
         
+        // Auto remove después de 5 segundos
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
@@ -1617,32 +1893,44 @@
     function logout(event) {
         event.preventDefault();
         
-        // Mostrar notificación de cierre de sesión
         showNotification('Cerrando sesión...', 'info');
         
-        // Proceso de logout directo con animación suave
         setTimeout(() => {
             window.location.href = '{{ url_for("auth.logout") }}';
         }, 800);
     }
 
-    // Función para actualizar datos del gráfico (placeholder)
-    function updateChartData(period) {
-        // Actualizar botones activos
-        document.querySelectorAll('.chart-actions .btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        // Encontrar el botón clickeado y marcarlo como activo
-        const clickedButton = document.querySelector(`[onclick="updateChartData('${period}')"]`);
-        if (clickedButton) {
-            clickedButton.classList.add('active');
+    // Refresh automático de estadísticas cada 5 minutos
+    setInterval(async function() {
+        try {
+            const response = await fetch('/admin/api/dashboard-stats');
+            if (response.ok) {
+                const stats = await response.json();
+                
+                // Actualizar valores en las tarjetas
+                const cards = document.querySelectorAll('.stat-value');
+                if (cards[0]) cards[0].textContent = stats.total_estudiantes;
+                if (cards[1]) cards[1].textContent = stats.total_docentes;
+                if (cards[2]) cards[2].textContent = stats.total_cursos;
+                if (cards[3]) cards[3].textContent = stats.promedio_general.toFixed(1);
+                
+                console.log('Estadísticas actualizadas automáticamente');
+            }
+        } catch (error) {
+            console.log('Error actualizando estadísticas:', error);
         }
-        
-        // Aquí podrías hacer una llamada AJAX para obtener datos reales
-        console.log('Actualizando gráfico para período:', period);
-        showNotification(`Datos actualizados para ${period}`, 'success');
-    }
+    }, 300000); // 5 minutos
+
+    // Actualizar gráficos cada 10 minutos
+    setInterval(function() {
+        if (mainChart) {
+            loadMainChart(currentPeriod);
+        }
+        if (pieChart) {
+            loadPieChart();
+        }
+        console.log('Gráficos actualizados automáticamente');
+    }, 600000); // 10 minutos
 </script>
 </body>
 </html>
