@@ -1,12 +1,16 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, jsonify, request
 from flask_login import login_required, current_user
 from app.models import Usuario, Curso, Calificacion, Asistencia, db
+from app.forms import EstudianteForm, DocenteForm, DirectivoForm, PadreForm, CursoForm, CalificacionForm
 from datetime import datetime, timedelta
 from sqlalchemy import func, extract
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
-# Función helper para calcular estadísticas del dashboard
+# ============================================
+# FUNCIONES HELPER PARA ESTADÍSTICAS
+# ============================================
+
 def calcular_estadisticas_dashboard():
     """Calcula las estadísticas dinámicas para el dashboard"""
     try:
@@ -84,7 +88,6 @@ def calcular_estadisticas_dashboard():
             'variacion_promedio': 0.0
         }
 
-# Generar actividades recientes dinámicas
 def generar_actividades_recientes():
     """Genera actividades recientes basadas en datos reales"""
     actividades = []
@@ -134,13 +137,22 @@ def generar_actividades_recientes():
     
     return actividades[:5]  # Máximo 5 actividades
 
-# NUEVAS RUTAS PARA DATOS DE GRÁFICOS
+def verificar_admin():
+    """Helper para verificar si el usuario actual es admin"""
+    if current_user.rol != 'admin':
+        flash('Acceso no autorizado. Se requieren permisos de administrador.', 'error')
+        return False
+    return True
+
+# ============================================
+# RUTAS DE API PARA GRÁFICOS (EXISTENTES)
+# ============================================
 
 @admin_bp.route('/api/dashboard-stats')
 @login_required
 def dashboard_stats():
     """Endpoint para obtener estadísticas del dashboard en JSON"""
-    if current_user.rol != 'admin':
+    if not verificar_admin():
         return jsonify({'error': 'Acceso no autorizado'}), 403
     
     stats = calcular_estadisticas_dashboard()
@@ -150,7 +162,7 @@ def dashboard_stats():
 @login_required
 def chart_data(period):
     """Endpoint para datos de gráficos según el período solicitado"""
-    if current_user.rol != 'admin':
+    if not verificar_admin():
         return jsonify({'error': 'Acceso no autorizado'}), 403
     
     try:
@@ -172,26 +184,6 @@ def chart_data(period):
             start_date = end_date - timedelta(days=7)
             date_format = '%Y-%m-%d'
             interval = 'day'
-        
-        # Datos de registros de usuarios por día/mes
-        if interval == 'day':
-            usuario_data = db.session.query(
-                func.date(Usuario.fecha_creacion).label('fecha'),
-                func.count(Usuario.id).label('total')
-            ).filter(
-                Usuario.fecha_creacion >= start_date,
-                Usuario.fecha_creacion <= end_date,
-                Usuario.activo == True
-            ).group_by(func.date(Usuario.fecha_creacion)).all()
-        else:
-            usuario_data = db.session.query(
-                func.date_format(Usuario.fecha_creacion, '%Y-%m').label('fecha'),
-                func.count(Usuario.id).label('total')
-            ).filter(
-                Usuario.fecha_creacion >= start_date,
-                Usuario.fecha_creacion <= end_date,
-                Usuario.activo == True
-            ).group_by(func.date_format(Usuario.fecha_creacion, '%Y-%m')).all()
         
         # Formatear datos para Chart.js
         labels = []
@@ -263,7 +255,7 @@ def chart_data(period):
 @login_required
 def calificaciones_chart():
     """Endpoint para gráfico de distribución de calificaciones"""
-    if current_user.rol != 'admin':
+    if not verificar_admin():
         return jsonify({'error': 'Acceso no autorizado'}), 403
     
     try:
@@ -302,13 +294,15 @@ def calificaciones_chart():
         print(f"Error obteniendo datos de calificaciones: {e}")
         return jsonify({'error': 'Error interno del servidor'}), 500
 
-# RUTA PRINCIPAL DEL DASHBOARD (MODIFICADA)
+# ============================================
+# DASHBOARD PRINCIPAL
+# ============================================
+
 @admin_bp.route('/dashboard')
 @login_required
 def dashboard():
     """Dashboard principal con datos dinámicos"""
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
+    if not verificar_admin():
         return redirect(url_for('main.index'))
     
     # Obtener estadísticas
@@ -364,296 +358,750 @@ def dashboard():
                          actividades_recientes=actividades_recientes,
                          proximas_tareas=proximas_tareas)
 
-# RESTO DE RUTAS EXISTENTES (SIN CAMBIOS)
+# ============================================
+# GESTIÓN DE ESTUDIANTES
+# ============================================
 
 @admin_bp.route('/estudiantes')
 @login_required
 def estudiantes():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+    """Lista de estudiantes"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    estudiantes = Usuario.query.filter_by(rol='alumno').all()
+    estudiantes = Usuario.query.filter_by(rol='alumno', activo=True).all()
     return render_template('admin/estudiantes.html', estudiantes=estudiantes)
+
+@admin_bp.route('/estudiantes/nuevo', methods=['GET', 'POST'])
+@login_required
+def estudiantes_nuevo():
+    """Formulario para crear nuevo estudiante"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    form = EstudianteForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el usuario o email ya existen
+            usuario_existente = Usuario.query.filter(
+                (Usuario.username == form.username.data) | 
+                (Usuario.email == form.email.data)
+            ).first()
+            
+            if usuario_existente:
+                if usuario_existente.username == form.username.data:
+                    flash('El nombre de usuario ya está en uso. Elige otro.', 'error')
+                else:
+                    flash('El email ya está registrado en el sistema.', 'error')
+                return render_template('admin/estudiantes_nuevo.html', form=form)
+            
+            # Crear nuevo usuario estudiante
+            estudiante = Usuario(
+                username=form.username.data,
+                email=form.email.data,
+                rol='alumno',
+                nombre=form.nombre.data,
+                apellido=form.apellido.data,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña
+            estudiante.set_password(form.password.data)
+            
+            # Agregar a la base de datos
+            db.session.add(estudiante)
+            db.session.commit()
+            
+            flash(f'Estudiante {form.nombre.data} {form.apellido.data} creado exitosamente.', 'success')
+            return redirect(url_for('admin.estudiantes'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creando estudiante: {e}")
+            flash('Error al crear el estudiante. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/estudiantes_nuevo.html', form=form)
+
+# ============================================
+# GESTIÓN DE DOCENTES
+# ============================================
 
 @admin_bp.route('/docentes')
 @login_required
 def docentes():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+    """Lista de docentes"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    docentes = Usuario.query.filter_by(rol='profesor').all()
+    docentes = Usuario.query.filter_by(rol='profesor', activo=True).all()
     return render_template('admin/docentes.html', docentes=docentes)
+
+@admin_bp.route('/docentes/nuevo', methods=['GET', 'POST'])
+@login_required
+def docentes_nuevo():
+    """Formulario para crear nuevo docente"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    form = DocenteForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el usuario o email ya existen
+            usuario_existente = Usuario.query.filter(
+                (Usuario.username == form.username.data) | 
+                (Usuario.email == form.email.data)
+            ).first()
+            
+            if usuario_existente:
+                if usuario_existente.username == form.username.data:
+                    flash('El nombre de usuario ya está en uso. Elige otro.', 'error')
+                else:
+                    flash('El email ya está registrado en el sistema.', 'error')
+                return render_template('admin/docentes_nuevo.html', form=form)
+            
+            # Crear nuevo usuario docente
+            docente = Usuario(
+                username=form.username.data,
+                email=form.email.data,
+                rol='profesor',
+                nombre=form.nombre.data,
+                apellido=form.apellido.data,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña
+            docente.set_password(form.password.data)
+            
+            # Agregar a la base de datos
+            db.session.add(docente)
+            db.session.commit()
+            
+            flash(f'Docente {form.nombre.data} {form.apellido.data} creado exitosamente.', 'success')
+            return redirect(url_for('admin.docentes'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creando docente: {e}")
+            flash('Error al crear el docente. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/docentes_nuevo.html', form=form)
+
+# ============================================
+# GESTIÓN DE DIRECTIVOS
+# ============================================
 
 @admin_bp.route('/directivos')
 @login_required
 def directivos():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+    """Lista de directivos"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    directivos = Usuario.query.filter_by(rol='directivo').all()
+    directivos = Usuario.query.filter_by(rol='directivo', activo=True).all()
     return render_template('admin/directivos.html', directivos=directivos)
+
+@admin_bp.route('/directivos/nuevo', methods=['GET', 'POST'])
+@login_required
+def directivos_nuevo():
+    """Formulario para crear nuevo directivo"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    form = DirectivoForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el usuario o email ya existen
+            usuario_existente = Usuario.query.filter(
+                (Usuario.username == form.username.data) | 
+                (Usuario.email == form.email.data)
+            ).first()
+            
+            if usuario_existente:
+                if usuario_existente.username == form.username.data:
+                    flash('El nombre de usuario ya está en uso. Elige otro.', 'error')
+                else:
+                    flash('El email ya está registrado en el sistema.', 'error')
+                return render_template('admin/directivos_nuevo.html', form=form)
+            
+            # Crear nuevo usuario directivo
+            directivo = Usuario(
+                username=form.username.data,
+                email=form.email.data,
+                rol='directivo',
+                nombre=form.nombre.data,
+                apellido=form.apellido.data,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña
+            directivo.set_password(form.password.data)
+            
+            # Agregar a la base de datos
+            db.session.add(directivo)
+            db.session.commit()
+            
+            flash(f'Directivo {form.nombre.data} {form.apellido.data} creado exitosamente.', 'success')
+            return redirect(url_for('admin.directivos'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creando directivo: {e}")
+            flash('Error al crear el directivo. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/directivos_nuevo.html', form=form)
+
+# ============================================
+# GESTIÓN DE PADRES/ACUDIENTES
+# ============================================
 
 @admin_bp.route('/padres')
 @login_required
 def padres():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+    """Lista de padres/acudientes"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    padres = Usuario.query.filter_by(rol='padre').all()
+    padres = Usuario.query.filter_by(rol='padre', activo=True).all()
     return render_template('admin/padres.html', padres=padres)
 
-@admin_bp.route('/agregar_usuario')
+@admin_bp.route('/padres/nuevo', methods=['GET', 'POST'])
 @login_required
-def agregar_usuario():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def padres_nuevo():
+    """Formulario para crear nuevo padre/acudiente"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    return render_template('admin/agregar_usuario.html')
+    form = PadreForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el usuario o email ya existen
+            usuario_existente = Usuario.query.filter(
+                (Usuario.username == form.username.data) | 
+                (Usuario.email == form.email.data)
+            ).first()
+            
+            if usuario_existente:
+                if usuario_existente.username == form.username.data:
+                    flash('El nombre de usuario ya está en uso. Elige otro.', 'error')
+                else:
+                    flash('El email ya está registrado en el sistema.', 'error')
+                return render_template('admin/padres_nuevo.html', form=form)
+            
+            # Crear nuevo usuario padre/acudiente
+            padre = Usuario(
+                username=form.username.data,
+                email=form.email.data,
+                rol='padre',
+                nombre=form.nombre.data,
+                apellido=form.apellido.data,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña
+            padre.set_password(form.password.data)
+            
+            # Agregar a la base de datos
+            db.session.add(padre)
+            db.session.commit()
+            
+            flash(f'Padre/Acudiente {form.nombre.data} {form.apellido.data} creado exitosamente.', 'success')
+            return redirect(url_for('admin.padres'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creando padre: {e}")
+            flash('Error al crear el padre/acudiente. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/padres_nuevo.html', form=form)
+
+# ============================================
+# GESTIÓN DE CURSOS/ASIGNATURAS
+# ============================================
 
 @admin_bp.route('/asignaturas')
 @login_required
 def asignaturas():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+    """Lista de asignaturas/cursos"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    return render_template('admin/asignaturas.html')
+    cursos = Curso.query.filter_by(activo=True).all()
+    return render_template('admin/asignaturas.html', cursos=cursos)
+
+@admin_bp.route('/asignaturas/nueva', methods=['GET', 'POST'])
+@login_required
+def asignaturas_nueva():
+    """Formulario para crear nueva asignatura"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    form = CursoForm()
+    
+    # Cargar opciones de profesores dinámicamente
+    docentes = Usuario.query.filter_by(rol='profesor', activo=True).all()
+    form.profesor_id.choices = [('', 'Sin asignar')] + [(d.id, f"{d.nombre} {d.apellido}") for d in docentes]
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el código ya existe
+            curso_existente = Curso.query.filter_by(codigo=form.codigo.data).first()
+            if curso_existente:
+                flash('El código del curso ya existe. Elige otro.', 'error')
+                return render_template('admin/asignaturas_nueva.html', form=form)
+            
+            # Crear nuevo curso
+            curso = Curso(
+                nombre=form.nombre.data,
+                codigo=form.codigo.data,
+                descripcion=form.descripcion.data,
+                profesor_id=form.profesor_id.data if form.profesor_id.data else None,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Agregar a la base de datos
+            db.session.add(curso)
+            db.session.commit()
+            
+            flash(f'Asignatura {form.nombre.data} creada exitosamente.', 'success')
+            return redirect(url_for('admin.asignaturas'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error creando curso: {e}")
+            flash('Error al crear la asignatura. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/asignaturas_nueva.html', form=form)
+
+# ============================================
+# RUTAS DE MENÚ GENERAL (SIN CAMBIOS)
+# ============================================
+
+@admin_bp.route('/agregar_usuario')
+@login_required
+def agregar_usuario():
+    """Página principal para agregar usuarios"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    return render_template('admin/nuevo.html')
+
+@admin_bp.route('/nuevo')
+@login_required
+def nuevo():
+    """Página de opciones para crear nuevos elementos"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    return render_template('admin/nuevo.html')
+
+# ============================================
+# RUTAS EXISTENTES MANTENIDAS
+# ============================================
 
 @admin_bp.route('/evaluaciones')
 @login_required
 def evaluaciones():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/evaluaciones.html')
 
 @admin_bp.route('/reportes_rendimiento')
 @login_required
 def reportes_rendimiento():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/reportes_rendimiento.html')
 
 @admin_bp.route('/nivelaciones')
 @login_required
 def nivelaciones():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/nivelaciones.html')
 
 @admin_bp.route('/boletines')
 @login_required
 def boletines():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/boletines.html')
 
 @admin_bp.route('/asistencias')
 @login_required
 def asistencias():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/asistencias.html')
 
 @admin_bp.route('/observador')
 @login_required
 def observador():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/observador.html')
 
 @admin_bp.route('/reportes_convivencia')
 @login_required
 def reportes_convivencia():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/reportes_convivencia.html')
 
 @admin_bp.route('/tutorias')
 @login_required
 def tutorias():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/tutorias.html')
 
 @admin_bp.route('/agenda')
 @login_required
 def agenda():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/agenda.html')
 
 @admin_bp.route('/comunicados')
 @login_required
 def comunicados():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/comunicados.html')
 
 @admin_bp.route('/notificaciones')
 @login_required
 def notificaciones():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/notificaciones.html')
 
 @admin_bp.route('/contenidos')
 @login_required
 def contenidos():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/contenidos.html')
 
 @admin_bp.route('/materiales')
 @login_required
 def materiales():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/materiales.html')
 
 @admin_bp.route('/actividades')
 @login_required
 def actividades():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/actividades.html')
 
 @admin_bp.route('/foros')
 @login_required
 def foros():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/foros.html')
 
 @admin_bp.route('/periodos')
 @login_required
 def periodos():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/periodos.html')
 
 @admin_bp.route('/roles_permisos')
 @login_required
 def roles_permisos():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/roles_permisos.html')
 
 @admin_bp.route('/calendario_academico')
 @login_required
 def calendario_academico():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/calendario_academico.html')
 
 @admin_bp.route('/importar_exportar')
 @login_required
 def importar_exportar():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/importar_exportar.html')
 
 @admin_bp.route('/backup')
 @login_required
 def backup():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     return render_template('admin/backup.html')
 
-@admin_bp.route('/nuevo')
-@login_required
-def nuevo():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
-    
-    return render_template('admin/nuevo.html')
+# ============================================
+# RUTAS ADICIONALES PARA GESTIÓN AVANZADA
+# ============================================
 
-@admin_bp.route('/estudiantes/nuevo')
+@admin_bp.route('/usuario/<int:user_id>')
 @login_required
-def estudiantes_nuevo():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def ver_usuario(user_id):
+    """Ver detalles de un usuario específico"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    return render_template('admin/estudiantes_nuevo.html')
+    usuario = Usuario.query.get_or_404(user_id)
+    return render_template('admin/ver_usuario.html', usuario=usuario)
 
-@admin_bp.route('/docentes/nuevo')
+@admin_bp.route('/usuario/<int:user_id>/editar', methods=['GET', 'POST'])
 @login_required
-def docentes_nuevo():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def editar_usuario(user_id):
+    """Editar un usuario existente"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
     
-    return render_template('admin/docentes_nuevo.html')
+    usuario = Usuario.query.get_or_404(user_id)
+    
+    # Seleccionar el formulario según el rol
+    if usuario.rol == 'alumno':
+        form = EstudianteForm(obj=usuario)
+    elif usuario.rol == 'profesor':
+        form = DocenteForm(obj=usuario)
+    elif usuario.rol == 'directivo':
+        form = DirectivoForm(obj=usuario)
+    elif usuario.rol == 'padre':
+        form = PadreForm(obj=usuario)
+    else:
+        flash('Tipo de usuario no válido para edición.', 'error')
+        return redirect(url_for('admin.dashboard'))
+    
+    if form.validate_on_submit():
+        try:
+            # Verificar si el username o email ya existen (excluyendo el usuario actual)
+            usuario_existente = Usuario.query.filter(
+                Usuario.id != user_id,
+                (Usuario.username == form.username.data) | 
+                (Usuario.email == form.email.data)
+            ).first()
+            
+            if usuario_existente:
+                if usuario_existente.username == form.username.data:
+                    flash('El nombre de usuario ya está en uso. Elige otro.', 'error')
+                else:
+                    flash('El email ya está registrado en el sistema.', 'error')
+                return render_template('admin/editar_usuario.html', form=form, usuario=usuario)
+            
+            # Actualizar campos básicos
+            usuario.username = form.username.data
+            usuario.email = form.email.data
+            usuario.nombre = form.nombre.data
+            usuario.apellido = form.apellido.data
+            
+            # Si se proporcionó nueva contraseña, actualizarla
+            if form.password.data:
+                usuario.set_password(form.password.data)
+            
+            db.session.commit()
+            
+            flash(f'Usuario {usuario.nombre} {usuario.apellido} actualizado exitosamente.', 'success')
+            
+            # Redirigir según el tipo de usuario
+            if usuario.rol == 'alumno':
+                return redirect(url_for('admin.estudiantes'))
+            elif usuario.rol == 'profesor':
+                return redirect(url_for('admin.docentes'))
+            elif usuario.rol == 'directivo':
+                return redirect(url_for('admin.directivos'))
+            elif usuario.rol == 'padre':
+                return redirect(url_for('admin.padres'))
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error actualizando usuario: {e}")
+            flash('Error al actualizar el usuario. Inténtalo de nuevo.', 'error')
+    
+    return render_template('admin/editar_usuario.html', form=form, usuario=usuario)
 
-@admin_bp.route('/directivos/nuevo')
+@admin_bp.route('/usuario/<int:user_id>/toggle-status', methods=['POST'])
 @login_required
-def directivos_nuevo():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def toggle_usuario_status(user_id):
+    """Activar/desactivar un usuario"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
     
-    return render_template('admin/directivos_nuevo.html')
+    try:
+        usuario = Usuario.query.get_or_404(user_id)
+        
+        # No permitir desactivar al admin actual
+        if usuario.id == current_user.id:
+            return jsonify({'error': 'No puedes desactivar tu propia cuenta'}), 400
+        
+        usuario.activo = not usuario.activo
+        db.session.commit()
+        
+        status_text = 'activado' if usuario.activo else 'desactivado'
+        return jsonify({
+            'success': True,
+            'message': f'Usuario {status_text} exitosamente',
+            'nuevo_status': usuario.activo
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error cambiando status de usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
-@admin_bp.route('/padres/nuevo')
+@admin_bp.route('/usuario/<int:user_id>/eliminar', methods=['POST'])
 @login_required
-def padres_nuevo():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def eliminar_usuario(user_id):
+    """Eliminar un usuario (soft delete)"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
     
-    return render_template('admin/padres_nuevo.html')
+    try:
+        usuario = Usuario.query.get_or_404(user_id)
+        
+        # No permitir eliminar al admin actual
+        if usuario.id == current_user.id:
+            return jsonify({'error': 'No puedes eliminar tu propia cuenta'}), 400
+        
+        # Soft delete - marcar como inactivo
+        usuario.activo = False
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Usuario {usuario.nombre} {usuario.apellido} eliminado exitosamente'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error eliminando usuario: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
-@admin_bp.route('/asignaturas/nueva')
+# ============================================
+# BÚSQUEDA Y FILTROS
+# ============================================
+
+@admin_bp.route('/buscar-usuarios')
 @login_required
-def asignaturas_nueva():
-    if current_user.rol != 'admin':
-        flash('Acceso no autorizado', 'error')
-        return redirect(url_for('main.dashboard'))
+def buscar_usuarios():
+    """Endpoint para búsqueda AJAX de usuarios"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
     
-    return render_template('admin/asignaturas_nueva.html')
+    query = request.args.get('q', '').strip()
+    rol = request.args.get('rol', '')
+    
+    if len(query) < 2:
+        return jsonify({'usuarios': []})
+    
+    try:
+        # Construir query base
+        usuarios_query = Usuario.query.filter(Usuario.activo == True)
+        
+        # Filtrar por rol si se especifica
+        if rol and rol != 'todos':
+            usuarios_query = usuarios_query.filter(Usuario.rol == rol)
+        
+        # Búsqueda en nombre, apellido, username o email
+        usuarios_query = usuarios_query.filter(
+            (Usuario.nombre.contains(query)) |
+            (Usuario.apellido.contains(query)) |
+            (Usuario.username.contains(query)) |
+            (Usuario.email.contains(query))
+        )
+        
+        usuarios = usuarios_query.limit(10).all()
+        
+        # Formatear resultados
+        resultados = []
+        for usuario in usuarios:
+            resultados.append({
+                'id': usuario.id,
+                'nombre_completo': f"{usuario.nombre} {usuario.apellido}",
+                'username': usuario.username,
+                'email': usuario.email,
+                'rol': usuario.rol,
+                'activo': usuario.activo
+            })
+        
+        return jsonify({'usuarios': resultados})
+        
+    except Exception as e:
+        print(f"Error en búsqueda de usuarios: {e}")
+        return jsonify({'error': 'Error en la búsqueda'}), 500
+
+# ============================================
+# ESTADÍSTICAS AVANZADAS
+# ============================================
+
+@admin_bp.route('/api/usuarios-por-rol')
+@login_required
+def usuarios_por_rol():
+    """Estadísticas de usuarios por rol"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        stats = db.session.query(
+            Usuario.rol,
+            func.count(Usuario.id).label('total')
+        ).filter(Usuario.activo == True).group_by(Usuario.rol).all()
+        
+        data = {
+            'labels': [stat.rol.title() for stat in stats],
+            'data': [stat.total for stat in stats],
+            'backgroundColor': [
+                '#8E2DE2',  # admin
+                '#10B981',  # profesor
+                '#3B82F6',  # alumno
+                '#F59E0B',  # directivo
+                '#EF4444'   # padre
+            ]
+        }
+        
+        return jsonify(data)
+        
+    except Exception as e:
+        print(f"Error obteniendo estadísticas por rol: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@admin_bp.route('/api/usuarios-recientes/<int:dias>')
+@login_required
+def usuarios_recientes(dias):
+    """Usuarios registrados en los últimos N días"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        fecha_limite = datetime.now() - timedelta(days=dias)
+        
+        usuarios = Usuario.query.filter(
+            Usuario.fecha_creacion >= fecha_limite,
+            Usuario.activo == True
+        ).order_by(Usuario.fecha_creacion.desc()).all()
+        
+        resultados = []
+        for usuario in usuarios:
+            resultados.append({
+                'id': usuario.id,
+                'nombre': f"{usuario.nombre} {usuario.apellido}",
+                'rol': usuario.rol,
+                'email': usuario.email,
+                'fecha_creacion': usuario.fecha_creacion.strftime('%Y-%m-%d %H:%M')
+            })
+        
+        return jsonify({'usuarios': resultados})
+        
+    except Exception as e:
+        print(f"Error obteniendo usuarios recientes: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
