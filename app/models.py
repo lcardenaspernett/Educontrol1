@@ -28,6 +28,8 @@ class Usuario(UserMixin, db.Model):
     direccion = db.Column(db.Text, nullable=True)
     ciudad = db.Column(db.String(50), nullable=True)
     barrio = db.Column(db.String(100), nullable=True)
+    nacionalidad = db.Column(db.String(50), nullable=True)
+    estrato = db.Column(db.Integer, nullable=True)
     
     # Campos específicos para estudiantes
     grado = db.Column(db.Integer, nullable=True)

@@ -1,4 +1,4 @@
-{% extends "../base_admin.html" %}
+{% extends "admin/base_admin.html" %}
 
 {% block title %}Editar Estudiante - EduControl{% endblock %}
 
@@ -44,12 +44,12 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="nombres" class="form-label">Nombres <span class="text-danger">*</span></label>
+                                <label for="nombres" class="form-label">Nombres</label>
                                 <input type="text" class="form-control" id="nombres" name="nombres" 
                                        value="{{ estudiante.nombre }}" required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="apellidos" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                                <label for="apellidos" class="form-label">Apellidos</label>
                                 <input type="text" class="form-control" id="apellidos" name="apellidos" 
                                        value="{{ estudiante.apellido }}" required>
                             </div>
@@ -63,7 +63,7 @@
                                 </select>
                             </div>
                             <div class="col-md-8 mb-3">
-                                <label for="documento" class="form-label">Número de Documento <span class="text-danger">*</span></label>
+                                <label for="documento" class="form-label">Número de Documento</label>
                                 <input type="text" class="form-control" id="documento" name="documento" 
                                        value="{{ estudiante.documento or '' }}" required
                                        onblur="verificarDocumento()">
@@ -86,11 +86,11 @@
                     </div>
                 </div>
 
-                <!-- Información de Contacto -->
+                <!-- Información de Contacto y Ubicación -->
                 <div class="card mb-4">
                     <div class="card-header">
                         <h5 class="card-title mb-0">
-                            <i class="fas fa-address-book me-2"></i>Información de Contacto
+                            <i class="fas fa-address-book me-2"></i>Información de Contacto y Ubicación
                         </h5>
                     </div>
                     <div class="card-body">
@@ -104,6 +104,21 @@
                                 <label for="telefono" class="form-label">Teléfono</label>
                                 <input type="tel" class="form-control" id="telefono" name="telefono" 
                                        value="{{ estudiante.telefono or '' }}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="nacionalidad" class="form-label">Nacionalidad</label>
+                                <input type="text" class="form-control" id="nacionalidad" name="nacionalidad" 
+                                       value="{{ estudiante.nacionalidad or '' }}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="ciudad" class="form-label">Ciudad</label>
+                                <input type="text" class="form-control" id="ciudad" name="ciudad" 
+                                       value="{{ estudiante.ciudad or '' }}">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="barrio" class="form-label">Barrio</label>
+                                <input type="text" class="form-control" id="barrio" name="barrio" 
+                                       value="{{ estudiante.barrio or '' }}">
                             </div>
                             <div class="col-12 mb-3">
                                 <label for="direccion" class="form-label">Dirección</label>
@@ -124,7 +139,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label for="grado" class="form-label">Grado <span class="text-danger">*</span></label>
+                                <label for="grado" class="form-label">Grado</label>
                                 <select class="form-select" id="grado" name="grado" required>
                                     <option value="">Seleccionar grado...</option>
                                     {% for i in range(1, 12) %}
@@ -133,7 +148,7 @@
                                 </select>
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="seccion" class="form-label">Sección <span class="text-danger">*</span></label>
+                                <label for="seccion" class="form-label">Sección</label>
                                 <select class="form-select" id="seccion" name="seccion" required>
                                     <option value="">Seleccionar sección...</option>
                                     {% for letra in ['A', 'B', 'C', 'D', 'E'] %}
@@ -149,7 +164,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                                <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" 
                                        value="{{ estudiante.username }}" required>
                                 <div class="form-text">Usado para iniciar sesión en el sistema</div>
@@ -241,19 +256,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- Loading overlay -->
-<div id="loadingOverlay" class="position-fixed top-0 start-0 w-100 h-100 d-none" style="background: rgba(0,0,0,0.5); z-index: 9999;">
-    <div class="d-flex justify-content-center align-items-center h-100">
-        <div class="text-center text-white">
-            <div class="spinner-border mb-3" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-            <p>Actualizando estudiante...</p>
-        </div>
-    </div>
-</div>
-
+{% block additional_js %}
 <script>
 let documentoOriginal = '{{ estudiante.documento or "" }}';
 
@@ -283,11 +288,10 @@ function verificarDocumento() {
         });
 }
 
-function updateStudent(event) {
+async function updateStudent(event) {
     event.preventDefault();
     
     const form = document.getElementById('editStudentForm');
-    const formData = new FormData(form);
     const studentId = document.getElementById('studentId').value;
     
     // Validar campos requeridos
@@ -299,7 +303,14 @@ function updateStudent(event) {
     const username = document.getElementById('username').value.trim();
     
     if (!nombres || !apellidos || !documento || !grado || !seccion || !username) {
-        showAlert('Por favor, completa todos los campos requeridos.', 'error');
+        if (window.showWarning) {
+            showWarning('Por favor, completa todos los campos requeridos.', {
+                title: 'Campos Incompletos',
+                duration: 6000
+            });
+        } else {
+            alert('Por favor, completa todos los campos requeridos.');
+        }
         return;
     }
     
@@ -307,102 +318,140 @@ function updateStudent(event) {
     if (documento !== documentoOriginal) {
         const statusDiv = document.getElementById('documentoStatus');
         if (statusDiv.innerHTML.includes('text-danger')) {
-            showAlert('El número de documento ya está registrado en el sistema.', 'error');
+            if (window.showError) {
+                showError('El número de documento ya está registrado en el sistema.', {
+                    title: 'Documento Duplicado',
+                    duration: 6000
+                });
+            } else {
+                alert('El número de documento ya está registrado en el sistema.');
+            }
             return;
         }
     }
     
-    // Mostrar loading
-    showLoading(true);
+    // Mostrar notificación de carga
+    const loadingId = window.showLoading ? showLoading('Actualizando información del estudiante...', {
+        title: 'Guardando Cambios',
+        icon: 'user-edit'
+    }) : null;
     
-    // Preparar datos para enviar
-    const updateData = {
-        nombres: nombres,
-        apellidos: apellidos,
-        tipo_documento: document.getElementById('tipo_documento').value,
-        documento: documento,
-        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-        genero: document.getElementById('genero').value,
-        email: document.getElementById('email').value.trim(),
-        telefono: document.getElementById('telefono').value.trim(),
-        direccion: document.getElementById('direccion').value.trim(),
-        grado: parseInt(grado),
-        seccion: seccion,
-        username: username,
-        activo: document.getElementById('estado').value === 'true'
-    };
+    // Mostrar loading en botón
+    const btnGuardar = document.getElementById('btnGuardar');
+    const originalText = btnGuardar.innerHTML;
+    btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Guardando...';
+    btnGuardar.disabled = true;
     
-    // Agregar nueva contraseña si se proporcionó
-    const nuevaPassword = document.getElementById('nueva_password').value;
-    if (nuevaPassword) {
-        updateData.nueva_password = nuevaPassword;
-    }
-    
-    // Enviar actualización
-    fetch(`/admin/api/estudiantes/${studentId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        showLoading(false);
+    try {
+        // Preparar datos para enviar
+        const updateData = {
+            nombres: nombres,
+            apellidos: apellidos,
+            tipo_documento: document.getElementById('tipo_documento').value,
+            documento: documento,
+            fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+            genero: document.getElementById('genero').value,
+            email: document.getElementById('email').value.trim(),
+            telefono: document.getElementById('telefono').value.trim(),
+            direccion: document.getElementById('direccion').value.trim(),
+            nacionalidad: document.getElementById('nacionalidad').value.trim(),
+            ciudad: document.getElementById('ciudad').value.trim(),
+            barrio: document.getElementById('barrio').value.trim(),
+            grado: parseInt(grado),
+            seccion: seccion,
+            username: username,
+            activo: document.getElementById('estado').value === 'true'
+        };
         
-        if (data.success) {
-            showAlert('Estudiante actualizado exitosamente', 'success');
+        // Agregar nueva contraseña si se proporcionó
+        const nuevaPassword = document.getElementById('nueva_password').value;
+        if (nuevaPassword) {
+            updateData.nueva_password = nuevaPassword;
+        }
+        
+        console.log('📤 Enviando datos de actualización:', updateData);
+        
+        // Enviar actualización
+        const response = await fetch(`/admin/api/estudiantes/${studentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateData)
+        });
+        
+        // Remover notificación de carga
+        if (window.notificationSystem && loadingId) {
+            window.notificationSystem.remove(loadingId);
+        }
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            if (window.showSuccess) {
+                showSuccess(`¡${data.estudiante.nombre} ${data.estudiante.apellido} actualizado exitosamente!`, {
+                    title: '✅ Cambios Guardados',
+                    duration: 6000,
+                    actions: [
+                        {
+                            text: 'Ver Estudiante',
+                            handler: `window.location.href='/admin/estudiantes/${studentId}'`
+                        }
+                    ]
+                });
+            } else {
+                alert('Estudiante actualizado exitosamente');
+            }
             
-            // Redirigir después de 1.5 segundos
+            // Redirigir después de 2 segundos
             setTimeout(() => {
                 window.location.href = `/admin/estudiantes/${studentId}`;
-            }, 1500);
+            }, 2000);
         } else {
-            showAlert(data.error || 'Error al actualizar el estudiante', 'error');
+            throw new Error(data.error || 'Error al actualizar el estudiante');
         }
-    })
-    .catch(error => {
-        showLoading(false);
-        console.error('Error:', error);
-        showAlert('Error de conexión. Inténtalo de nuevo.', 'error');
-    });
-}
-
-function showLoading(show) {
-    const overlay = document.getElementById('loadingOverlay');
-    const btnGuardar = document.getElementById('btnGuardar');
-    
-    if (show) {
-        overlay.classList.remove('d-none');
-        btnGuardar.disabled = true;
-        btnGuardar.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Guardando...';
-    } else {
-        overlay.classList.add('d-none');
+    } catch (error) {
+        // Remover notificación de carga si existe
+        if (window.notificationSystem && loadingId) {
+            window.notificationSystem.remove(loadingId);
+        }
+        
+        console.error('❌ Error:', error);
+        
+        let errorMessage = error.message;
+        let errorTitle = 'Error al Actualizar';
+        
+        // Manejar errores específicos
+        if (error.message.includes('documento ya está registrado')) {
+            errorMessage = 'Este número de documento ya está registrado para otro estudiante';
+            errorTitle = 'Documento Duplicado';
+        } else if (error.message.includes('username ya está en uso')) {
+            errorMessage = 'Este nombre de usuario ya está en uso';
+            errorTitle = 'Username Duplicado';
+        } else if (error.message.includes('email ya está registrado')) {
+            errorMessage = 'Este correo electrónico ya está registrado';
+            errorTitle = 'Email Duplicado';
+        }
+        
+        if (window.showError) {
+            showError(errorMessage, {
+                title: errorTitle,
+                duration: 8000,
+                actions: [
+                    {
+                        text: 'Reintentar',
+                        handler: 'updateStudent(event)'
+                    }
+                ]
+            });
+        } else {
+            alert('Error: ' + errorMessage);
+        }
+    } finally {
+        // Restaurar botón siempre
+        btnGuardar.innerHTML = originalText;
         btnGuardar.disabled = false;
-        btnGuardar.innerHTML = '<i class="fas fa-save me-1"></i> Guardar Cambios';
     }
-}
-
-function showAlert(message, type) {
-    // Crear alert dinámico
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    // Insertar al inicio del contenido
-    const container = document.querySelector('.container-fluid');
-    container.insertBefore(alertDiv, container.firstChild);
-    
-    // Auto-remove después de 5 segundos
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
-    }, 5000);
 }
 
 // Auto-generar username basado en nombres y apellidos
@@ -442,12 +491,19 @@ document.getElementById('fecha_nacimiento').addEventListener('change', function(
     const hoy = new Date();
     
     if (fechaNacimiento > hoy) {
-        showAlert('La fecha de nacimiento no puede ser futura', 'error');
+        if (window.showWarning) {
+            showWarning('La fecha de nacimiento no puede ser futura', {
+                title: 'Fecha Inválida',
+                duration: 4000
+            });
+        } else {
+            alert('La fecha de nacimiento no puede ser futura');
+        }
         this.value = '';
         return;
     }
     
-    const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
     const mes = hoy.getMonth() - fechaNacimiento.getMonth();
     
     if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
@@ -456,18 +512,258 @@ document.getElementById('fecha_nacimiento').addEventListener('change', function(
     
     // Mostrar edad calculada
     if (edad >= 0 && edad < 100) {
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'form-text text-info';
-        statusDiv.innerHTML = `<i class="fas fa-birthday-cake me-1"></i>Edad: ${edad} años`;
-        
         // Remover mensaje anterior si existe
-        const existingStatus = this.parentNode.querySelector('.form-text');
+        const existingStatus = this.parentNode.querySelector('.edad-info');
         if (existingStatus) {
             existingStatus.remove();
         }
         
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'form-text text-info edad-info';
+        statusDiv.innerHTML = `<i class="fas fa-birthday-cake me-1"></i>Edad: ${edad} años`;
+        
         this.parentNode.appendChild(statusDiv);
     }
 });
+
+// Funciones fallback para notificaciones si el sistema unificado no está disponible
+if (typeof showNotification === 'undefined') {
+    window.showNotification = function(message, type) {
+        alert(message);
+    };
+    window.showSuccess = function(message) {
+        alert(message);
+    };
+    window.showError = function(message) {
+        alert(message);
+    };
+    window.showWarning = function(message) {
+        alert(message);
+    };
+    window.showLoading = function(message) {
+        console.log('Loading:', message);
+        return null;
+    };
+}
+
+// Validación de formulario en tiempo real
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editStudentForm');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('input', function() {
+            // Remover clases de error mientras el usuario escribe
+            this.classList.remove('is-invalid');
+        });
+    });
+});
+
+function validateField(field) {
+    const value = field.value.trim();
+    const isValid = value !== '';
+    
+    if (isValid) {
+        field.classList.remove('is-invalid');
+        field.classList.add('is-valid');
+    } else {
+        field.classList.remove('is-valid');
+        field.classList.add('is-invalid');
+    }
+    
+    return isValid;
+}
 </script>
+
+<style>
+/* Estilos específicos para el formulario de edición */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(142, 45, 226, 0.05), rgba(74, 0, 224, 0.02));
+    border-bottom: 1px solid rgba(142, 45, 226, 0.1);
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.25rem;
+}
+
+.card-title {
+    color: var(--primary-color, #8E2DE2);
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color, #8E2DE2);
+    box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.15);
+    outline: none;
+}
+
+.form-control.is-valid {
+    border-color: #10B981;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.form-control.is-invalid {
+    border-color: #EF4444;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color, #8E2DE2), #4A00E0);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(142, 45, 226, 0.3);
+}
+
+.btn-secondary {
+    border: 2px solid #6B7280;
+    color: #6B7280;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #6B7280;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.text-danger {
+    color: #EF4444 !important;
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05));
+    color: #1E40AF;
+    border-left: 4px solid #3B82F6;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+    color: #92400E;
+    border-left: 4px solid #F59E0B;
+}
+
+.badge {
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #10B981, #059669) !important;
+}
+
+.bg-danger {
+    background: linear-gradient(135deg, #EF4444, #DC2626) !important;
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color, #8E2DE2);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: #6B7280;
+}
+
+/* Animaciones suaves */
+.card {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive mejoras */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+    }
+    
+    .col-md-6, .col-md-4, .col-md-8 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Estados de carga */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Efectos de hover en tarjetas */
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+</style>
 {% endblock %}

@@ -298,6 +298,157 @@ def calificaciones_chart():
 # RUTAS API PARA ESTUDIANTES
 # ============================================
 
+@admin_bp.route('/api/estudiantes/<int:id>', methods=['PUT'])
+@login_required
+def api_actualizar_estudiante(id):
+    """API endpoint para actualizar estudiante existente"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        # Buscar el estudiante
+        estudiante = Usuario.query.filter_by(id=id, rol='alumno').first()
+        if not estudiante:
+            return jsonify({'error': 'Estudiante no encontrado'}), 404
+        
+        # Obtener datos
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No se recibieron datos en el cuerpo de la petición'}), 400
+            
+        print(f"📝 Actualizando estudiante ID {id}: {data}")  # Debug
+            
+        # Validar campos requeridos
+        campos_requeridos = ['nombres', 'apellidos', 'documento', 'grado', 'seccion', 'username']
+        campos_faltantes = [campo for campo in campos_requeridos if not data.get(campo)]
+        if campos_faltantes:
+            return jsonify({
+                'error': f'Campos requeridos faltantes: {", ".join(campos_faltantes)}'
+            }), 400
+            
+        # Validar grado
+        try:
+            grado = int(data['grado'])
+            if grado < 1 or grado > 11:
+                return jsonify({'error': 'El grado debe estar entre 1 y 11'}), 400
+        except (ValueError, TypeError):
+            return jsonify({'error': 'El grado debe ser un número válido'}), 400
+            
+        # Verificar si el documento ya existe (excluyendo el estudiante actual)
+        if data['documento'] != estudiante.documento:
+            documento_existente = Usuario.query.filter(
+                Usuario.documento == data['documento'],
+                Usuario.id != id
+            ).first()
+            if documento_existente:
+                return jsonify({
+                    'error': f'El número de documento {data["documento"]} ya está registrado para otro usuario'
+                }), 400
+        
+        # Verificar si el username ya existe (excluyendo el estudiante actual)
+        if data['username'] != estudiante.username:
+            username_existente = Usuario.query.filter(
+                Usuario.username == data['username'],
+                Usuario.id != id
+            ).first()
+            if username_existente:
+                return jsonify({
+                    'error': f'El username {data["username"]} ya está en uso'
+                }), 400
+        
+        # Verificar si el email ya existe (excluyendo el estudiante actual)
+        email_nuevo = data.get('email', '').strip()
+        if email_nuevo and email_nuevo != estudiante.email:
+            email_existente = Usuario.query.filter(
+                Usuario.email == email_nuevo,
+                Usuario.id != id
+            ).first()
+            if email_existente:
+                return jsonify({
+                    'error': f'El email {email_nuevo} ya está registrado'
+                }), 400
+        
+        try:
+            # Actualizar campos básicos
+            estudiante.nombre = data['nombres']
+            estudiante.apellido = data['apellidos']
+            estudiante.documento = data['documento']
+            estudiante.tipo_documento = data.get('tipo_documento', 'CC')
+            estudiante.grado = grado
+            estudiante.seccion = data['seccion']
+            estudiante.username = data['username']
+            estudiante.activo = data.get('activo', True)
+            
+            # Actualizar campos opcionales
+            estudiante.genero = data.get('genero', '')
+            estudiante.telefono = data.get('telefono', '')
+            estudiante.direccion = data.get('direccion', '')
+            estudiante.nacionalidad = data.get('nacionalidad', '')
+            estudiante.estrato = data.get('estrato', '')
+            estudiante.ciudad = data.get('ciudad', '')
+            estudiante.barrio = data.get('barrio', '')
+            
+            # Actualizar email si se proporciona
+            if email_nuevo:
+                estudiante.email = email_nuevo
+            elif not estudiante.email:
+                # Generar email único si no tiene uno
+                base_email = f"estudiante.{estudiante.documento}@educontrol.local"
+                email_final = base_email
+                counter = 1
+                while Usuario.query.filter_by(email=email_final).first():
+                    email_final = f"estudiante.{estudiante.documento}.{counter}@educontrol.local"
+                    counter += 1
+                estudiante.email = email_final
+            
+            # Actualizar fecha de nacimiento si se proporciona
+            if data.get('fecha_nacimiento'):
+                try:
+                    fecha_nacimiento_obj = datetime.strptime(data['fecha_nacimiento'], '%Y-%m-%d').date()
+                    estudiante.fecha_nacimiento = fecha_nacimiento_obj
+                except ValueError:
+                    return jsonify({'error': 'Formato de fecha inválido. Use YYYY-MM-DD'}), 400
+            
+            # Actualizar contraseña si se proporciona
+            if data.get('nueva_password'):
+                estudiante.set_password(data['nueva_password'])
+                print(f"🔐 Contraseña actualizada para estudiante {estudiante.username}")
+            
+            # Guardar en base de datos
+            db.session.commit()
+            
+            print(f"✅ Estudiante {estudiante.nombre} {estudiante.apellido} actualizado exitosamente")
+            
+            return jsonify({
+                'success': True,
+                'message': f'Estudiante {estudiante.nombre} {estudiante.apellido} actualizado exitosamente',
+                'estudiante': {
+                    'id': estudiante.id,
+                    'nombre': estudiante.nombre,
+                    'apellido': estudiante.apellido,
+                    'username': estudiante.username,
+                    'email': estudiante.email,
+                    'documento': estudiante.documento,
+                    'grado': estudiante.grado,
+                    'seccion': estudiante.seccion,
+                    'activo': estudiante.activo
+                }
+            }), 200
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"❌ Error al actualizar el estudiante: {str(e)}")
+            return jsonify({
+                'error': f'Error al actualizar el estudiante: {str(e)}'
+            }), 500
+            
+    except Exception as e:
+        print(f"❌ Error general: {str(e)}")
+        return jsonify({
+            'error': 'Error interno del servidor',
+            'details': str(e)
+        }), 500
+
 @admin_bp.route('/api/estudiantes')
 @login_required
 def api_estudiantes():
@@ -955,6 +1106,8 @@ def editar_estudiante(id):
         return redirect(url_for('admin.dashboard'))
     
     estudiante = Usuario.query.filter_by(id=id, rol='alumno').first_or_404()
+    
+    return render_template('admin/editar_estudiante.html', estudiante=estudiante)
     return render_template('admin/editar_estudiante.html', estudiante=estudiante)
 
 @admin_bp.route('/estudiantes/exportar')

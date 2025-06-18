@@ -1,0 +1,362 @@
+{% extends "admin/base_admin.html" %}
+
+{% block title %}Docentes - EduControl{% endblock %}
+
+{% block page_title %}Gestión de Docentes{% endblock %}
+
+{% block breadcrumb %}
+<i class="fas fa-chevron-right"></i>
+<span>Usuarios</span>
+<i class="fas fa-chevron-right"></i>
+<span>Docentes</span>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <!-- Estadísticas Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-primary">
+                    <div class="card-body">
+                        <i class="fas fa-chalkboard-teacher fa-2x text-primary mb-3"></i>
+                        <h4 class="card-title text-primary" id="totalDocentes">0</h4>
+                        <p class="card-text text-muted">Total Docentes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-success">
+                    <div class="card-body">
+                        <i class="fas fa-user-check fa-2x text-success mb-3"></i>
+                        <h4 class="card-title text-success" id="docentesActivos">0</h4>
+                        <p class="card-text text-muted">Activos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-warning">
+                    <div class="card-body">
+                        <i class="fas fa-user-clock fa-2x text-warning mb-3"></i>
+                        <h4 class="card-title text-warning" id="docentesInactivos">0</h4>
+                        <p class="card-text text-muted">Inactivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-info">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x text-info mb-3"></i>
+                        <h4 class="card-title text-info" id="docentesRetirados">0</h4>
+                        <p class="card-text text-muted">Retirados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-filter me-2"></i>
+                    Filtros de Búsqueda
+                </h5>
+            </div>
+            <div class="card-body">
+                <form class="row g-4" id="filtrosForm">
+                    <div class="col-md-3">
+                        <label for="busqueda" class="form-label">Buscar</label>
+                        <div class="input-group position-relative">
+                            <input type="text" class="form-control" id="busqueda" placeholder="Nombre o documento...">
+                            <button class="btn btn-outline-secondary" type="button" onclick="aplicarFiltros()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <!-- Indicador de búsqueda -->
+                            <div class="search-indicator d-none" id="searchIndicator">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                        <!-- Mensaje de resultados -->
+                        <small class="text-muted d-none" id="searchResults"></small>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="asignatura" class="form-label">Asignatura</label>
+                        <select class="form-select" id="asignatura">
+                            <option value="">Todas las asignaturas</option>
+                            <!-- Las opciones se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="grado" class="form-label">Grado</label>
+                        <select class="form-select" id="grado">
+                            <option value="">Todos los grados</option>
+                            <option value="1">1°</option>
+                            <option value="2">2°</option>
+                            <option value="3">3°</option>
+                            <option value="4">4°</option>
+                            <option value="5">5°</option>
+                            <option value="6">6°</option>
+                            <option value="7">7°</option>
+                            <option value="8">8°</option>
+                            <option value="9">9°</option>
+                            <option value="10">10°</option>
+                            <option value="11">11°</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select class="form-select" id="estado">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="retirado">Retirado</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-primary" onclick="aplicarFiltros()">
+                                <i class="fas fa-search me-2"></i>
+                                Buscar
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">
+                                <i class="fas fa-eraser me-2"></i>
+                                Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista de Docentes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>
+                        Lista de Docentes
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" onclick="exportarDocentes()">
+                            <i class="fas fa-file-excel me-2"></i>
+                            Exportar
+                        </button>
+                        <button class="btn btn-info" onclick="importarDocentes()">
+                            <i class="fas fa-file-import me-2"></i>
+                            Importar
+                        </button>
+                        <a href="{{ url_for('admin.docentes_nuevo') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Nuevo Docente
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Loading indicator -->
+                <div id="loadingIndicator" class="text-center py-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Cargando docentes...</p>
+                </div>
+
+                <!-- Tabla de docentes -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
+                                <th>Docente</th>
+                                <th>Documento</th>
+                                <th>Asignatura</th>
+                                <th>Grado</th>
+                                <th>Estado</th>
+                                <th>Fecha de Ingreso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docentes-table">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <nav aria-label="Paginación de docentes" class="mt-4">
+                    <ul class="pagination justify-content-center" id="paginacion">
+                        <!-- Se genera dinámicamente -->
+                    </ul>
+                </nav>
+
+                <!-- Mensaje cuando no hay datos -->
+                <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No hay docentes registrados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
+<script>
+// Función para cargar datos iniciales
+function cargarDatosIniciales() {
+    // Cargar estadísticas
+    fetch('/admin/api/docentes/estadisticas')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalDocentes').textContent = data.total;
+            document.getElementById('docentesActivos').textContent = data.activos;
+            document.getElementById('docentesInactivos').textContent = data.inactivos;
+            document.getElementById('docentesRetirados').textContent = data.retirados;
+        });
+
+    // Cargar asignaturas para el filtro
+    fetch('/admin/api/asignaturas')
+        .then(response => response.json())
+        .then(data => {
+            const asignaturaSelect = document.getElementById('asignatura');
+            data.asignaturas.forEach(asignatura => {
+                const option = document.createElement('option');
+                option.value = asignatura.id;
+                option.textContent = asignatura.nombre;
+                asignaturaSelect.appendChild(option);
+            });
+        });
+}
+
+// Función para aplicar filtros
+function aplicarFiltros() {
+    const filtros = {
+        busqueda: document.getElementById('busqueda').value,
+        asignatura: document.getElementById('asignatura').value,
+        grado: document.getElementById('grado').value,
+        estado: document.getElementById('estado').value
+    };
+
+    cargarDocentes(filtros);
+}
+
+// Función para cargar docentes
+function cargarDocentes(filtros = {}) {
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const tabla = document.getElementById('docentes-table');
+    const noDataMessage = document.getElementById('noDataMessage');
+
+    loadingIndicator.style.display = 'block';
+    tabla.innerHTML = '';
+    noDataMessage.style.display = 'none';
+
+    fetch('/admin/api/docentes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(filtros)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.docentes.length === 0) {
+            noDataMessage.style.display = 'block';
+        }
+
+        data.docentes.forEach(docente => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>${docente.nombre} ${docente.apellido}</td>
+                <td>${docente.documento}</td>
+                <td>${docente.asignatura || 'Sin asignatura'}</td>
+                <td>${docente.grado || 'Sin asignar'}</td>
+                <td>
+                    <span class="badge bg-${docente.estado === 'activo' ? 'success' : 
+                                    docente.estado === 'inactivo' ? 'warning' : 'danger'}">
+                        ${docente.estado}
+                    </span>
+                </td>
+                <td>${docente.fecha_ingreso}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="${url_for('admin.ver_docente', {'id': docente.id})}" 
+                           class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="${url_for('admin.editar_docente', {'id': docente.id})}" 
+                           class="btn btn-sm btn-primary">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <button type="button" 
+                                class="btn btn-sm btn-danger" 
+                                onclick="eliminarDocente(${docente.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            `;
+            tabla.appendChild(row);
+        });
+
+        // Actualizar paginación
+        actualizarPaginacion(data.paginacion);
+    })
+    .catch(error => {
+        console.error('Error al cargar docentes:', error);
+        showNotification('Error al cargar los docentes', 'error');
+    })
+    .finally(() => {
+        loadingIndicator.style.display = 'none';
+    });
+}
+
+// Función para limpiar filtros
+function limpiarFiltros() {
+    document.getElementById('busqueda').value = '';
+    document.getElementById('asignatura').value = '';
+    document.getElementById('grado').value = '';
+    document.getElementById('estado').value = '';
+    aplicarFiltros();
+}
+
+// Función para exportar docentes
+function exportarDocentes() {
+    window.location.href = '/admin/docentes/exportar';
+}
+
+// Función para importar docentes
+function importarDocentes() {
+    window.location.href = '/admin/docentes/importar';
+}
+
+// Función para eliminar docente
+function eliminarDocente(id) {
+    if (confirm('¿Está seguro de que desea eliminar este docente?')) {
+        fetch(`/admin/api/docentes/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                showNotification('Docente eliminado exitosamente', 'success');
+                cargarDocentes();
+            } else {
+                throw new Error('Error al eliminar el docente');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al eliminar el docente', 'error');
+        });
+    }
+}
+
+// Función para actualizar paginación
+document.addEventListener('DOMContentLoaded', () => {
+    cargarDatosIniciales();
+    cargarDocentes();
+});
+</script>
+{% endblock %}
