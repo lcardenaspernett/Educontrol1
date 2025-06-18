@@ -16,267 +16,336 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <!-- Indicador de progreso -->
-        <div class="card mb-4">
+        <!-- Indicador de progreso mejorado -->
+        <div class="card mb-4 progress-card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-0">Progreso del Registro</h6>
-                    <span class="text-muted">Paso <span id="pasoActual">1</span> de 3</span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0 fw-bold text-primary">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Progreso del Registro
+                    </h6>
+                    <span class="badge bg-primary">Paso <span id="pasoActual">1</span> de 3</span>
                 </div>
-                <div class="progress mt-2" style="height: 8px;">
-                    <div class="progress-bar" role="progressbar" style="width: 33%" id="barraProgreso"></div>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <small class="text-primary fw-bold" id="etiqueta1">Datos Básicos</small>
-                    <small class="text-muted" id="etiqueta2">Información Académica</small>
-                    <small class="text-muted" id="etiqueta3">Datos Adicionales</small>
+                <div class="progress-container">
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar progress-bar-animated" role="progressbar" style="width: 33%" id="barraProgreso"></div>
+                    </div>
+                    <div class="progress-labels">
+                        <div class="progress-step active" id="step1">
+                            <div class="step-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <small class="step-label">Datos Básicos</small>
+                        </div>
+                        <div class="progress-step" id="step2">
+                            <div class="step-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <small class="step-label">Información Académica</small>
+                        </div>
+                        <div class="progress-step" id="step3">
+                            <div class="step-icon">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <small class="step-label">Datos Adicionales</small>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Formulario Multi-paso -->
-        <div class="card">
-            <div class="card-header">
+        <!-- Formulario Multi-paso mejorado -->
+        <div class="card form-card">
+            <div class="card-header form-header">
                 <h5 class="card-title mb-0">
                     <i class="fas fa-user-plus me-2"></i>
                     Registro de Nuevo Estudiante
                 </h5>
+                <p class="text-muted mb-0 mt-2">Complete todos los pasos para registrar un nuevo estudiante en el sistema</p>
             </div>
             <div class="card-body">
                 <form id="nuevo-estudiante-form" novalidate>
                     <!-- PASO 1: DATOS BÁSICOS -->
-                    <div class="paso-form" id="paso1">
-                        <div class="form-header-section">
-                            <h6>
+                    <div class="paso-form paso-visible" id="paso1">
+                        <div class="section-header">
+                            <div class="section-icon">
                                 <i class="fas fa-user"></i>
-                                Información Personal
-                            </h6>
+                            </div>
+                            <div>
+                                <h5 class="section-title">Información Personal</h5>
+                                <p class="section-subtitle">Datos básicos del estudiante</p>
+                            </div>
                         </div>
                         
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="nombres" class="form-label">
-                                        <i class="fas fa-user"></i>
-                                        Nombres <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="text" class="form-control" id="nombres" required
-                                               placeholder="Ingrese los nombres">
-                                        <span class="validation-icon"></span>
+                        <!-- Nombres -->
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-id-badge me-2"></i>
+                                Nombres y Apellidos
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="primer_nombre" required
+                                               placeholder="Primer nombre">
+                                        <label for="primer_nombre">
+                                            Primer Nombre <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
-                                        Por favor ingrese los nombres del estudiante.
+                                        Por favor ingrese el primer nombre del estudiante.
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="segundo_nombre"
+                                               placeholder="Segundo nombre">
+                                        <label for="segundo_nombre">Segundo Nombre <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="documento" class="form-label">
-                                        <i class="fas fa-hashtag"></i>
-                                        Número de Documento <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="text" class="form-control" id="documento" required
-                                               placeholder="Ingrese el número de documento">
-                                        <span class="validation-icon"></span>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="primer_apellido" required
+                                               placeholder="Primer apellido">
+                                        <label for="primer_apellido">
+                                            Primer Apellido <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
-                                        Por favor ingrese un número de documento válido.
+                                        Por favor ingrese el primer apellido del estudiante.
                                     </div>
-                                    <div id="documento-exists" class="warning-alert" style="display: none;">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        Este documento ya está registrado para: Luis Cardenas
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="segundo_apellido"
+                                               placeholder="Segundo apellido">
+                                        <label for="segundo_apellido">Segundo Apellido <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="apellidos" class="form-label">
-                                        <i class="fas fa-user"></i>
-                                        Apellidos <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="text" class="form-control" id="apellidos" required
-                                               placeholder="Ingrese los apellidos">
-                                        <span class="validation-icon"></span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese los apellidos del estudiante.
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="fecha_nacimiento" class="form-label">
-                                        <i class="fas fa-calendar"></i>
-                                        Fecha de Nacimiento <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="date" class="form-control" id="fecha_nacimiento" required
-                                               oninput="limitarAnio(this)">
-                                        <span class="validation-icon"></span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese una fecha de nacimiento válida.
-                                    </div>
-                                    <small class="form-text text-muted">
-                                        Edad calculada: <span id="edad-calculada">--</span> años
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tipo_documento" class="form-label">
-                                        <i class="fas fa-id-card"></i>
-                                        Tipo de Documento <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
+                        <!-- Documentos -->
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-id-card me-2"></i>
+                                Documento de Identidad
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <select class="form-select" id="tipo_documento" required>
-                                            <option value="">Seleccionar tipo</option>
+                                            <option value="">Seleccionar</option>
                                             <option value="TI">Tarjeta de Identidad</option>
                                             <option value="CC">Cédula de Ciudadanía</option>
                                             <option value="CE">Cédula de Extranjería</option>
                                             <option value="RC">Registro Civil</option>
                                             <option value="PA">Pasaporte</option>
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="tipo_documento">Tipo de Documento <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor seleccione el tipo de documento.
                                     </div>
                                 </div>
+                                
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="documento" required
+                                               placeholder="Número de documento">
+                                        <label for="documento">Número de Documento <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese un número de documento válido.
+                                    </div>
+                                    <div id="documento-exists" class="documento-warning" style="display: none;">
+                                        <div class="alert alert-warning alert-sm mt-2">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Este documento ya está registrado para: <strong><span id="documento-usuario"></span></strong>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="genero" class="form-label">
-                                        <i class="fas fa-venus-mars"></i>
-                                        Género <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
+                        </div>
+
+                        <!-- Información personal -->
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Información Personal
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fecha_nacimiento" required
+                                               oninput="limitarAnio(this)">
+                                        <label for="fecha_nacimiento">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese una fecha de nacimiento válida.
+                                    </div>
+                                    <div class="age-display">
+                                        <small class="text-muted">
+                                            <i class="fas fa-birthday-cake me-1"></i>
+                                            Edad: <span id="edad-calculada" class="fw-bold">--</span> años
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <select class="form-select" id="genero" required>
-                                            <option value="">Seleccionar género</option>
+                                            <option value="">Seleccionar</option>
                                             <option value="M">Masculino</option>
                                             <option value="F">Femenino</option>
                                             <option value="O">Otro</option>
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="genero">Género <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor seleccione el género.
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="nacionalidad" required>
+                                            <option value="">Seleccionar</option>
+                                            <option value="Colombiana">Colombiana</option>
+                                            <option value="Venezolana">Venezolana</option>
+                                            <option value="Ecuatoriana">Ecuatoriana</option>
+                                            <option value="Peruana">Peruana</option>
+                                            <option value="Brasileña">Brasileña</option>
+                                            <option value="Argentina">Argentina</option>
+                                            <option value="Chilena">Chilena</option>
+                                            <option value="Estadounidense">Estadounidense</option>
+                                            <option value="Española">Española</option>
+                                            <option value="Italiana">Italiana</option>
+                                            <option value="Francesa">Francesa</option>
+                                            <option value="Alemana">Alemana</option>
+                                            <option value="Haitiana">Haitiana</option>
+                                            <option value="Cubana">Cubana</option>
+                                            <option value="Otra">Otra</option>
+                                        </select>
+                                        <label for="nacionalidad">Nacionalidad <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor seleccione la nacionalidad.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="telefono" class="form-label">
-                                        <i class="fas fa-phone"></i>
-                                        Teléfono
-                                    </label>
-                                    <div class="input-with-validation">
+                        <!-- Contacto -->
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-phone me-2"></i>
+                                Información de Contacto
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <input type="tel" class="form-control" id="telefono"
-                                               placeholder="Ej: 3001234567">
-                                        <span class="validation-icon"></span>
+                                               placeholder="Número de teléfono">
+                                        <label for="telefono">Teléfono <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor ingrese un número de teléfono válido.
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">
-                                        <i class="fas fa-envelope"></i>
-                                        Correo Electrónico
-                                    </label>
-                                    <div class="input-with-validation">
+                                
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <input type="email" class="form-control" id="email"
-                                               placeholder="estudiante@ejemplo.com">
-                                        <span class="validation-icon"></span>
+                                               placeholder="Correo electrónico">
+                                        <label for="email">Correo Electrónico <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor ingrese un correo electrónico válido.
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="estrato" required>
+                                            <option value="">Seleccionar</option>
+                                            <option value="1">Estrato 1 - Bajo-Bajo</option>
+                                            <option value="2">Estrato 2 - Bajo</option>
+                                            <option value="3">Estrato 3 - Medio-Bajo</option>
+                                            <option value="4">Estrato 4 - Medio</option>
+                                            <option value="5">Estrato 5 - Medio-Alto</option>
+                                            <option value="6">Estrato 6 - Alto</option>
+                                        </select>
+                                        <label for="estrato">Estrato Socioeconómico <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor seleccione el estrato socioeconómico.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Campos de ubicación -->
-                        <div class="location-fields">
-                            <div class="form-header-section">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-map-marked-alt"></i>
-                                    Ubicación
-                                </h5>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="ciudad" class="form-label">
-                                            <i class="fas fa-city"></i>
-                                            Ciudad <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-with-validation">
-                                            <select class="form-select" id="ciudad" required onchange="cargarBarrios()">
-                                                <option value="">Seleccionar ciudad</option>
-                                                <option value="Barranquilla">Barranquilla</option>
-                                                <option value="Soledad">Soledad</option>
-                                            </select>
-                                            <span class="validation-icon"></span>
-                                        </div>
-                                        <div class="invalid-feedback">
-                                            Por favor seleccione la ciudad.
-                                        </div>
+                        <!-- Ubicación -->
+                        <div class="form-section location-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-map-marked-alt me-2"></i>
+                                Ubicación
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="ciudad" required onchange="cargarBarrios()">
+                                            <option value="">Seleccionar</option>
+                                            <option value="Barranquilla">Barranquilla</option>
+                                            <option value="Soledad">Soledad</option>
+                                        </select>
+                                        <label for="ciudad">Ciudad <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor seleccione la ciudad.
                                     </div>
                                 </div>
                                 
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label for="barrio" class="form-label">
-                                            <i class="fas fa-map-marked-alt"></i>
-                                            Barrio <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-with-validation">
-                                            <select class="form-select" id="barrio" required disabled>
-                                                <option value="">Primero seleccione una ciudad</option>
-                                            </select>
-                                            <span class="validation-icon"></span>
-                                        </div>
-                                        <div class="invalid-feedback">
-                                            Por favor seleccione el barrio.
-                                        </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="barrio" required disabled>
+                                            <option value="">Primero seleccione una ciudad</option>
+                                        </select>
+                                        <label for="barrio">Barrio <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor seleccione el barrio.
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="mb-3">
-                                        <label for="direccion" class="form-label">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                            Dirección <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-with-validation">
-                                            <input type="text" class="form-control" id="direccion" required>
-                                            <span class="validation-icon"></span>
-                                        </div>
-                                        <div class="invalid-feedback">
-                                            Por favor ingrese la dirección completa.
-                                        </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="direccion" required
+                                               placeholder="Dirección completa">
+                                        <label for="direccion">Dirección <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                    <div class="invalid-feedback">
+                                        Por favor ingrese la dirección completa.
                                     </div>
                                 </div>
                             </div>
@@ -284,24 +353,27 @@
                     </div>
 
                     <!-- PASO 2: INFORMACIÓN ACADÉMICA -->
-                    <div class="paso-form" id="paso2" style="display: none;">
-                        <div class="form-header-section">
-                            <h6>
+                    <div class="paso-form paso-hidden" id="paso2">
+                        <div class="section-header">
+                            <div class="section-icon">
                                 <i class="fas fa-graduation-cap"></i>
-                                Información Académica
-                            </h6>
+                            </div>
+                            <div>
+                                <h5 class="section-title">Información Académica</h5>
+                                <p class="section-subtitle">Datos relacionados con los estudios</p>
+                            </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="grado" class="form-label">
-                                        <i class="fas fa-layer-group"></i>
-                                        Grado <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-school me-2"></i>
+                                Asignación Académica
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <select class="form-select" id="grado" required>
-                                            <option value="">Seleccionar grado</option>
+                                            <option value="">Seleccionar</option>
                                             <option value="1">1° - Primero</option>
                                             <option value="2">2° - Segundo</option>
                                             <option value="3">3° - Tercero</option>
@@ -314,136 +386,133 @@
                                             <option value="10">10° - Décimo</option>
                                             <option value="11">11° - Once</option>
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="grado">Grado <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor seleccione el grado.
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="seccion" class="form-label">
-                                        <i class="fas fa-users"></i>
-                                        Sección <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <select class="form-select" id="seccion" required>
-                                            <option value="">Seleccionar sección</option>
+                                            <option value="">Seleccionar</option>
                                             <option value="A">A</option>
                                             <option value="B">B</option>
                                             <option value="C">C</option>
                                             <option value="D">D</option>
                                             <option value="E">E</option>
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="seccion">Sección <span class="text-danger">*</span></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                     <div class="invalid-feedback">
                                         Por favor seleccione la sección.
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="fecha_ingreso" class="form-label">
-                                        <i class="fas fa-calendar-plus"></i>
-                                        Fecha de Ingreso <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="date" class="form-control" id="fecha_ingreso" required>
-                                        <span class="validation-icon"></span>
-                                    </div>
-                                    <div class="invalid-feedback">
-                                        Por favor ingrese la fecha de ingreso.
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fecha_ingreso">
+                                        <label for="fecha_ingreso">Fecha de Ingreso <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="institucion_anterior" class="form-label">
-                                        <i class="fas fa-school"></i>
-                                        Institución Anterior
-                                    </label>
-                                    <div class="input-with-validation">
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-history me-2"></i>
+                                Historial Académico
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-8">
+                                    <div class="form-floating">
                                         <input type="text" class="form-control" id="institucion_anterior"
                                                placeholder="Nombre de la institución anterior">
-                                        <span class="validation-icon"></span>
+                                        <label for="institucion_anterior">Institución Anterior <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="promedio_anterior" class="form-label">
-                                        <i class="fas fa-chart-line"></i>
-                                        Promedio Anterior
-                                    </label>
-                                    <div class="input-with-validation">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <input type="number" class="form-control" id="promedio_anterior" 
-                                               min="1" max="5" step="0.1" placeholder="Ej: 4.2">
-                                        <span class="validation-icon"></span>
+                                               min="1" max="5" step="0.1" placeholder="Promedio">
+                                        <label for="promedio_anterior">Promedio Anterior <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="observaciones_academicas" class="form-label">
-                                <i class="fas fa-sticky-note"></i>
-                                Observaciones Académicas
-                            </label>
-                            <div class="input-with-validation">
-                                <textarea class="form-control" id="observaciones_academicas" rows="3"
-                                          placeholder="Información adicional sobre el rendimiento académico del estudiante"></textarea>
-                                <span class="validation-icon"></span>
+                            <div class="mt-3">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="observaciones_academicas" rows="3"
+                                              placeholder="Observaciones académicas" style="height: 120px;"></textarea>
+                                    <label for="observaciones_academicas">Observaciones Académicas <small class="text-muted">(Opcional)</small></label>
+                                    <div class="validation-icon"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- PASO 3: DATOS ADICIONALES -->
-                    <div class="paso-form" id="paso3" style="display: none;">
-                        <div class="form-header-section">
-                            <h6>
+                    <div class="paso-form paso-hidden" id="paso3">
+                        <div class="section-header">
+                            <div class="section-icon">
                                 <i class="fas fa-clipboard-list"></i>
-                                Información Adicional
-                            </h6>
+                            </div>
+                            <div>
+                                <h5 class="section-title">Información Adicional</h5>
+                                <p class="section-subtitle">Datos complementarios del estudiante</p>
+                            </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="acudiente" class="form-label">
-                                        <i class="fas fa-user-shield"></i>
-                                        Acudiente Principal
-                                    </label>
-                                    <div class="input-with-validation">
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-user-shield me-2"></i>
+                                Acudiente y Contacto de Emergencia
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
                                         <select class="form-select" id="acudiente">
-                                            <option value="">Seleccionar acudiente</option>
+                                            <option value="">Seleccionar acudiente (opcional)</option>
                                             <!-- Se cargarán dinámicamente -->
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="acudiente">Acudiente Principal <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
-                                    <small class="form-text text-muted">
+                                    <small class="form-text text-muted mt-1">
+                                        <i class="fas fa-info-circle me-1"></i>
                                         Si no aparece en la lista, 
-                                        <a href="#" onclick="abrirModalAcudiente()">registre un nuevo acudiente</a>
+                                        <a href="#" onclick="abrirModalAcudiente()" class="text-decoration-none">registre un nuevo acudiente</a>
                                     </small>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="tipo_sangre" class="form-label">
-                                        <i class="fas fa-tint"></i>
-                                        Tipo de Sangre
-                                    </label>
-                                    <div class="input-with-validation">
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="contacto_emergencia"
+                                               placeholder="Teléfono de emergencia">
+                                        <label for="contacto_emergencia">Contacto de Emergencia <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-heart me-2"></i>
+                                Información de Salud
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
                                         <select class="form-select" id="tipo_sangre">
-                                            <option value="">Seleccionar tipo</option>
+                                            <option value="">Seleccionar</option>
                                             <option value="A+">A+</option>
                                             <option value="A-">A-</option>
                                             <option value="B+">B+</option>
@@ -453,109 +522,99 @@
                                             <option value="O+">O+</option>
                                             <option value="O-">O-</option>
                                         </select>
-                                        <span class="validation-icon"></span>
+                                        <label for="tipo_sangre">Tipo de Sangre <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="eps" class="form-label">
-                                        <i class="fas fa-heart"></i>
-                                        EPS
-                                    </label>
-                                    <div class="input-with-validation">
+                                <div class="col-md-8">
+                                    <div class="form-floating">
                                         <input type="text" class="form-control" id="eps"
                                                placeholder="Nombre de la EPS">
-                                        <span class="validation-icon"></span>
+                                        <label for="eps">EPS <small class="text-muted">(Opcional)</small></label>
+                                        <div class="validation-icon"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="contacto_emergencia" class="form-label">
-                                        <i class="fas fa-phone-alt"></i>
-                                        Contacto de Emergencia
-                                    </label>
-                                    <div class="input-with-validation">
-                                        <input type="tel" class="form-control" id="contacto_emergencia"
-                                               placeholder="Teléfono de emergencia">
-                                        <span class="validation-icon"></span>
-                                    </div>
+                            <div class="mt-3">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="alergias" rows="3"
+                                              placeholder="Alergias y condiciones médicas" style="height: 120px;"></textarea>
+                                    <label for="alergias">Alergias y Condiciones Médicas <small class="text-muted">(Opcional)</small></label>
+                                    <div class="validation-icon"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="alergias" class="form-label">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                Alergias y Condiciones Médicas
-                            </label>
-                            <div class="input-with-validation">
-                                <textarea class="form-control" id="alergias" rows="3"
-                                          placeholder="Describa cualquier alergia, condición médica o medicamento que tome"></textarea>
-                                <span class="validation-icon"></span>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="observaciones_generales" class="form-label">
-                                <i class="fas fa-comments"></i>
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-comments me-2"></i>
                                 Observaciones Generales
-                            </label>
-                            <div class="input-with-validation">
+                            </h6>
+                            <div class="form-floating">
                                 <textarea class="form-control" id="observaciones_generales" rows="3"
-                                          placeholder="Información adicional relevante sobre el estudiante"></textarea>
-                                <span class="validation-icon"></span>
+                                          placeholder="Información adicional relevante" style="height: 120px;"></textarea>
+                                <label for="observaciones_generales">Observaciones Generales <small class="text-muted">(Opcional)</small></label>
+                                <div class="validation-icon"></div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="activo" checked>
-                                    <label class="form-check-label fw-bold" for="activo">
-                                        <i class="fas fa-toggle-on text-success me-1"></i>
-                                        Estudiante Activo
-                                    </label>
-                                    <small class="form-text text-muted d-block">
-                                        El estudiante aparecerá como activo en el sistema
-                                    </small>
+                        <div class="form-section">
+                            <h6 class="subsection-title">
+                                <i class="fas fa-cog me-2"></i>
+                                Configuración del Estudiante
+                            </h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="custom-switch-container">
+                                        <input class="custom-switch-input" type="checkbox" id="activo" checked>
+                                        <label class="custom-switch-label" for="activo">
+                                            <div class="switch-slider"></div>
+                                            <div class="switch-content">
+                                                <i class="fas fa-user-check text-success me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Estudiante Activo</div>
+                                                    <small class="text-muted">El estudiante aparecerá como activo en el sistema</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="notificar_registro">
-                                    <label class="form-check-label fw-bold" for="notificar_registro">
-                                        <i class="fas fa-bell text-info me-1"></i>
-                                        Notificar Registro
-                                    </label>
-                                    <small class="form-text text-muted d-block">
-                                        Enviar notificación de registro al acudiente
-                                    </small>
+                                <div class="col-md-6">
+                                    <div class="custom-switch-container">
+                                        <input class="custom-switch-input" type="checkbox" id="notificar_registro">
+                                        <label class="custom-switch-label" for="notificar_registro">
+                                            <div class="switch-slider"></div>
+                                            <div class="switch-content">
+                                                <i class="fas fa-bell text-info me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">Notificar Registro</div>
+                                                    <small class="text-muted">Enviar notificación de registro al acudiente</small>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Botones de navegación -->
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="button" class="btn btn-secondary" id="btnAnterior" onclick="pasoAnterior()" style="display: none;">
+                    <!-- Botones de navegación mejorados -->
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-outline-secondary btn-lg" id="btnAnterior" onclick="pasoAnterior()" style="display: none;">
                             <i class="fas fa-arrow-left me-2"></i>
                             Anterior
                         </button>
                         
-                        <div class="ms-auto">
-                            <button type="button" class="btn btn-primary" id="btnSiguiente" onclick="pasoSiguiente()">
+                        <div class="ms-auto d-flex gap-3">
+                            <button type="button" class="btn btn-primary btn-lg" id="btnSiguiente" onclick="pasoSiguiente()">
                                 Siguiente
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </button>
                             
-                            <button type="submit" class="btn btn-success" id="btnRegistrar" style="display: none;">
+                            <button type="submit" class="btn btn-success btn-lg" id="btnRegistrar" style="display: none;">
                                 <i class="fas fa-save me-2"></i>
                                 Registrar Estudiante
                             </button>
@@ -580,37 +639,39 @@
             </div>
             <div class="modal-body">
                 <form id="form-acudiente">
-                    <div class="row">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="acudiente_nombres" class="form-label">Nombres</label>
+                            <div class="form-floating">
                                 <input type="text" class="form-control" id="acudiente_nombres" required>
+                                <label for="acudiente_nombres">Nombres</label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="acudiente_apellidos" class="form-label">Apellidos</label>
+                            <div class="form-floating">
                                 <input type="text" class="form-control" id="acudiente_apellidos" required>
+                                <label for="acudiente_apellidos">Apellidos</label>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row g-3 mt-2">
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="acudiente_documento" class="form-label">Documento</label>
+                            <div class="form-floating">
                                 <input type="text" class="form-control" id="acudiente_documento" required>
+                                <label for="acudiente_documento">Documento</label>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="acudiente_telefono" class="form-label">Teléfono</label>
+                            <div class="form-floating">
                                 <input type="tel" class="form-control" id="acudiente_telefono" required>
+                                <label for="acudiente_telefono">Teléfono</label>
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="acudiente_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="acudiente_email">
+                    <div class="mt-3">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="acudiente_email">
+                            <label for="acudiente_email">Email</label>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -628,451 +689,236 @@
 
 {% block additional_js %}
 <script>
-    // Variables globales
-    let pasoActual = 1;
-    const totalPasos = 3;
-    let datosEstudiante = {};
+// ========== VARIABLES GLOBALES ==========
+let pasoActual = 1;
+const totalPasos = 3;
+let datosEstudiante = {};
 
-    // Función para limitar la entrada del año a 4 dígitos
-    function limitarAnio(input) {
-        const fecha = input.value;
-        const partes = fecha.split('-');
-        if (partes.length === 3) {
-            const anio = partes[0];
-            if (anio.length > 4) {
-                // Si el año tiene más de 4 dígitos, mantener solo los primeros 4
-                partes[0] = anio.slice(0, 4);
-                input.value = partes.join('-');
-            }
+// Datos de barrios por ciudad (actualizados al 2025)
+const barriosPorCiudad = {
+    "Barranquilla": {
+        "Metropolitana": [
+            "Buenos Aires", "Carrizal", "Cevillar", "Ciudadela 20 de Julio",
+            "El Santuario", "Kennedy", "La Sierra", "La Sierrita",
+            "Las Américas", "Las Cayenas", "Las Gardenias", "Las Granjas",
+            "Los Continentes", "Los Girasoles", "San Luis", "Santa María",
+            "Santo Domingo de Guzmán", "Sevilla Real", "Siete de Abril",
+            "Sinaí", "Veinte de Julio", "Villa San Carlos", "Villa San Pedro I",
+            "Villa San Pedro II", "Villa Sevilla", "Villa Valery"
+        ],
+        "Suroriente": [
+            "Atlántico", "Bellarena", "Boyacá", "Chiquinquirá", "El Campito",
+            "El Limón", "El Parque", "El Milagro", "José Antonio Galán",
+            "La Chinita", "La Unión", "Las Palmas", "San Nicolás", "Simón Bolívar"
+        ],
+        "Suroccidente": [
+            "Alfonso López", "Bernardo Hoyos", "Buena Esperanza", "California",
+            "Caribe Verde", "Ciudad Modesto", "Ciudadela de la Salud",
+            "Ciudadela de Paz", "El Bosque", "El Carmen", "El Edén",
+            "El Pueblo", "El Romance", "La Ceiba", "La Esmeralda",
+            "La Gloria", "La Libertad", "La Manga", "La Paz", "La Pradera",
+            "Las Malvinas", "Las Terrazas", "Lipaya", "Loma Fresca",
+            "Los Andes", "Los Ángeles I", "Los Ángeles II", "Los Ángeles III",
+            "Los Olivos I", "Los Olivos II", "Los Pinos", "Los Rosales",
+            "Lucero", "Me Quejo", "Nueva Colombia", "Nueva Granada",
+            "Olaya", "Pinar del Río", "Por Fin", "Pumarejo", "San Felipe", "San Isidro"
+        ],
+        "Riomar": [
+            "Riomar", "Las Tres Ave María", "Altamira", "Altos de Riomar",
+            "San Salvador", "Andalucia", "Santa Mónica", "La Playa",
+            "Villa Campestre", "Villa Santos"
+        ]
+    },
+    "Soledad": {
+        "Norte": [
+            "Altos de Jesús", "Altos de La Metropolitana", "Antonio Nariño",
+            "Bella Jerusalén", "Bello Horizonte", "Cachimbero",
+            "Ciudad Bolívar", "Ciudad Bonita", "Ciudad Camelot",
+            "Ciudad Caribe", "Ciudad Salitre", "Ciudad Transmetro",
+            "Ciudadela Metropolitana", "Costa Hermosa", "Cruz de Mayo",
+            "Dieciséis de Junio", "Doce de Octubre", "El Cabrera",
+            "El Carnero", "El Centenario", "El Cortijo", "El Encanto",
+            "El Esfuerzo", "El Hipódromo", "El Manantial", "El Oasis",
+            "El Pasito", "El Triunfo", "El Tucán", "Jardín de Villa Estadio",
+            "Juan Domínguez Romero", "La Arboleda", "La Bonanza",
+            "La Candelaria I", "La Candelaria II", "La Central",
+            "La Esperanza", "La Fe", "La Floresta I", "La Floresta II",
+            "La Ilusión", "La Inmaculada", "La Loma", "La María",
+            "La Puerta de Oro", "La Rivera", "La Victoria",
+            "Las Colonias I", "Las Colonias II", "Las Cometas",
+            "Las Ferias", "Las Gaviotas I", "Las Gaviotas II",
+            "Las Moras Norte", "Las Moras Occidente", "Las Moras IV",
+            "Las Trinitarias", "Linda María I", "Linda María II",
+            "Los Almendros I", "Los Almendros II", "Los Almendros III",
+            "Los Arrayanes", "Los Balcanes", "Los Cedros", "Los Cerezos",
+            "Los Cusules", "Los Fundadores", "Los Loteros", "Los Mangos",
+            "Los Robles", "Los Robles IV", "Los Robles VIII", "Los Rosales",
+            "Manuela Beltrán", "Montecarmelo", "Normandía", "Nueva Esperanza",
+            "Nueva Jerusalén", "Nuevo Horizonte I", "Nuevo Horizonte II",
+            "Nuevo Triunfo", "Prado de Soledad", "Primero de Mayo",
+            "Pumarejo", "Renacer", "Ríos de Agua Viva", "Salamanca",
+            "San Antonio", "San Bernardo", "San Juan Eudes", "San Vicente",
+            "Siete de Agosto", "Sitio Hermoso", "Soledad Dos Mil",
+            "Tajamar I", "Tajamar II", "Urbanización Ciudad del Parque",
+            "Urbanización El Parque", "Urbanización El Río",
+            "Urbanización Las Moras", "Urbanización María de los Ángeles",
+            "Urbanización Parque Muvdi", "Urbanización Portal de Jordán",
+            "Urbanización Portal de San Antonio", "Urbanización Salamanca",
+            "Urbanización Santana", "Urbanización Sol Real",
+            "Urbanización Terranova I", "Urbanización Terranova II",
+            "Urbanización Villa Mónaco", "Urbanización Villa Soledad",
+            "Urbanización Villa Viola", "Veinte de Julio",
+            "Veintitrés de Noviembre", "Villa Adela I", "Villa Adela II",
+            "Villa Angelita", "Villa Anita", "Villa Carmen I", "Villa Carmen II",
+            "Villa Cecilia", "Villa de Aragón", "Villa Del Carmen",
+            "Villa Del Rey", "Villa Estadio I", "Villa Estadio II",
+            "Villa Estefany", "Villa Esther", "Villa Gladis", "Villa Karla I",
+            "Villa Katanga I", "Villa Katanga II", "Villa Las Moras I",
+            "Villa Las Moras II", "Villa Lozano", "Villa María",
+            "Villa María Silena", "Villa Merly", "Villa Mónica",
+            "Villa Murillo", "Villa Rosa", "Villa Salamar", "Villa Santa",
+            "Villa Severa", "Villa Sevilla", "Villa Sofía", "Villa Sol",
+            "Villa Soledad", "Villa Valentina", "Villa Zambrano",
+            "Viñas del Rey", "Vista Hermosa", "Zarabanda"
+        ]
+    }
+};
+
+// ========== FUNCIONES DE INICIALIZACIÓN ==========
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== INICIALIZANDO FORMULARIO DE ESTUDIANTE ===');
+    
+    // Limpiar cualquier patrón CSS problemático
+    limpiarPatronesCSS();
+    
+    // Configurar validaciones
+    configurarValidaciones();
+    
+    // Cargar acudientes
+    cargarAcudientes();
+    
+    // Mostrar paso inicial
+    mostrarPaso(1);
+    
+    // Establecer fecha de ingreso por defecto (hoy)
+    const fechaIngreso = document.getElementById('fecha_ingreso');
+    if (fechaIngreso) {
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaIngreso.value = hoy;
+    }
+    
+    console.log('✅ Formulario inicializado correctamente');
+});
+
+function limpiarPatronesCSS() {
+    // Asegurar que no hay patrones repetitivos en los selects
+    const selects = document.querySelectorAll('.form-select');
+    selects.forEach(select => {
+        select.style.backgroundRepeat = 'no-repeat';
+        select.style.backgroundAttachment = 'initial';
+        select.style.backgroundSize = '16px 12px';
+    });
+}
+
+// ========== FUNCIONES AUXILIARES ==========
+
+function limitarAnio(input) {
+    const fecha = input.value;
+    const partes = fecha.split('-');
+    if (partes.length === 3) {
+        const anio = partes[0];
+        if (anio.length > 4) {
+            partes[0] = anio.slice(0, 4);
+            input.value = partes.join('-');
         }
     }
+    
+    // Calcular edad automáticamente
+    if (input.value) {
+        calcularEdad(input);
+    }
+}
 
-    // Datos de barrios por ciudad (actualizados al 2025)
-    const barriosPorCiudad = {
-        "Barranquilla": {
-            "Metropolitana": [
-                "Buenos Aires",
-                "Carrizal",
-                "Cevillar",
-                "Ciudadela 20 de Julio",
-                "El Santuario",
-                "Kennedy",
-                "La Sierra",
-                "La Sierrita",
-                "Las Américas",
-                "Las Cayenas",
-                "Las Gardenias",
-                "Las Granjas",
-                "Los Continentes",
-                "Los Girasoles",
-                "San Luis",
-                "Santa María",
-                "Santo Domingo de Guzmán",
-                "Sevilla Real",
-                "Siete de Abril",
-                "Sinaí",
-                "Veinte de Julio",
-                "Villa San Carlos",
-                "Villa San Pedro I",
-                "Villa San Pedro II",
-                "Villa Sevilla",
-                "Villa Valery"
-            ],
-            "Suroriente": [
-                "Atlántico",
-                "Bellarena",
-                "Boyacá",
-                "Chiquinquirá",
-                "El Campito",
-                "El Limón",
-                "El Parque",
-                "El Milagro",
-                "José Antonio Galán",
-                "La Chinita",
-                "La Unión",
-                "Las Palmas",
-                "San Nicolás",
-                "Simón Bolívar"
-            ],
-            "Suroccidente": [
-                "Alfonso López",
-                "Bernardo Hoyos",
-                "Buena Esperanza",
-                "California",
-                "Caribe Verde",
-                "Ciudad Modesto",
-                "Ciudadela de la Salud",
-                "Ciudadela de Paz",
-                "El Bosque",
-                "El Carmen",
-                "El Edén",
-                "El Pueblo",
-                "El Romance",
-                "La Ceiba",
-                "La Esmeralda",
-                "La Gloria",
-                "La Libertad",
-                "La Manga",
-                "La Paz",
-                "La Pradera",
-                "Las Malvinas",
-                "Las Terrazas",
-                "Lipaya",
-                "Loma Fresca",
-                "Los Andes",
-                "Los Ángeles I",
-                "Los Ángeles II",
-                "Los Ángeles III",
-                "Los Olivos I",
-                "Los Olivos II",
-                "Los Pinos",
-                "Los Rosales",
-                "Lucero",
-                "Me Quejo",
-                "Nueva Colombia",
-                "Nueva Granada",
-                "Olaya",
-                "Pinar del Río",
-                "Por Fin",
-                "Pumarejo",
-                "San Felipe",
-                "San Isidro"
-            ],
-            "Riomar": [
-                "Riomar",
-                "Las Tres Ave María",
-                "Altamira",
-                "Altos de Riomar",
-                "San Salvador",
-                "Andalucia",
-                "Santa Mónica",
-                "La Playa",
-                "Villa Campestre",
-                "Villa Santos"
-            ]
-        },
-        "Soledad": {
-            "Norte": [
-                "Altos de Jesús",
-                "Altos de La Metropolitana",
-                "Antonio Nariño",
-                "Bella Jerusalén",
-                "Bello Horizonte",
-                "Cachimbero",
-                "Ciudad Bolívar",
-                "Ciudad Bonita",
-                "Ciudad Camelot",
-                "Ciudad Caribe",
-                "Ciudad Salitre",
-                "Ciudad Transmetro",
-                "Ciudadela Metropolitana",
-                "Costa Hermosa",
-                "Cruz de Mayo",
-                "Dieciséis de Junio",
-                "Doce de Octubre",
-                "El Cabrera",
-                "El Carnero",
-                "El Centenario",
-                "El Cortijo",
-                "El Encanto",
-                "El Esfuerzo",
-                "El Hipódromo",
-                "El Manantial",
-                "El Oasis",
-                "El Pasito",
-                "El Triunfo",
-                "El Tucán",
-                "Jardín de Villa Estadio",
-                "Juan Domínguez Romero",
-                "La Arboleda",
-                "La Bonanza",
-                "La Candelaria I",
-                "La Candelaria II",
-                "La Central",
-                "La Esperanza",
-                "La Fe",
-                "La Floresta I",
-                "La Floresta II",
-                "La Ilusión",
-                "La Inmaculada",
-                "La Loma",
-                "La María",
-                "La Puerta de Oro",
-                "La Rivera",
-                "La Victoria",
-                "Las Colonias I",
-                "Las Colonias II",
-                "Las Cometas",
-                "Las Ferias",
-                "Las Gaviotas I",
-                "Las Gaviotas II",
-                "Las Moras Norte",
-                "Las Moras Occidente",
-                "Las Moras IV",
-                "Las Trinitarias",
-                "Linda María I",
-                "Linda María II",
-                "Los Almendros I",
-                "Los Almendros II",
-                "Los Almendros III",
-                "Los Arrayanes",
-                "Los Balcanes",
-                "Los Cedros",
-                "Los Cerezos",
-                "Los Cusules",
-                "Los Fundadores",
-                "Los Loteros",
-                "Los Mangos",
-                "Los Robles",
-                "Los Robles IV",
-                "Los Robles VIII",
-                "Los Rosales",
-                "Manuela Beltrán",
-                "Montecarmelo",
-                "Normandía",
-                "Nueva Esperanza",
-                "Nueva Jerusalén",
-                "Nuevo Horizonte I",
-                "Nuevo Horizonte II",
-                "Nuevo Triunfo",
-                "Prado de Soledad",
-                "Primero de Mayo",
-                "Pumarejo",
-                "Renacer",
-                "Ríos de Agua Viva",
-                "Salamanca",
-                "San Antonio",
-                "San Bernardo",
-                "San Juan Eudes",
-                "San Vicente",
-                "Siete de Agosto",
-                "Sitio Hermoso",
-                "Soledad Dos Mil",
-                "Tajamar I",
-                "Tajamar II",
-                "Urbanización Ciudad del Parque",
-                "Urbanización El Parque",
-                "Urbanización El Río",
-                "Urbanización Las Moras",
-                "Urbanización María de los Ángeles",
-                "Urbanización Parque Muvdi",
-                "Urbanización Portal de Jordán",
-                "Urbanización Portal de San Antonio",
-                "Urbanización Salamanca",
-                "Urbanización Santana",
-                "Urbanización Sol Real",
-                "Urbanización Terranova I",
-                "Urbanización Terranova II",
-                "Urbanización Villa Mónaco",
-                "Urbanización Villa Soledad",
-                "Urbanización Villa Viola",
-                "Veinte de Julio",
-                "Veintitrés de Noviembre",
-                "Villa Adela I",
-                "Villa Adela II",
-                "Villa Angelita",
-                "Villa Anita",
-                "Villa Carmen I",
-                "Villa Carmen II",
-                "Villa Cecilia",
-                "Villa de Aragón",
-                "Villa Del Carmen",
-                "Villa Del Rey",
-                "Villa Estadio I",
-                "Villa Estadio II",
-                "Villa Estefany",
-                "Villa Esther",
-                "Villa Gladis",
-                "Villa Karla I",
-                "Villa Katanga I",
-                "Villa Katanga II",
-                "Villa Las Moras I",
-                "Villa Las Moras II",
-                "Villa Lozano",
-                "Villa María",
-                "Villa María Silena",
-                "Villa Merly",
-                "Villa Mónica",
-                "Villa Murillo",
-                "Villa Rosa",
-                "Villa Salamar",
-                "Villa Santa",
-                "Villa Severa",
-                "Villa Sevilla",
-                "Villa Sofía",
-                "Villa Sol",
-                "Villa Soledad",
-                "Villa Valentina",
-                "Villa Zambrano",
-                "Viñas del Rey",
-                "Vista Hermosa",
-                "Zarabanda"
-            ]
-        }
-    };
-
-    // Cargar barrios según ciudad seleccionada
-    function cargarBarrios() {
-        const ciudadSelect = document.getElementById('ciudad');
-        const barrioSelect = document.getElementById('barrio');
-        const ciudad = ciudadSelect.value;
-        
-        barrioSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
-        barrioSelect.disabled = !ciudad;
-        
-        if (ciudad) {
-            const barriosData = barriosPorCiudad[ciudad];
-            for (const [localidad, barrios] of Object.entries(barriosData)) {
-                const optgroup = document.createElement('optgroup');
-                optgroup.label = localidad;
-                
-                barrios.forEach(barrio => {
-                    const option = document.createElement('option');
-                    option.value = barrio;
-                    option.textContent = barrio;
-                    optgroup.appendChild(option);
-                });
-                
-                barrioSelect.appendChild(optgroup);
-            }
+function cargarBarrios() {
+    const ciudadSelect = document.getElementById('ciudad');
+    const barrioSelect = document.getElementById('barrio');
+    const ciudad = ciudadSelect.value;
+    
+    barrioSelect.innerHTML = '<option value="">Seleccionar barrio</option>';
+    barrioSelect.disabled = !ciudad;
+    
+    if (ciudad) {
+        const barriosData = barriosPorCiudad[ciudad];
+        for (const [localidad, barrios] of Object.entries(barriosData)) {
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = localidad;
             
-            // Validar automáticamente
-            validarCampo(ciudadSelect);
+            barrios.forEach(barrio => {
+                const option = document.createElement('option');
+                option.value = barrio;
+                option.textContent = barrio;
+                optgroup.appendChild(option);
+            });
+            
+            barrioSelect.appendChild(optgroup);
         }
+        
+        validarCampo(ciudadSelect);
+    }
+}
+
+// ========== FUNCIONES DE VALIDACIÓN CORREGIDAS ==========
+
+function configurarValidaciones() {
+    console.log('Configurando validaciones...');
+    
+    // Validación de fecha de nacimiento y cálculo de edad
+    const fechaNacimientoInput = document.getElementById('fecha_nacimiento');
+    if (fechaNacimientoInput) {
+        fechaNacimientoInput.addEventListener('change', function() {
+            calcularEdad(this);
+        });
     }
 
-    // Modificar la función guardarDatosPaso para incluir los nuevos campos
-    function guardarDatosPaso() {
-        const paso = document.getElementById(`paso${pasoActual}`);
-        const inputs = paso.querySelectorAll('input, select, textarea');
-        
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                datosEstudiante[input.id] = input.checked;
-            } else {
-                datosEstudiante[input.id] = input.value;
+    // Validación de documento único
+    const documentoInput = document.getElementById('documento');
+    if (documentoInput) {
+        documentoInput.addEventListener('blur', function() {
+            if (this.value) {
+                verificarDocumentoUnico(this.value);
             }
         });
-        
-        // Guardar también el nombre completo del tipo de documento y género
-        if (pasoActual === 1) {
-            const tipoDocSelect = document.getElementById('tipo_documento');
-            const generoSelect = document.getElementById('genero');
-            
-            datosEstudiante['tipo_documento_texto'] = tipoDocSelect.options[tipoDocSelect.selectedIndex].text;
-            datosEstudiante['genero_texto'] = generoSelect.options[generoSelect.selectedIndex].text;
-            
-            // Calcular y guardar edad
-            if (datosEstudiante['fecha_nacimiento']) {
-                const edad = document.getElementById('edad-calculada').textContent;
-                datosEstudiante['edad'] = edad !== '--' ? parseInt(edad) : null;
+
+        // Solo números en documento
+        documentoInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 15) {
+                this.value = this.value.slice(0, 15);
             }
-        }
+        });
     }
 
-    // Configurar el formulario
-    document.addEventListener('DOMContentLoaded', function() {
-        // Inicializar variables
-        let pasoActual = 1;
-        const totalPasos = 3;
-        const datosEstudiante = {};
-        
-        // Configurar validaciones
-        configurarValidaciones();
+    // Validación de teléfonos
+    const telefonoInputs = ['telefono', 'contacto_emergencia', 'acudiente_telefono'];
+    telefonoInputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 15) {
+                    this.value = this.value.slice(0, 15);
+                }
+            });
+        }
     });
 
-    // Configurar validaciones especiales
-    function configurarValidaciones() {
-        // Validación de fecha de nacimiento y cálculo de edad
-        document.getElementById('fecha_nacimiento').addEventListener('change', function() {
-            if (!this.value) {
-                document.getElementById('edad-calculada').textContent = '--';
-                return;
-            }
-
-            const fechaNacimiento = new Date(this.value + 'T00:00:00'); // Agregar hora para evitar problemas de timezone
-            const hoy = new Date();
-            
-            // Calcular edad de forma más precisa
-            let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-            const mesActual = hoy.getMonth();
-            const mesNacimiento = fechaNacimiento.getMonth();
-            const diaActual = hoy.getDate();
-            const diaNacimiento = fechaNacimiento.getDate();
-            
-            // Ajustar si aún no ha cumplido años este año
-            if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
-                edad--;
-            }
-            
-            // Mostrar la edad calculada
-            document.getElementById('edad-calculada').textContent = edad;
-            
-            const container = this.closest('.input-with-validation');
-            const icon = container?.querySelector('.validation-icon');
-            
-            // Validar rango de edad razonable
-            if (edad < 4 || edad > 25) {
-                this.classList.add('is-invalid');
-                this.classList.remove('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✕';
-                    icon.className = 'validation-icon error';
-                }
-                showNotification('La edad debe estar entre 4 y 25 años', 'warning');
-            } else if (edad >= 4 && edad <= 25) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✓';
-                    icon.className = 'validation-icon success';
-                }
-            } else {
-                // Edad válida pero fuera del contexto escolar típico
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✓';
-                    icon.className = 'validation-icon success';
-                }
-            }
-        });
-
-        // Validación de documento único
-        document.getElementById('documento').addEventListener('blur', function() {
-            const documento = this.value;
-            if (documento) {
-                verificarDocumentoUnico(documento);
-            }
-        });
-
-        // Validación de número en documento
-        document.getElementById('documento').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            if (this.value.length > 15) {
-                this.value = this.value.slice(0, 15);
-            }
-        });
-
-        // Validación de teléfono
-        document.getElementById('telefono').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            if (this.value.length > 15) {
-                this.value = this.value.slice(0, 15);
-            }
-        });
-
-        document.getElementById('contacto_emergencia').addEventListener('input', function() {
-            this.value = this.value.replace(/\D/g, '');
-            if (this.value.length > 15) {
-                this.value = this.value.slice(0, 15);
-            }
-        });
-
-        // Validación de promedio
-        document.getElementById('promedio_anterior').addEventListener('input', function() {
+    // Validación de promedio
+    const promedioInput = document.getElementById('promedio_anterior');
+    if (promedioInput) {
+        promedioInput.addEventListener('input', function() {
             const valor = parseFloat(this.value);
-            const container = this.closest('.input-with-validation');
+            const container = this.closest('.form-floating');
             const icon = container?.querySelector('.validation-icon');
             
             if (valor < 1 || valor > 5) {
@@ -1082,7 +928,7 @@
                     icon.innerHTML = '✕';
                     icon.className = 'validation-icon error';
                 }
-            } else {
+            } else if (valor >= 1 && valor <= 5) {
                 this.classList.remove('is-invalid');
                 this.classList.add('is-valid');
                 if (icon) {
@@ -1091,817 +937,1635 @@
                 }
             }
         });
-
-        // Validación en tiempo real para todos los campos
-        document.querySelectorAll('input, select, textarea').forEach(input => {
-            input.addEventListener('input', function() {
-                validarCampo(this);
-            });
-            
-            input.addEventListener('blur', function() {
-                validarCampo(this);
-            });
-        });
     }
 
-    // Función para validar un campo individual
-    function validarCampo(input) {
-        const container = input.closest('.input-with-validation');
-        if (!container) return;
+    // Validación en tiempo real para todos los campos
+    document.querySelectorAll('input, select, textarea').forEach(input => {
+        input.addEventListener('input', function() {
+            validarCampo(this);
+        });
         
-        const icon = container.querySelector('.validation-icon');
-        
-        // Validaciones básicas
-        let esValido = true;
-        
+        input.addEventListener('blur', function() {
+            validarCampo(this);
+        });
+    });
+
+    // Capitalización automática
+    const camposTexto = ['primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 'institucion_anterior'];
+    camposTexto.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) {
+            input.addEventListener('blur', function() {
+                this.value = this.value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+            });
+        }
+    });
+}
+
+function calcularEdad(input) {
+    if (!input.value) {
+        document.getElementById('edad-calculada').textContent = '--';
+        return;
+    }
+
+    const fechaNacimiento = new Date(input.value + 'T00:00:00');
+    const hoy = new Date();
+    
+    let edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+    const mesActual = hoy.getMonth();
+    const mesNacimiento = fechaNacimiento.getMonth();
+    const diaActual = hoy.getDate();
+    const diaNacimiento = fechaNacimiento.getDate();
+    
+    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) {
+        edad--;
+    }
+    
+    document.getElementById('edad-calculada').textContent = edad;
+    
+    const container = input.closest('.form-floating');
+    const icon = container?.querySelector('.validation-icon');
+    
+    if (edad < 4 || edad > 25) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        if (icon) {
+            icon.innerHTML = '✕';
+            icon.className = 'validation-icon error';
+        }
+        showNotification('La edad debe estar entre 4 y 25 años', 'warning');
+    } else {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        if (icon) {
+            icon.innerHTML = '✓';
+            icon.className = 'validation-icon success';
+        }
+    }
+}
+
+function validarCampo(input) {
+    const container = input.closest('.form-floating');
+    if (!container) return;
+    
+    const icon = container.querySelector('.validation-icon');
+    let esValido = true;
+    
+    // VALIDACIÓN CORREGIDA para nombres y apellidos
+    if (input.id === 'primer_nombre' || input.id === 'primer_apellido') {
+        // Para campos requeridos, verificar que tengan valor
         if (input.hasAttribute('required') && !input.value.trim()) {
             esValido = false;
         }
-        
-        if (input.type === 'email' && input.value) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(input.value)) {
-                esValido = false;
-            }
+    }
+    // Validar campos requeridos
+    else if (input.hasAttribute('required') && !input.value.trim()) {
+        esValido = false;
+    }
+    
+    // Validar email
+    if (input.type === 'email' && input.value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(input.value)) {
+            esValido = false;
         }
-        
-        if (input.type === 'tel' && input.value) {
-            if (input.value.length < 7) {
-                esValido = false;
-            }
+    }
+    
+    // Validar teléfono
+    if (input.type === 'tel' && input.value.trim()) {
+        if (input.value.length < 7) {
+            esValido = false;
         }
+    }
+    
+    // Validar documento
+    if (input.id === 'documento' && input.value.trim()) {
+        if (input.value.length < 6) {
+            esValido = false;
+        }
+    }
+    
+    // Aplicar estilos de validación
+    if (esValido && input.value.trim()) {
+        input.classList.remove('is-invalid');
+        input.classList.add('is-valid');
+        if (icon) {
+            icon.innerHTML = '✓';
+            icon.className = 'validation-icon success';
+        }
+    } else if (!esValido) {
+        input.classList.add('is-invalid');
+        input.classList.remove('is-valid');
+        if (icon) {
+            icon.innerHTML = '✕';
+            icon.className = 'validation-icon error';
+        }
+    } else {
+        // Campo opcional vacío - sin validación visual
+        input.classList.remove('is-invalid', 'is-valid');
+        if (icon) {
+            icon.innerHTML = '';
+            icon.className = 'validation-icon';
+        }
+    }
+}
+
+async function verificarDocumentoUnico(documento) {
+    try {
+        const response = await fetch(`/admin/api/verificar-documento/${documento}`);
+        const data = await response.json();
         
-        // Aplicar estilos de validación
-        if (esValido && input.value.trim()) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-            if (icon) {
-                icon.innerHTML = '✓';
-                icon.className = 'validation-icon success';
+        const alertElement = document.getElementById('documento-exists');
+        const usuarioSpan = document.getElementById('documento-usuario');
+        const input = document.getElementById('documento');
+        const container = input.closest('.form-floating');
+        const icon = container?.querySelector('.validation-icon');
+        
+        if (data.exists) {
+            alertElement.style.display = 'block';
+            if (usuarioSpan && data.usuario) {
+                usuarioSpan.textContent = data.usuario.nombre;
             }
-        } else if (!esValido) {
             input.classList.add('is-invalid');
             input.classList.remove('is-valid');
             if (icon) {
                 icon.innerHTML = '✕';
                 icon.className = 'validation-icon error';
             }
+            return false;
         } else {
-            input.classList.remove('is-invalid', 'is-valid');
+            alertElement.style.display = 'none';
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
             if (icon) {
-                icon.innerHTML = '';
-                icon.className = 'validation-icon';
+                icon.innerHTML = '✓';
+                icon.className = 'validation-icon success';
             }
+            return true;
         }
+    } catch (error) {
+        console.error('Error verificando documento:', error);
+        return true;
     }
+}
 
-    // Verificar documento único
-    async function verificarDocumentoUnico(documento) {
-        try {
-            const response = await fetch(`/admin/api/verificar-documento/${documento}`);
-            const data = await response.json();
-            
-            const alertElement = document.getElementById('documento-exists');
-            const input = document.getElementById('documento');
-            const container = input.closest('.input-with-validation');
-            const icon = container?.querySelector('.validation-icon');
-            
-            if (data.exists) {
-                alertElement.style.display = 'block';
-                input.classList.add('is-invalid');
-                input.classList.remove('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✕';
-                    icon.className = 'validation-icon error';
-                }
-                return false;
-            } else {
-                alertElement.style.display = 'none';
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✓';
-                    icon.className = 'validation-icon success';
-                }
-                return true;
-            }
-        } catch (error) {
-            console.error('Error verificando documento:', error);
-            return true; // Permitir continuar si hay error en la verificación
-        }
-    }
+// ========== FUNCIONES DE NAVEGACIÓN ==========
 
-    // Cargar acudientes
-    async function cargarAcudientes() {
-        try {
-            const response = await fetch('/admin/api/acudientes');
-            if (response.ok) {
-                const acudientes = await response.json();
-                const select = document.getElementById('acudiente');
-                
-                select.innerHTML = '<option value="">Seleccionar acudiente</option>';
-                acudientes.forEach(acudiente => {
-                    select.innerHTML += `
-                        <option value="${acudiente.id}">
-                            ${acudiente.nombres} ${acudiente.apellidos} - ${acudiente.documento}
-                        </option>
-                    `;
-                });
-            }
-        } catch (error) {
-            console.error('Error cargando acudientes:', error);
-        }
-    }
-
-    // Abrir modal de acudiente
-    function abrirModalAcudiente() {
-        const modal = new bootstrap.Modal(document.getElementById('modalAcudiente'));
-        modal.show();
-    }
-
-    // Guardar nuevo acudiente
-    async function guardarAcudiente() {
-        const form = document.getElementById('form-acudiente');
-        
-        // Validar campos requeridos
-        const campos = ['acudiente_nombres', 'acudiente_apellidos', 'acudiente_documento', 'acudiente_telefono'];
-        let valido = true;
-        
-        campos.forEach(campo => {
-            const input = document.getElementById(campo);
-            if (!input.value.trim()) {
-                input.classList.add('is-invalid');
-                valido = false;
-            } else {
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-            }
-        });
-
-        if (!valido) {
-            showNotification('Por favor complete todos los campos obligatorios', 'warning');
-            return;
-        }
-
-        try {
-            const acudienteData = {
-                nombres: document.getElementById('acudiente_nombres').value,
-                apellidos: document.getElementById('acudiente_apellidos').value,
-                documento: document.getElementById('acudiente_documento').value,
-                telefono: document.getElementById('acudiente_telefono').value,
-                email: document.getElementById('acudiente_email').value
-            };
-
-            const response = await fetch('/admin/api/acudientes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(acudienteData)
-            });
-
-            if (response.ok) {
-                const nuevoAcudiente = await response.json();
-                
-                // Agregar al select
-                const select = document.getElementById('acudiente');
-                const option = document.createElement('option');
-                option.value = nuevoAcudiente.id;
-                option.textContent = `${nuevoAcudiente.nombres} ${nuevoAcudiente.apellidos} - ${nuevoAcudiente.documento}`;
-                option.selected = true;
-                select.appendChild(option);
-
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalAcudiente'));
-                modal.hide();
-
-                // Limpiar formulario
-                form.reset();
-                
-                showNotification('Acudiente registrado correctamente', 'success');
-            } else {
-                throw new Error('Error al guardar acudiente');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification('Error al guardar el acudiente', 'error');
-        }
-    }
-
-    // Manejar envío del formulario principal
-    document.getElementById('nuevo-estudiante-form').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        if (!validarPasoActual()) {
-            return;
-        }
-
-        // Guardar datos del último paso
+function pasoSiguiente() {
+    console.log(`=== NAVEGANDO AL PASO ${pasoActual + 1} ===`);
+    
+    if (validarPasoActual()) {
         guardarDatosPaso();
+        
+        if (pasoActual < totalPasos) {
+            pasoActual++;
+            mostrarPaso(pasoActual);
+            actualizarProgreso();
+            console.log(`✅ Navegado exitosamente al paso ${pasoActual}`);
+        }
+    } else {
+        console.log('❌ Validación del paso actual falló');
+    }
+}
 
-        // Validar datos completos
-        if (!validarDatosCompletos()) {
-            showNotification('Por favor complete todos los campos obligatorios', 'warning');
+function pasoAnterior() {
+    console.log(`Navegando al paso ${pasoActual - 1}`);
+    
+    if (pasoActual > 1) {
+        pasoActual--;
+        mostrarPaso(pasoActual);
+        actualizarProgreso();
+        console.log(`Navegado al paso ${pasoActual}`);
+    }
+}
+
+function mostrarPaso(paso) {
+    console.log(`=== MOSTRANDO PASO ${paso} ===`);
+    
+    // Ocultar todos los pasos
+    document.querySelectorAll('.paso-form').forEach(div => {
+        div.classList.add('paso-hidden');
+        div.classList.remove('paso-visible');
+    });
+    
+    // Mostrar paso actual
+    const pasoElement = document.getElementById(`paso${paso}`);
+    if (pasoElement) {
+        pasoElement.classList.remove('paso-hidden');
+        pasoElement.classList.add('paso-visible');
+        
+        console.log(`✅ Mostrando paso: paso${paso}`);
+        
+        // Scroll al contenido
+        setTimeout(() => {
+            pasoElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    } else {
+        console.error(`❌ No se encontró el elemento paso${paso}`);
+    }
+    
+    // Actualizar botones
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnRegistrar = document.getElementById('btnRegistrar');
+    
+    if (btnAnterior) {
+        btnAnterior.style.display = paso > 1 ? 'inline-block' : 'none';
+    }
+    if (btnSiguiente) {
+        btnSiguiente.style.display = paso < totalPasos ? 'inline-block' : 'none';
+    }
+    if (btnRegistrar) {
+        btnRegistrar.style.display = paso === totalPasos ? 'inline-block' : 'none';
+    }
+}
+
+function actualizarProgreso() {
+    const progreso = (pasoActual / totalPasos) * 100;
+    const barraProgreso = document.getElementById('barraProgreso');
+    const pasoActualSpan = document.getElementById('pasoActual');
+    
+    if (barraProgreso) {
+        barraProgreso.style.width = `${progreso}%`;
+    }
+    if (pasoActualSpan) {
+        pasoActualSpan.textContent = pasoActual;
+    }
+    
+    // Actualizar pasos visuales
+    for (let i = 1; i <= totalPasos; i++) {
+        const step = document.getElementById(`step${i}`);
+        if (step) {
+            if (i <= pasoActual) {
+                step.classList.add('active');
+                step.classList.remove('completed');
+            } else {
+                step.classList.remove('active', 'completed');
+            }
+            
+            if (i < pasoActual) {
+                step.classList.add('completed');
+            }
+        }
+    }
+}
+
+function validarPasoActual() {
+    const paso = document.getElementById(`paso${pasoActual}`);
+    if (!paso) {
+        console.error(`Paso ${pasoActual} no encontrado`);
+        return false;
+    }
+    
+    console.log(`=== VALIDANDO PASO ${pasoActual} ===`);
+    
+    const inputs = paso.querySelectorAll('input[required], select[required]');
+    let valido = true;
+    let camposInvalidos = [];
+
+    console.log(`Campos requeridos en paso ${pasoActual}:`, Array.from(inputs).map(input => `${input.id}: "${input.value}"`));
+
+    inputs.forEach(input => {
+        const contenedor = input.closest('.form-floating') || input.closest('.mb-3');
+        const isVisible = contenedor && 
+                         window.getComputedStyle(contenedor).display !== 'none' &&
+                         window.getComputedStyle(input).display !== 'none';
+        
+        if (!isVisible) {
+            console.log(`Campo ${input.id} no está visible, saltando validación`);
             return;
         }
-
-        // Mostrar loading en el botón
-        const btnRegistrar = document.getElementById('btnRegistrar');
-        const textoOriginal = btnRegistrar.innerHTML;
-        btnRegistrar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registrando...';
-        btnRegistrar.disabled = true;
-
-        try {
-            const response = await fetch('/admin/api/estudiantes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(datosEstudiante)
-            });
-
-            if (response.ok) {
-                const resultado = await response.json();
-                showNotification('Estudiante registrado correctamente', 'success');
-                
-                // Preguntar si desea registrar otro estudiante
-                setTimeout(() => {
-                    if (confirm('¿Desea registrar otro estudiante?')) {
-                        location.reload();
-                    } else {
-                        window.location.href = '/admin/estudiantes';
-                    }
-                }, 1500);
-            } else {
-                const error = await response.json();
-                throw new Error(error.message || 'Error al registrar estudiante');
+        
+        const valor = input.value ? input.value.trim() : '';
+        let esValido = valor !== '';
+        
+        // LÓGICA ESPECIAL PARA NOMBRES Y APELLIDOS CORREGIDA
+        if (input.id === 'primer_nombre' || input.id === 'primer_apellido') {
+            // Solo verificar que el campo requerido tenga valor
+            esValido = valor !== '';
+        }
+        
+        console.log(`Validando ${input.id}: "${valor}" -> ${esValido ? 'VÁLIDO' : 'INVÁLIDO'}`);
+        
+        const container = input.closest('.form-floating');
+        const icon = container?.querySelector('.validation-icon');
+        
+        if (!esValido) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            if (icon) {
+                icon.innerHTML = '✕';
+                icon.className = 'validation-icon error';
             }
-        } catch (error) {
-            console.error('Error:', error);
-            showNotification(error.message || 'Error al registrar el estudiante', 'error');
-        } finally {
-            // Restaurar botón
-            btnRegistrar.innerHTML = textoOriginal;
+            valido = false;
+            
+            const label = input.closest('.form-floating')?.querySelector('label')?.textContent || input.id;
+            camposInvalidos.push(label.replace('*', '').trim());
+        } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            if (icon) {
+                icon.innerHTML = '✓';
+                icon.className = 'validation-icon success';
+            }
+        }
+    });
+
+    if (!valido) {
+        console.log('❌ Validación falló. Campos inválidos:', camposInvalidos);
+        showWarning(`Complete los campos requeridos: ${camposInvalidos.join(', ')}`, {
+            title: 'Campos Requeridos',
+            duration: 6000
+        });
+        
+        const primerCampoInvalido = paso.querySelector('.is-invalid');
+        if (primerCampoInvalido) {
+            primerCampoInvalido.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            primerCampoInvalido.focus();
+        }
+    } else {
+        console.log(`✅ Paso ${pasoActual} validado correctamente`);
+    }
+
+    return valido;
+}
+
+// ========== FUNCIONES DE DATOS CORREGIDAS ==========
+
+function guardarDatosPaso() {
+    // Obtener todos los campos del formulario
+    const inputs = document.querySelectorAll('#nuevo-estudiante-form input, #nuevo-estudiante-form select, #nuevo-estudiante-form textarea');
+    
+    inputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            datosEstudiante[input.id] = input.checked;
+        } else {
+            datosEstudiante[input.id] = input.value.trim();
+        }
+    });
+    
+    // MAPEO CORREGIDO: Combinar nombres y apellidos
+    datosEstudiante.nombres = `${datosEstudiante.primer_nombre || ''} ${datosEstudiante.segundo_nombre || ''}`.trim();
+    datosEstudiante.apellidos = `${datosEstudiante.primer_apellido || ''} ${datosEstudiante.segundo_apellido || ''}`.trim();
+    
+    console.log('Datos guardados del paso:', datosEstudiante);
+}
+
+// ========== FUNCIONES DE ACUDIENTES ==========
+
+function abrirModalAcudiente() {
+    console.log('Abriendo modal para nuevo acudiente');
+    const modal = new bootstrap.Modal(document.getElementById('modalAcudiente'));
+    modal.show();
+}
+
+async function cargarAcudientes() {
+    console.log('Cargando lista de acudientes...');
+    try {
+        const response = await fetch('/admin/api/acudientes');
+        const acudientes = await response.json();
+        
+        const selectElement = document.getElementById('acudiente');
+        if (selectElement) {
+            // Limpiar opciones excepto la primera
+            selectElement.innerHTML = '<option value="">Seleccionar acudiente (opcional)</option>';
+            
+            // Agregar acudientes
+            acudientes.forEach(acudiente => {
+                const option = document.createElement('option');
+                option.value = acudiente.id;
+                option.textContent = `${acudiente.nombres} ${acudiente.apellidos} (${acudiente.documento})`;
+                selectElement.appendChild(option);
+            });
+            
+            console.log(`✅ ${acudientes.length} acudientes cargados`);
+        }
+    } catch (error) {
+        console.error('Error cargando acudientes:', error);
+        showError('Error al cargar la lista de acudientes', {
+            title: 'Error de Conexión',
+            duration: 5000
+        });
+    }
+}
+
+async function guardarAcudiente() {
+    try {
+        const nombres = document.getElementById('acudiente_nombres').value.trim();
+        const apellidos = document.getElementById('acudiente_apellidos').value.trim();
+        const documento = document.getElementById('acudiente_documento').value.trim();
+        const telefono = document.getElementById('acudiente_telefono').value.trim();
+        const email = document.getElementById('acudiente_email').value.trim();
+        
+        // Validación básica
+        if (!nombres || !apellidos || !documento || !telefono) {
+            showWarning('Complete los campos obligatorios del acudiente', {
+                title: 'Campos Requeridos',
+                duration: 5000
+            });
+            return;
+        }
+        
+        const response = await fetch('/admin/api/acudientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                nombres,
+                apellidos,
+                documento,
+                telefono,
+                email
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            showSuccess('Acudiente registrado exitosamente', {
+                title: '¡Acudiente Creado!',
+                duration: 4000
+            });
+            
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalAcudiente'));
+            modal.hide();
+            
+            // Recargar lista de acudientes
+            cargarAcudientes();
+        } else {
+            throw new Error(data.message || 'Error al registrar acudiente');
+        }
+    } catch (error) {
+        console.error('Error guardando acudiente:', error);
+        showError(error.message, {
+            title: 'Error al Crear Acudiente',
+            duration: 6000
+        });
+    }
+}
+
+// ========== FUNCIÓN DE REGISTRO CORREGIDA ==========
+
+async function registrarEstudiante() {
+    console.log('=== INICIANDO REGISTRO DE ESTUDIANTE ===');
+    
+    // Validar paso final
+    if (!validarPasoActual()) {
+        console.log('❌ Validación falló en el paso final');
+        return;
+    }
+    
+    // Guardar datos del último paso
+    guardarDatosPaso();
+    
+    // VALIDACIÓN CORREGIDA DE CAMPOS REQUERIDOS
+    const camposRequeridos = [
+        'primer_nombre', 'primer_apellido', 'documento', 'tipo_documento', 'grado', 'seccion',
+        'ciudad', 'barrio', 'direccion', 'fecha_nacimiento', 'genero',
+        'nacionalidad', 'estrato'
+    ];
+    
+    let camposFaltantes = [];
+    camposRequeridos.forEach(campo => {
+        if (!datosEstudiante[campo] || datosEstudiante[campo].toString().trim() === '') {
+            camposFaltantes.push(campo);
+        }
+    });
+    
+    if (camposFaltantes.length > 0) {
+        showError(`Faltan campos requeridos: ${camposFaltantes.join(', ')}`, {
+            title: 'Formulario Incompleto',
+            duration: 8000
+        });
+        return;
+    }
+    
+    // Validar que los nombres y apellidos combinados no estén vacíos
+    if (!datosEstudiante.nombres.trim()) {
+        showWarning('Debe ingresar al menos un nombre', {
+            title: 'Nombre Requerido',
+            duration: 5000
+        });
+        return;
+    }
+    
+    if (!datosEstudiante.apellidos.trim()) {
+        showWarning('Debe ingresar al menos un apellido', {
+            title: 'Apellido Requerido',
+            duration: 5000
+        });
+        return;
+    }
+    
+    // Validar grado
+    const grado = parseInt(datosEstudiante.grado);
+    if (isNaN(grado) || grado < 1 || grado > 11) {
+        showError('El grado debe ser un número entre 1 y 11', {
+            title: 'Grado Inválido',
+            duration: 5000
+        });
+        return;
+    }
+    
+    // Mostrar notificación de carga
+    const loadingId = showLoading('Registrando estudiante en el sistema...', {
+        title: 'Procesando Registro',
+        icon: 'user-plus'
+    });
+    
+    try {
+        // SOLUCIÓN TEMPORAL: Generar email único si está vacío
+        let emailParaEnvio = datosEstudiante.email || '';
+        if (!emailParaEnvio.trim()) {
+            // Generar email único basado en documento y timestamp
+            const timestamp = Date.now();
+            emailParaEnvio = `estudiante.${datosEstudiante.documento}.${timestamp}@educontrol.local`;
+        }
+
+        // DATOS CORREGIDOS PARA EL API - VERSION MEJORADA
+        const datosParaEnviar = {
+            nombres: datosEstudiante.nombres,
+            apellidos: datosEstudiante.apellidos,
+            documento: datosEstudiante.documento,
+            tipo_documento: datosEstudiante.tipo_documento,
+            grado: grado,
+            seccion: datosEstudiante.seccion,
+            ciudad: datosEstudiante.ciudad,
+            barrio: datosEstudiante.barrio,
+            direccion: datosEstudiante.direccion,
+            fecha_nacimiento: datosEstudiante.fecha_nacimiento,
+            genero: datosEstudiante.genero,
+            telefono: datosEstudiante.telefono || '',
+            email: emailParaEnvio, // Email único garantizado
+            nacionalidad: datosEstudiante.nacionalidad,
+            estrato: parseInt(datosEstudiante.estrato)
+        };
+        
+        console.log('Datos que se enviarán al API:', datosParaEnviar);
+        
+        const response = await fetch('/admin/api/estudiantes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify(datosParaEnviar)
+        });
+        
+        // Mostrar carga en botón también
+        const btnRegistrar = document.getElementById('btnRegistrar');
+        const originalText = btnRegistrar.innerHTML;
+        btnRegistrar.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Registrando...';
+        btnRegistrar.disabled = true;
+        
+        console.log('Respuesta del servidor:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            // Remover notificación de carga
+            if (window.notificationSystem && loadingId) {
+                window.notificationSystem.remove(loadingId);
+            }
+            
+            const errorText = await response.text();
+            console.error('Error del servidor:', errorText);
+            
+            try {
+                const errorData = JSON.parse(errorText);
+                throw new Error(errorData.error || `Error ${response.status}: ${response.statusText}`);
+            } catch (parseError) {
+                throw new Error(`Error ${response.status}: ${errorText || response.statusText}`);
+            }
+        }
+        
+        const data = await response.json();
+        console.log('Respuesta exitosa:', data);
+        
+        // Remover notificación de carga
+        if (window.notificationSystem && loadingId) {
+            window.notificationSystem.remove(loadingId);
+        }
+        
+        if (data.error) {
+            throw new Error(data.error);
+        }
+        
+        // Mostrar éxito con información del estudiante
+        showSuccess(`¡${data.estudiante.nombre} ${data.estudiante.apellido} ha sido registrado exitosamente!`, {
+            title: '🎓 ¡Estudiante Registrado!',
+            duration: 8000,
+            actions: [
+                {
+                    text: 'Ver Lista',
+                    handler: 'window.location.href="/admin/estudiantes"'
+                },
+                {
+                    text: 'Agregar Otro',
+                    handler: 'location.reload()'
+                }
+            ]
+        });
+        
+        // Limpiar formulario
+        document.getElementById('nuevo-estudiante-form').reset();
+        datosEstudiante = {};
+        
+        // Volver al paso 1
+        pasoActual = 1;
+        mostrarPaso(1);
+        actualizarProgreso();
+        
+        // Redirigir después de 5 segundos
+        setTimeout(function() {
+            window.location.href = '/admin/estudiantes';
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Error registrando estudiante:', error);
+        
+        // Remover notificación de carga si existe
+        if (window.notificationSystem && loadingId) {
+            window.notificationSystem.remove(loadingId);
+        }
+        
+        let errorMessage = error.message;
+        let errorTitle = 'Error al Registrar';
+        
+        // Manejar errores específicos con títulos apropiados
+        if (error.message.includes('documento ya está registrado')) {
+            errorMessage = 'Este número de documento ya está registrado en el sistema';
+            errorTitle = 'Documento Duplicado';
+        } else if (error.message.includes('email ya está registrado')) {
+            errorMessage = 'Este correo electrónico ya está registrado en el sistema';
+            errorTitle = 'Email Duplicado';
+        } else if (error.message.includes('Campos requeridos faltantes')) {
+            errorMessage = 'Faltan campos requeridos: ' + error.message.split(':')[1]?.trim();
+            errorTitle = 'Campos Incompletos';
+        } else if (error.message.includes('grado debe estar entre')) {
+            errorMessage = 'El grado debe ser un número entre 1 y 11';
+            errorTitle = 'Grado Inválido';
+        } else if (error.message.includes('Unexpected token') || error.message.includes('JSON')) {
+            errorMessage = 'Error de comunicación con el servidor. Por favor, inténtelo nuevamente.';
+            errorTitle = 'Error de Conexión';
+        }
+        
+        showError(errorMessage, {
+            title: errorTitle,
+            duration: 10000,
+            actions: [
+                {
+                    text: 'Reintentar',
+                    handler: 'registrarEstudiante()'
+                }
+            ]
+        });
+    } finally {
+        // Restaurar botón siempre
+        const btnRegistrar = document.getElementById('btnRegistrar');
+        if (btnRegistrar) {
+            btnRegistrar.innerHTML = originalText || '<i class="fas fa-save me-2"></i>Registrar Estudiante';
             btnRegistrar.disabled = false;
         }
+    }
+}
+
+// ========== FUNCIONES AUXILIARES MEJORADAS ==========
+
+function showNotification(message, type = 'info', options = {}) {
+    // Usar el sistema unificado si está disponible
+    if (window.notificationSystem) {
+        return window.notificationSystem.show(message, type, options);
+    }
+    
+    // Fallback al sistema anterior si no está disponible
+    console.log(`Notificación ${type}: ${message}`);
+    
+    // Crear notificación moderna como fallback
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <div class="notification-icon">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'danger' ? 'times-circle' : 'info-circle'}"></i>
+            </div>
+            <div class="notification-text">
+                <div class="notification-title">${type === 'success' ? '¡Éxito!' : type === 'warning' ? 'Advertencia' : type === 'danger' ? 'Error' : 'Información'}</div>
+                <div class="notification-message">${message}</div>
+            </div>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="notification-progress"></div>
+        </div>
+    `;
+    
+    // Crear contenedor si no existe
+    let container = document.querySelector('.notifications-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.className = 'notifications-container';
+        document.body.appendChild(container);
+    }
+    
+    container.appendChild(notification);
+    
+    // Mostrar con animación
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Eliminar después de 5 segundos
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+    
+    return notification;
+}
+
+// Funciones específicas mejoradas
+function showSuccess(message, options = {}) {
+    return showNotification(message, 'success', {
+        title: '¡Éxito!',
+        duration: 6000,
+        ...options
     });
+}
 
-    // Validar datos completos
-    function validarDatosCompletos() {
-        const camposObligatorios = [
-            'nombres', 'apellidos', 'tipo_documento', 'documento', 
-            'fecha_nacimiento', 'genero', 'grado', 'seccion', 'fecha_ingreso'
-        ];
-
-        return camposObligatorios.every(campo => {
-            const valor = datosEstudiante[campo];
-            return valor && valor.toString().trim() !== '';
-        });
-    }
-
-    // Función para capitalizar nombres
-    function capitalizarTexto(input) {
-        input.addEventListener('blur', function() {
-            this.value = this.value.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
-        });
-    }
-
-    // Aplicar capitalización a campos de nombres
-    capitalizarTexto(document.getElementById('nombres'));
-    capitalizarTexto(document.getElementById('apellidos'));
-    capitalizarTexto(document.getElementById('institucion_anterior'));
-
-    // Formateo de teléfonos
-    function formatearTelefono(input) {
-        input.addEventListener('input', function() {
-            let valor = this.value.replace(/\D/g, '');
-            
-            if (valor.length <= 10) {
-                // Formato: 300 123 4567
-                if (valor.length > 6) {
-                    valor = valor.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-                } else if (valor.length > 3) {
-                    valor = valor.replace(/(\d{3})(\d{3})/, '$1 $2');
-                }
-            }
-            
-            this.value = valor;
-        });
-    }
-
-    // Aplicar formato a campos de teléfono
-    formatearTelefono(document.getElementById('telefono'));
-    formatearTelefono(document.getElementById('contacto_emergencia'));
-    formatearTelefono(document.getElementById('acudiente_telefono'));
-
-    // Agregar validación de año para fecha de nacimiento
-    document.getElementById('fecha_nacimiento').addEventListener('input', limitarAnio);
-
-    // Atajos de teclado
-    document.addEventListener('keydown', function(e) {
-        // Ctrl + Enter para siguiente paso o guardar
-        if (e.ctrlKey && e.key === 'Enter') {
-            e.preventDefault();
-            if (pasoActual < totalPasos) {
-                pasoSiguiente();
-            } else {
-                document.getElementById('nuevo-estudiante-form').dispatchEvent(new Event('submit'));
-            }
-        }
-        
-        // Escape para paso anterior
-        if (e.key === 'Escape' && pasoActual > 1) {
-            e.preventDefault();
-            pasoAnterior();
-        }
+function showError(message, options = {}) {
+    return showNotification(message, 'error', {
+        title: 'Error',
+        duration: 8000,
+        ...options
     });
+}
 
-    // Función showNotification (placeholder - debes implementar según tu sistema)
-    function showNotification(message, type) {
-        console.log(`${type.toUpperCase()}: ${message}`);
-        // Aquí implementarías tu sistema de notificaciones
-    }
+function showWarning(message, options = {}) {
+    return showNotification(message, 'warning', {
+        title: 'Advertencia',
+        duration: 7000,
+        ...options
+    });
+}
+
+function showInfo(message, options = {}) {
+    return showNotification(message, 'info', {
+        title: 'Información',
+        duration: 5000,
+        ...options
+    });
+}
+
+function showLoading(message, options = {}) {
+    return showNotification(message, 'info', {
+        title: 'Procesando...',
+        persistent: true,
+        closable: false,
+        icon: 'spinner',
+        ...options
+    });
+}
+
+// ========== EVENT LISTENERS ==========
+
+document.getElementById('nuevo-estudiante-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    registrarEstudiante();
+});
+
+// ========== EXPORTAR FUNCIONES PARA HTML ==========
+
+// Hacer funciones accesibles desde el HTML
+window.pasoSiguiente = pasoSiguiente;
+window.pasoAnterior = pasoAnterior;
+window.abrirModalAcudiente = abrirModalAcudiente;
+window.guardarAcudiente = guardarAcudiente;
+window.cargarBarrios = cargarBarrios;
+window.limitarAnio = limitarAnio;
 </script>
 
 <style>
-    /* Variables CSS personalizadas */
-    :root {
-        --primary-color: #3b82f6;
-        --success-color: #10b981;
-        --danger-color: #ef4444;
-        --warning-color: #f59e0b;
-        --info-color: #06b6d4;
-        --light-bg: #f8fafc;
-        --border-radius: 12px;
-        --border-color: #e2e8f0;
-        --success-border: #10b981;
-        --danger-border: #ef4444;
-        --text-muted: #64748b;
-    }
+/* ========== ESTILOS MEJORADOS PARA EL FORMULARIO ========== */
 
-    /* Reset y base */
-    .paso-form {
-        min-height: 400px;
-        background: #f8fafc;
-        padding: 2rem;
-        border-radius: var(--border-radius);
-    }
-
-    .progress {
-        background-color: rgba(59, 130, 246, 0.1);
-        border-radius: 10px;
-    }
-
-    .progress-bar {
-        background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-        transition: width 0.6s ease;
-        border-radius: 10px;
-    }
-
-    /* Header con gradiente */
-    .form-header-section {
-        background: linear-gradient(135deg, #3b82f6, #1e40af);
-        color: white;
-        padding: 1.5rem 2rem;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-        margin: -2rem -2rem 2rem -2rem;
-    }
-
-    .form-header-section h6 {
-        margin: 0;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    /* Estilos de labels modernos */
-    .form-label {
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-        font-size: 0.875rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .form-label i {
-        color: var(--text-muted);
-        font-size: 1rem;
-    }
-
-    .text-danger {
-        color: var(--danger-color) !important;
-    }
-
-    /* SOLUCIÓN DEFINITIVA PARA CHECKMARKS */
+/* Variables CSS adicionales */
+:root {
+    --form-primary: #8E2DE2;
+    --form-success: #10B981;
+    --form-warning: #F59E0B;
+    --form-danger: #EF4444;
+    --form-info: #3B82F6;
     
-    /* Remover TODOS los background-images automáticos */
-    .form-control,
-    .form-select {
-        background-image: none !important;
-        padding-right: 40px;
-        border: 2px solid var(--border-color);
-        border-radius: var(--border-radius);
-        padding: 0.75rem 1rem;
-        font-size: 0.875rem;
-        transition: all 0.2s ease-in-out;
-        background-color: white;
-    }
+    --form-bg: rgba(255, 255, 255, 0.98);
+    --form-border: rgba(142, 45, 226, 0.15);
+    --form-shadow: 0 8px 32px rgba(142, 45, 226, 0.12);
     
-    /* Eliminar pseudo-elementos completamente */
-    .form-control::after,
-    .form-control::before,
-    .form-select::after,
-    .form-select::before,
-    input::after,
-    input::before,
-    select::after,
-    select::before,
-    textarea::after,
-    textarea::before {
-        display: none !important;
-        content: none !important;
-    }
+    --form-radius: 16px;
+    --form-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    /* Estados de focus */
-    .form-control:focus,
-    .form-select:focus {
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        outline: none;
-        background-color: white;
-    }
+/* Card de progreso mejorado */
+.progress-card {
+    background: linear-gradient(135deg, rgba(142, 45, 226, 0.05), rgba(74, 0, 224, 0.02));
+    border: 1px solid var(--form-border);
+    box-shadow: var(--form-shadow);
+}
 
-    /* Contenedor para input con validación */
-    .input-with-validation {
-        position: relative;
-        display: block;
-        width: 100%;
-    }
+.progress-container {
+    position: relative;
+}
 
-    /* Ícono de validación personalizado */
-    .validation-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 18px;
-        font-weight: bold;
-        pointer-events: none;
-        z-index: 10;
-        display: none;
-        width: 20px;
-        height: 20px;
+.progress {
+    background: rgba(142, 45, 226, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, var(--form-primary), #4A00E0);
+    transition: width 0.6s ease;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.5;
+    transition: var(--form-transition);
+}
+
+.progress-step.active {
+    opacity: 1;
+    color: var(--form-primary);
+}
+
+.progress-step.completed {
+    opacity: 1;
+    color: var(--form-success);
+}
+
+.step-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(142, 45, 226, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    transition: var(--form-transition);
+    font-size: 14px;
+}
+
+.progress-step.active .step-icon {
+    background: var(--form-primary);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
+}
+
+.progress-step.completed .step-icon {
+    background: var(--form-success);
+    color: white;
+}
+
+.step-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Card del formulario */
+.form-card {
+    background: var(--form-bg);
+    border: 1px solid var(--form-border);
+    box-shadow: var(--form-shadow);
+    backdrop-filter: blur(20px);
+}
+
+.form-header {
+    background: linear-gradient(135deg, rgba(142, 45, 226, 0.08), rgba(74, 0, 224, 0.04));
+    border-bottom: 1px solid var(--form-border);
+}
+
+/* Pasos del formulario */
+.paso-form {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--form-transition);
+}
+
+.paso-visible {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.paso-hidden {
+    display: none;
+}
+
+/* Headers de sección */
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(142, 45, 226, 0.05), rgba(74, 0, 224, 0.02));
+    border-radius: var(--form-radius);
+    border: 1px solid var(--form-border);
+}
+
+.section-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--form-primary), #4A00E0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    margin-right: 1rem;
+    box-shadow: 0 8px 25px rgba(142, 45, 226, 0.3);
+}
+
+.section-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.section-subtitle {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* Secciones del formulario */
+.form-section {
+    margin-bottom: 2.5rem;
+}
+
+.subsection-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--form-primary);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(142, 45, 226, 0.1);
+}
+
+/* Form floating mejorado */
+.form-floating {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: 60px;
+    padding: 1rem 0.75rem;
+    border: 2px solid rgba(142, 45, 226, 0.15);
+    border-radius: var(--form-radius);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    transition: var(--form-transition);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.form-floating > label {
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: var(--form-transition);
+}
+
+.form-floating > .form-control:focus,
+.form-floating > .form-select:focus {
+    border-color: var(--form-primary);
+    box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.15);
+    background: white;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-select:focus ~ label {
+    color: var(--form-primary);
+    opacity: 0.8;
+}
+
+/* Iconos de validación */
+.validation-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 10;
+    transition: var(--form-transition);
+}
+
+.validation-icon.success {
+    color: var(--form-success);
+}
+
+.validation-icon.error {
+    color: var(--form-danger);
+}
+
+/* Estados de validación */
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: var(--form-success);
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: var(--form-danger);
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* Alertas del documento */
+.documento-warning .alert {
+    border-radius: 12px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+/* Display de edad */
+.age-display {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(142, 45, 226, 0.05);
+    border-radius: 8px;
+    text-align: center;
+}
+
+/* Sección de ubicación */
+.location-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(37, 99, 235, 0.02));
+    padding: 1.5rem;
+    border-radius: var(--form-radius);
+    border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* Switches personalizados CORREGIDOS */
+.custom-switch-container {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: rgba(142, 45, 226, 0.05);
+    border-radius: var(--form-radius);
+    border: 1px solid var(--form-border);
+    transition: var(--form-transition);
+    cursor: pointer;
+}
+
+.custom-switch-container:hover {
+    background: rgba(142, 45, 226, 0.08);
+}
+
+.custom-switch-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.switch-slider {
+    width: 48px;
+    height: 24px;
+    background: #ccc;
+    border-radius: 12px;
+    position: relative;
+    transition: var(--form-transition);
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.switch-slider::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: var(--form-transition);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.custom-switch-input:checked + .custom-switch-label .switch-slider {
+    background: var(--form-success);
+}
+
+.custom-switch-input:checked + .custom-switch-label .switch-slider::before {
+    transform: translateX(24px);
+}
+
+.switch-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+/* Botones de navegación */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--form-border);
+    margin-top: 2rem;
+}
+
+.btn-lg {
+    padding: 0.875rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: var(--form-transition);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--form-primary), #4A00E0);
+    border: none;
+    box-shadow: 0 4px 15px rgba(142, 45, 226, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(142, 45, 226, 0.4);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--form-success), #059669);
+    border: none;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.btn-outline-secondary {
+    border: 2px solid var(--text-light);
+    color: var(--text-secondary);
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--text-light);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Notificaciones personalizadas */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 350px;
+    max-width: 450px;
+    z-index: 10000;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: var(--form-transition);
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-radius: var(--form-radius);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.notification-success .notification-content {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+    color: white;
+}
+
+.notification-warning .notification-content {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+    color: white;
+}
+
+.notification-danger .notification-content {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+    color: white;
+}
+
+.notification-info .notification-content {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+    color: white;
+}
+
+.notification-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.notification-message {
+    flex: 1;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2rem;
+    margin-left: 1rem;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.notification-close:hover {
+    opacity: 1;
+}
+
+/* Modal mejorado */
+.modal-content {
+    border-radius: var(--form-radius);
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, rgba(142, 45, 226, 0.08), rgba(74, 0, 224, 0.04));
+    border-bottom: 1px solid var(--form-border);
+    border-radius: var(--form-radius) var(--form-radius) 0 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .section-header {
+        flex-direction: column;
         text-align: center;
-        line-height: 18px;
     }
-
-    .validation-icon.success {
-        color: var(--success-color);
-        display: block;
+    
+    .section-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
     }
-
-    .validation-icon.error {
-        color: var(--danger-color);
-        display: block;
-    }
-
-    /* Para textarea, ajustar posición del ícono */
-    textarea + .validation-icon {
-        top: 20px;
-        transform: none;
-    }
-
-    /* Estados válido/inválido SIN background-image */
-    .form-control.is-valid,
-    .form-select.is-valid {
-        border-color: var(--success-border) !important;
-        background-color: white !important;
-        box-shadow: none !important;
-        background-image: none !important;
-    }
-
-    .form-control.is-invalid,
-    .form-select.is-invalid {
-        border-color: var(--danger-border) !important;
-        background-color: white !important;
-        box-shadow: none !important;
-        background-image: none !important;
-    }
-
-    /* Asegurar que NUNCA hay checkmarks automáticos */
-    .was-validated .form-control:valid,
-    .was-validated .form-select:valid,
-    .form-control.is-valid,
-    .form-select.is-valid,
-    .was-validated .form-control:invalid,
-    .was-validated .form-select:invalid,
-    .form-control.is-invalid,
-    .form-select.is-invalid {
-        background-image: none !important;
-        background-repeat: no-repeat !important;
-        background-position: right calc(0.375em + 0.1875rem) center !important;
-        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important;
-    }
-
-    /* Placeholders */
-    .form-control::placeholder {
-        color: var(--text-muted);
-        opacity: 0.7;
-    }
-
-    /* Alertas de warning */
-    .warning-alert {
-        background-color: #fef3c7;
-        border: 1px solid #fbbf24;
-        color: #92400e;
-        padding: 0.75rem 1rem;
-        border-radius: var(--border-radius);
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-        display: flex;
-        align-items: center;
+    
+    .progress-labels {
         gap: 0.5rem;
     }
-
-    .warning-alert i {
-        color: #f59e0b;
+    
+    .step-label {
+        font-size: 10px;
     }
-
-    /* Helper text */
-    .form-text {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-top: 0.25rem;
+    
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 1rem;
     }
-
-    /* Selects con flecha personalizada */
-    .form-select {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
-        background-repeat: no-repeat !important;
-        background-position: right 1rem center !important;
-        background-size: 16px 12px !important;
-        padding-right: 2.5rem !important;
+    
+    .notification {
+        left: 20px;
+        right: 20px;
+        min-width: auto;
+        max-width: none;
     }
+}
 
-    /* Botones */
-    .btn {
-        border-radius: var(--border-radius);
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        transition: all 0.2s ease-in-out;
+/* Animaciones adicionales */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
     }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 
-    .btn-primary {
-        background: linear-gradient(135deg, #3b82f6, #1e40af);
-        border: none;
-    }
+.paso-visible {
+    animation: slideInRight 0.5s ease-out;
+}
 
-    .btn-primary:hover {
-        background: linear-gradient(135deg, #2563eb, #1d4ed8);
-        transform: translateY(-1px);
-        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-    }
+/* Mejoras visuales para selects - CORREGIDO */
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238E2DE2' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    background-color: rgba(255, 255, 255, 0.8) !important;
+}
 
-    .btn-success {
-        background: linear-gradient(135deg, #10b981, #059669);
-        border: none;
-    }
+.form-select:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%238E2DE2' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat !important;
+    background-color: white !important;
+}
 
-    .btn-success:hover {
-        background: linear-gradient(135deg, #059669, #047857);
-        transform: translateY(-1px);
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-    }
+/* Asegurar que no hay patrones repetitivos */
+.form-floating > .form-select {
+    background-repeat: no-repeat !important;
+    background-attachment: initial !important;
+    background-size: 16px 12px !important;
+}
 
-    /* Modal styles */
-    .modal-content {
-        border-radius: var(--border-radius);
-        border: none;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    }
+/* Focus states mejorados */
+.form-control:focus,
+.form-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(142, 45, 226, 0.15);
+}
 
-    .modal-header {
-        border-bottom: 1px solid var(--border-color);
-        padding: 1.5rem;
-        background: linear-gradient(135deg, #3b82f6, #1e40af);
-        color: white;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-    }
+/* Disabled state */
+.form-control:disabled,
+.form-select:disabled {
+    background-color: rgba(142, 45, 226, 0.05);
+    opacity: 0.6;
+}
 
-    .modal-body {
-        padding: 1.5rem;
-    }
+/* ========== SISTEMA DE NOTIFICACIONES UNIFICADO ========== */
 
-    .modal-footer {
-        border-top: 1px solid var(--border-color);
-        padding: 1.5rem;
-        background-color: #f8fafc;
-        border-radius: 0 0 var(--border-radius) var(--border-radius);
-    }
+:root {
+    --notification-success: linear-gradient(135deg, #10B981, #059669);
+    --notification-error: linear-gradient(135deg, #EF4444, #DC2626);
+    --notification-warning: linear-gradient(135deg, #F59E0B, #D97706);
+    --notification-info: linear-gradient(135deg, #3B82F6, #2563EB);
+    --notification-primary: linear-gradient(135deg, #8E2DE2, #4A00E0);
+    
+    --notification-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --notification-radius: 16px;
+    --notification-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    /* Animaciones */
-    .paso-form {
-        animation: fadeInUp 0.5s ease-out;
-    }
+/* Contenedor de notificaciones */
+.notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    pointer-events: none;
+}
 
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+/* Notificación base */
+.notification {
+    pointer-events: all;
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+    transition: var(--notification-transition);
+    max-width: 420px;
+    min-width: 320px;
+}
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        .paso-form {
-            min-height: auto;
-            padding: 1rem;
-        }
-        
-        .form-header-section {
-            margin: -1rem -1rem 1rem -1rem;
-            padding: 1rem;
-        }
-        
-        .validation-icon {
-            right: 10px;
-            font-size: 16px;
-        }
-    }
+.notification.show {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
 
-    /* Grid mejorado */
-    .row {
-        margin-left: -0.75rem;
-        margin-right: -0.75rem;
-    }
+.notification.hide {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+}
 
-    .row > * {
-        padding-left: 0.75rem;
-        padding-right: 0.75rem;
-    }
+/* Contenido de la notificación */
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    padding: 18px 20px;
+    border-radius: var(--notification-radius);
+    box-shadow: var(--notification-shadow);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
 
-    .mb-3 {
-        margin-bottom: 1.5rem !important;
-    }
+/* Efecto de brillo sutil */
+.notification-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
 
-    /* Estilos para los grupos de opciones en selects */
-    optgroup {
-        font-weight: 600;
-        color: #4b5563;
-    }
+.notification:hover .notification-content::before {
+    left: 100%;
+}
 
-    optgroup option {
-        font-weight: normal;
-        padding-left: 1.5rem;
-    }
+/* Tipos de notificación */
+.notification-success .notification-content {
+    background: var(--notification-success);
+    color: white;
+}
 
-    /* Mejorar el espaciado en los selects */
-    select.form-select {
-        padding-top: 0.75rem;
-        padding-bottom: 0.75rem;
-    }
+.notification-error .notification-content,
+.notification-danger .notification-content {
+    background: var(--notification-error);
+    color: white;
+}
 
-    /* Estilo para selects deshabilitados */
-    select.form-select:disabled {
-        background-color: #f3f4f6;
-        border-color: #e5e7eb;
-        cursor: not-allowed;
-    }
+.notification-warning .notification-content {
+    background: var(--notification-warning);
+    color: white;
+}
 
-    /* Mejorar la visualización de los campos de ubicación */
-    .location-fields {
-        background-color: #f8fafc;
-        padding: 1.5rem;
-        border-radius: var(--border-radius);
-        margin-bottom: 1.5rem;
-        border: 1px solid var(--border-color);
-    }
+.notification-info .notification-content {
+    background: var(--notification-info);
+    color: white;
+}
 
-    .location-fields .form-header-section {
-        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+.notification-primary .notification-content {
+    background: var(--notification-primary);
+    color: white;
+}
+
+/* Icono de la notificación */
+.notification-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Contenido del texto */
+.notification-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-title {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.notification-message {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.95;
+    margin: 0;
+}
+
+/* Botón de cerrar */
+.notification-close {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: inherit;
+    font-size: 14px;
+    margin-left: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--notification-transition);
+    opacity: 0.8;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Barra de progreso */
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 0 var(--notification-radius) var(--notification-radius);
+    transform-origin: left;
+    animation: progressBar 5s linear forwards;
+}
+
+@keyframes progressBar {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+/* Acciones adicionales */
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.notification-action {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--notification-transition);
+    text-decoration: none;
+}
+
+.notification-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: inherit;
+    transform: translateY(-1px);
+}
+
+/* Estados especiales */
+.notification.persistent .notification-progress {
+    display: none;
+}
+
+.notification.loading .notification-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive para notificaciones */
+@media (max-width: 768px) {
+    .notifications-container {
+        left: 20px;
+        right: 20px;
+        max-width: none;
     }
+    
+    .notification {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .notification-content {
+        padding: 16px;
+    }
+    
+    .notification-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        margin-right: 12px;
+    }
+    
+    .notification-title {
+        font-size: 15px;
+    }
+    
+    .notification-message {
+        font-size: 13px;
+    }
+}
 </style>
-{% endblock %} validación Bootstrap
-        const forms = document.querySelectorAll('.needs-validation');
-        forms.forEach(form => {
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            });
-        });
-    }
-
-    // Navegación entre pasos
-    function pasoSiguiente() {
-        if (validarPasoActual()) {
-            guardarDatosPaso();
-            
-            if (pasoActual < totalPasos) {
-                pasoActual++;
-                mostrarPaso(pasoActual);
-                actualizarProgreso();
-            }
-        }
-    }
-
-    function pasoAnterior() {
-        if (pasoActual > 1) {
-            pasoActual--;
-            mostrarPaso(pasoActual);
-            actualizarProgreso();
-        }
-    }
-
-    // Mostrar paso específico
-    function mostrarPaso(paso) {
-        // Ocultar todos los pasos
-        document.querySelectorAll('.paso-form').forEach(div => {
-            div.style.display = 'none';
-        });
-        
-        // Mostrar paso actual
-        document.getElementById(`paso${paso}`).style.display = 'block';
-        
-        // Actualizar botones
-        document.getElementById('btnAnterior').style.display = paso > 1 ? 'inline-block' : 'none';
-        document.getElementById('btnSiguiente').style.display = paso < totalPasos ? 'inline-block' : 'none';
-        document.getElementById('btnRegistrar').style.display = paso === totalPasos ? 'inline-block' : 'none';
-    }
-
-    // Actualizar barra de progreso
-    function actualizarProgreso() {
-        const progreso = (pasoActual / totalPasos) * 100;
-        document.getElementById('barraProgreso').style.width = `${progreso}%`;
-        document.getElementById('pasoActual').textContent = pasoActual;
-        
-        // Actualizar etiquetas
-        for (let i = 1; i <= totalPasos; i++) {
-            const etiqueta = document.getElementById(`etiqueta${i}`);
-            if (i <= pasoActual) {
-                etiqueta.className = 'text-primary fw-bold';
-            } else {
-                etiqueta.className = 'text-muted';
-            }
-        }
-    }
-
-    // Validar paso actual
-    function validarPasoActual() {
-        const paso = document.getElementById(`paso${pasoActual}`);
-        const inputs = paso.querySelectorAll('input[required], select[required]');
-        let valido = true;
-
-        inputs.forEach(input => {
-            const container = input.closest('.input-with-validation');
-            const icon = container?.querySelector('.validation-icon');
-            
-            if (!input.checkValidity()) {
-                input.classList.add('is-invalid');
-                input.classList.remove('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✕';
-                    icon.className = 'validation-icon error';
-                }
-                valido = false;
-            } else {
-                input.classList.remove('is-invalid');
-                input.classList.add('is-valid');
-                if (icon) {
-                    icon.innerHTML = '✓';
-                    icon.className = 'validation-icon success';
-                }
-            }
-        });
-
-        if (!valido) {
-            showNotification('Por favor complete todos los campos obligatorios', 'warning');
-        }
-
-        return valido;
-    }
-
-    // Guardar datos del paso actual
-    function guardarDatosPaso() {
-        const paso = document.getElementById(`paso${pasoActual}`);
-        const inputs = paso.querySelectorAll('input, select, textarea');
-        
-        inputs.forEach(input => {
-            if (input.type === 'checkbox') {
-                datosEstudiante[input.id] = input.checked;
-            } else {
-                datosEstudiante[input.id] = input.value;
-            }
-        });
-    }
-
-    // Configurar
+{% endblock %}

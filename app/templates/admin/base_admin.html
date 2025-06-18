@@ -770,6 +770,232 @@
     }
     </style>
     {% block additional_css %}{% endblock %}
+    <style>
+/* ========== SISTEMA DE NOTIFICACIONES UNIFICADO ========== */
+:root {
+    --notification-success: linear-gradient(135deg, #10B981, #059669);
+    --notification-error: linear-gradient(135deg, #EF4444, #DC2626);
+    --notification-warning: linear-gradient(135deg, #F59E0B, #D97706);
+    --notification-info: linear-gradient(135deg, #3B82F6, #2563EB);
+    --notification-primary: linear-gradient(135deg, #8E2DE2, #4A00E0);
+    
+    --notification-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    --notification-radius: 16px;
+    --notification-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notifications-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    pointer-events: none;
+}
+
+.notification {
+    pointer-events: all;
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+    transition: var(--notification-transition);
+    max-width: 420px;
+    min-width: 320px;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+}
+
+.notification.hide {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+}
+
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    padding: 18px 20px;
+    border-radius: var(--notification-radius);
+    box-shadow: var(--notification-shadow);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.notification:hover .notification-content::before {
+    left: 100%;
+}
+
+.notification-success .notification-content {
+    background: var(--notification-success);
+    color: white;
+}
+
+.notification-error .notification-content,
+.notification-danger .notification-content {
+    background: var(--notification-error);
+    color: white;
+}
+
+.notification-warning .notification-content {
+    background: var(--notification-warning);
+    color: white;
+}
+
+.notification-info .notification-content {
+    background: var(--notification-info);
+    color: white;
+}
+
+.notification-primary .notification-content {
+    background: var(--notification-primary);
+    color: white;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-right: 14px;
+    animation: iconPulse 2s infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.notification-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.notification-title {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.notification-message {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.95;
+    margin: 0;
+}
+
+.notification-close {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: inherit;
+    font-size: 14px;
+    margin-left: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--notification-transition);
+    opacity: 0.8;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 0 0 var(--notification-radius) var(--notification-radius);
+    transform-origin: left;
+    animation: progressBar 5s linear forwards;
+}
+
+@keyframes progressBar {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.notification-action {
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--notification-transition);
+    text-decoration: none;
+}
+
+.notification-action:hover {
+    background: rgba(255, 255, 255, 0.3);
+    color: inherit;
+    transform: translateY(-1px);
+}
+
+/* Ocultar alertas flash tradicionales para evitar duplicación */
+.alert.alert-dismissible {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .notifications-container {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+    }
+    
+    .notification {
+        min-width: auto;
+        max-width: none;
+    }
+    
+    .notification-content {
+        padding: 16px;
+    }
+}
+    </style>
 </head>
 <body>
     <!-- Mostrar alertas Flask si existen -->
@@ -1155,6 +1381,294 @@
                 }
             }, 5000);
         }
+    </script>
+    <script>
+/**
+ * Sistema Unificado de Notificaciones para EduControl
+ */
+class NotificationSystem {
+    constructor() {
+        this.container = this.createContainer();
+        this.notifications = new Map();
+        this.notificationId = 0;
+    }
+
+    createContainer() {
+        let container = document.querySelector('.notifications-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notifications-container';
+            document.body.appendChild(container);
+        }
+        return container;
+    }
+
+    show(message, type = 'info', options = {}) {
+        const config = {
+            title: this.getDefaultTitle(type),
+            duration: 5000,
+            closable: true,
+            persistent: false,
+            actions: [],
+            icon: this.getDefaultIcon(type),
+            ...options
+        };
+
+        const notification = this.createNotification(message, type, config);
+        const id = ++this.notificationId;
+        
+        this.notifications.set(id, notification);
+        this.container.appendChild(notification);
+
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
+
+        if (!config.persistent && config.duration > 0) {
+            setTimeout(() => {
+                this.remove(id);
+            }, config.duration);
+        }
+
+        return id;
+    }
+
+    createNotification(message, type, config) {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+
+        const hasActions = config.actions && config.actions.length > 0;
+        
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i class="fas fa-${config.icon}"></i>
+                </div>
+                <div class="notification-text">
+                    <div class="notification-title">${config.title}</div>
+                    <div class="notification-message">${message}</div>
+                    ${hasActions ? `
+                        <div class="notification-actions">
+                            ${config.actions.map(action => `
+                                <button class="notification-action" onclick="${action.handler}">${action.text}</button>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+                ${config.closable ? `
+                    <button class="notification-close" onclick="notificationSystem.removeElement(this.closest('.notification'))">
+                        <i class="fas fa-times"></i>
+                    </button>
+                ` : ''}
+                ${!config.persistent ? '<div class="notification-progress"></div>' : ''}
+            </div>
+        `;
+
+        return notification;
+    }
+
+    remove(id) {
+        const notification = this.notifications.get(id);
+        if (notification) {
+            this.removeElement(notification);
+            this.notifications.delete(id);
+        }
+    }
+
+    removeElement(element) {
+        if (element && element.parentNode) {
+            element.classList.add('hide');
+            setTimeout(() => {
+                if (element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 300);
+        }
+    }
+
+    getDefaultTitle(type) {
+        const titles = {
+            success: '¡Éxito!',
+            error: 'Error',
+            danger: 'Error',
+            warning: 'Advertencia',
+            info: 'Información',
+            primary: 'Notificación'
+        };
+        return titles[type] || 'Notificación';
+    }
+
+    getDefaultIcon(type) {
+        const icons = {
+            success: 'check-circle',
+            error: 'times-circle',
+            danger: 'times-circle',
+            warning: 'exclamation-triangle',
+            info: 'info-circle',
+            primary: 'bell'
+        };
+        return icons[type] || 'bell';
+    }
+
+    success(message, options = {}) {
+        return this.show(message, 'success', options);
+    }
+
+    error(message, options = {}) {
+        return this.show(message, 'error', options);
+    }
+
+    warning(message, options = {}) {
+        return this.show(message, 'warning', options);
+    }
+
+    info(message, options = {}) {
+        return this.show(message, 'info', options);
+    }
+
+    loading(message, options = {}) {
+        return this.show(message, 'info', {
+            persistent: true,
+            closable: false,
+            icon: 'spinner',
+            title: 'Cargando...',
+            ...options
+        });
+    }
+}
+
+// Crear instancia global
+const notificationSystem = new NotificationSystem();
+
+// Funciones globales para compatibilidad
+function showNotification(message, type = 'info', options = {}) {
+    return notificationSystem.show(message, type, options);
+}
+
+function showSuccess(message, options = {}) {
+    return notificationSystem.success(message, options);
+}
+
+function showError(message, options = {}) {
+    return notificationSystem.error(message, options);
+}
+
+function showWarning(message, options = {}) {
+    return notificationSystem.warning(message, options);
+}
+
+function showInfo(message, options = {}) {
+    return notificationSystem.info(message, options);
+}
+
+function showLoading(message, options = {}) {
+    return notificationSystem.loading(message, options);
+}
+
+// Exportar para uso global
+window.notificationSystem = notificationSystem;
+window.showNotification = showNotification;
+window.showSuccess = showSuccess;
+window.showError = showError;
+window.showWarning = showWarning;
+window.showInfo = showInfo;
+window.showLoading = showLoading;
+
+// Convertir mensajes flash de Flask al nuevo sistema
+document.addEventListener('DOMContentLoaded', function() {
+    // Convertir alertas Bootstrap existentes
+    const existingAlerts = document.querySelectorAll('.alert:not(.notification)');
+    existingAlerts.forEach(alert => {
+        const message = alert.textContent.trim();
+        let type = 'info';
+        
+        if (alert.classList.contains('alert-success')) type = 'success';
+        else if (alert.classList.contains('alert-danger')) type = 'error';
+        else if (alert.classList.contains('alert-warning')) type = 'warning';
+        else if (alert.classList.contains('alert-info')) type = 'info';
+        
+        if (message) {
+            showNotification(message, type, {
+                duration: 6000
+            });
+            alert.remove(); // Remover la alerta original
+        }
+    });
+    
+    console.log('✅ Sistema de Notificaciones Unificado cargado correctamente');
+});
+
+// EJEMPLOS DE USO EN DIFERENTES PÁGINAS:
+
+// En formularios de registro/edición:
+function onFormSuccess(entityName) {
+    showSuccess(`${entityName} registrado exitosamente`, {
+        title: '¡Registro Completado!',
+        duration: 6000,
+        actions: [
+            {
+                text: 'Ver Lista',
+                handler: `window.location.href='/admin/${entityName.toLowerCase()}s'`
+            },
+            {
+                text: 'Agregar Otro',
+                handler: 'location.reload()'
+            }
+        ]
+    });
+}
+
+// En eliminaciones:
+function onDeleteSuccess(entityName) {
+    showSuccess(`${entityName} eliminado correctamente`, {
+        title: 'Elemento Eliminado',
+        duration: 4000
+    });
+}
+
+// En errores de validación:
+function onValidationError(errors) {
+    showWarning(`Complete los siguientes campos: ${errors.join(', ')}`, {
+        title: 'Formulario Incompleto',
+        duration: 8000
+    });
+}
+
+// En errores de conexión:
+function onConnectionError() {
+    showError('Error de conexión con el servidor. Inténtelo nuevamente.', {
+        title: 'Error de Conexión',
+        duration: 10000,
+        actions: [
+            {
+                text: 'Reintentar',
+                handler: 'location.reload()'
+            }
+        ]
+    });
+}
+
+// En procesos largos:
+function processLongOperation() {
+    const loadingId = showLoading('Procesando información, por favor espere...', {
+        title: 'Generando Reporte',
+        icon: 'chart-bar'
+    });
+    
+    // Simular proceso largo
+    setTimeout(() => {
+        notificationSystem.remove(loadingId);
+        showSuccess('Reporte generado exitosamente', {
+            title: '¡Proceso Completado!',
+            actions: [
+                {
+                    text: 'Descargar',
+                    handler: 'downloadReport()'
+                }
+            ]
+        });
+    }, 3000);
+}
     </script>
     {% block additional_js %}{% endblock %}
 </body>

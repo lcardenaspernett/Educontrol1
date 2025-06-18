@@ -314,8 +314,8 @@ def api_estudiantes():
         page = int(request.args.get('page', 1))
         per_page = int(request.args.get('per_page', 10))
         
-        # Query base
-        query = Usuario.query.filter_by(rol='alumno')
+        # Query base - SOLO estudiantes activos (para que no aparezcan los eliminados)
+        query = Usuario.query.filter_by(rol='alumno', activo=True)
         
         # Aplicar filtros
         if grado:
@@ -363,98 +363,322 @@ def api_estudiantes():
 @admin_bp.route('/api/estudiantes', methods=['POST'])
 @login_required
 def api_crear_estudiante():
-    """API endpoint para crear nuevo estudiante"""
+    """API endpoint para crear nuevo estudiante - SOLUCION DEFINITIVA"""
     if not verificar_admin():
         return jsonify({'error': 'Acceso no autorizado'}), 403
     
     try:
+        # Obtener datos
         data = request.get_json()
-        
+        if not data:
+            return jsonify({'error': 'No se recibieron datos en el cuerpo de la petición'}), 400
+            
+        print(f"📥 Datos recibidos: {data}")  # Debug
+            
         # Validar campos requeridos
-        campos_requeridos = ['nombres', 'apellidos', 'documento', 'grado', 'seccion']
-        for campo in campos_requeridos:
-            if not data.get(campo):
-                return jsonify({'error': f'El campo {campo} es requerido'}), 400
+        campos_requeridos = [
+            'nombres', 'apellidos', 'documento', 'grado', 'seccion',
+            'ciudad', 'barrio', 'direccion', 'fecha_nacimiento', 'genero',
+            'nacionalidad', 'estrato'
+        ]
         
+        campos_faltantes = [campo for campo in campos_requeridos if not data.get(campo)]
+        if campos_faltantes:
+            return jsonify({
+                'error': f'Campos requeridos faltantes: {", ".join(campos_faltantes)}'
+            }), 400
+            
+        # Validar tipo de documento
+        if not data.get('tipo_documento'):
+            return jsonify({'error': 'El tipo de documento es requerido'}), 400
+            
+        # Validar grado
+        try:
+            grado = int(data['grado'])
+            if grado < 1 or grado > 11:
+                return jsonify({'error': 'El grado debe estar entre 1 y 11'}), 400
+        except (ValueError, TypeError):
+            return jsonify({'error': 'El grado debe ser un número válido'}), 400
+            
+        # Validar estrato
+        try:
+            estrato = int(data['estrato'])
+            if estrato < 1 or estrato > 6:
+                return jsonify({'error': 'El estrato debe estar entre 1 y 6'}), 400
+        except (ValueError, TypeError):
+            return jsonify({'error': 'El estrato debe ser un número válido'}), 400
+            
         # Verificar si el documento ya existe
-        estudiante_existente = Usuario.query.filter_by(documento=data['documento']).first()
-        if estudiante_existente:
-            return jsonify({'error': 'El número de documento ya está registrado'}), 400
+        documento_existente = Usuario.query.filter_by(documento=data['documento']).first()
+        if documento_existente:
+            return jsonify({
+                'error': f'El número de documento {data["documento"]} ya está registrado para {documento_existente.nombre} {documento_existente.apellido}',
+                'documento': data['documento']
+            }), 400
+            
+        # Crear username único
+        nombres_clean = ''.join(c.lower() for c in data['nombres'] if c.isalnum())
+        apellidos_clean = ''.join(c.lower() for c in data['apellidos'] if c.isalnum())
+        base_username = f"{nombres_clean[:10]}.{apellidos_clean[:10]}"
         
-        # Crear username único basado en nombres
+        username = base_username
+        counter = 1
+        while Usuario.query.filter_by(username=username).first():
+            username = f"{base_username}{counter}"
+            counter += 1
+            
+        print(f"🔑 Username generado: {username}")
+            
+        # SOLUCION DEFINITIVA PARA EMAIL: SIEMPRE GENERAR UNO UNICO
+        email_proporcionado = data.get('email', '').strip()
+        
+        if email_proporcionado:
+            # Si proporcionó email, verificar que sea único
+            if Usuario.query.filter_by(email=email_proporcionado).first():
+                return jsonify({
+                    'error': f'El email {email_proporcionado} ya está registrado en el sistema'
+                }), 400
+            email_final = email_proporcionado
+        else:
+            # SIEMPRE generar un email único para evitar conflictos con emails vacíos
+            base_email = f"estudiante.{data['documento']}@educontrol.local"
+            email_final = base_email
+            counter = 1
+            while Usuario.query.filter_by(email=email_final).first():
+                email_final = f"estudiante.{data['documento']}.{counter}@educontrol.local"
+                counter += 1
+                
+        print(f"📧 Email final asignado: {email_final}")
+            
+        try:
+            # Convertir fecha de nacimiento
+            fecha_nacimiento_obj = datetime.strptime(data['fecha_nacimiento'], '%Y-%m-%d').date()
+            
+            # Crear nuevo estudiante
+            estudiante = Usuario(
+                username=username,
+                email=email_final,  # NUNCA será vacío
+                rol='alumno',
+                nombre=data['nombres'],
+                apellido=data['apellidos'],
+                documento=data['documento'],
+                tipo_documento=data['tipo_documento'],
+                grado=grado,
+                seccion=data['seccion'],
+                fecha_nacimiento=fecha_nacimiento_obj,
+                genero=data['genero'],
+                telefono=data.get('telefono', ''),
+                direccion=data['direccion'],
+                ciudad=data['ciudad'],
+                barrio=data['barrio'],
+                nacionalidad=data['nacionalidad'],
+                estrato=estrato,
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña por defecto (documento)
+            estudiante.set_password(data['documento'])
+            
+            print(f"👤 Estudiante a crear: {estudiante.nombre} {estudiante.apellido} - Email: {estudiante.email}")
+            
+            # Guardar en base de datos
+            db.session.add(estudiante)
+            db.session.commit()
+            
+            print(f"✅ Estudiante creado exitosamente con ID: {estudiante.id}")
+            
+            return jsonify({
+                'success': True,
+                'message': f'Estudiante {estudiante.nombre} {estudiante.apellido} creado exitosamente',
+                'estudiante': {
+                    'id': estudiante.id,
+                    'nombre': estudiante.nombre,
+                    'apellido': estudiante.apellido,
+                    'username': estudiante.username,
+                    'email': estudiante.email,
+                    'documento': estudiante.documento
+                }
+            }), 201
+            
+        except ValueError as e:
+            print(f"❌ Error de valor: {e}")
+            return jsonify({
+                'error': f'Error en el formato de fecha: {str(e)}'
+            }), 400
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"❌ Error al crear el estudiante: {str(e)}")
+            
+            # Manejar errores específicos de integridad
+            if 'UNIQUE constraint failed: usuarios.email' in str(e):
+                return jsonify({
+                    'error': f'Email duplicado detectado. Inténtelo nuevamente o contacte al administrador.'
+                }), 400
+            elif 'UNIQUE constraint failed: usuarios.username' in str(e):
+                return jsonify({
+                    'error': f'Error interno: username duplicado.'
+                }), 500
+            elif 'UNIQUE constraint failed: usuarios.documento' in str(e):
+                return jsonify({
+                    'error': f'El documento {data["documento"]} ya está registrado'
+                }), 400
+            else:
+                return jsonify({
+                    'error': f'Error al crear el estudiante: {str(e)}'
+                }), 500
+            
+    except Exception as e:
+        print(f"❌ Error general: {str(e)}")
+        return jsonify({
+            'error': 'Error interno del servidor',
+            'details': str(e)
+        }), 500
+            
+        # Validar campos requeridos
+        campos_requeridos = [
+            'nombres', 'apellidos', 'documento', 'grado', 'seccion',
+            'ciudad', 'barrio', 'direccion', 'fecha_nacimiento', 'genero',
+            'nacionalidad', 'estrato'
+        ]
+        
+        campos_faltantes = [campo for campo in campos_requeridos if not data.get(campo)]
+        if campos_faltantes:
+            return jsonify({
+                'error': f'Campos requeridos faltantes: {", ".join(campos_faltantes)}'
+            }), 400
+            
+        # Validar tipo de documento
+        if not data.get('tipo_documento'):
+            return jsonify({'error': 'El tipo de documento es requerido'}), 400
+            
+        # Validar grado
+        try:
+            grado = int(data['grado'])
+            if grado < 1 or grado > 11:
+                return jsonify({'error': 'El grado debe estar entre 1 y 11'}), 400
+        except (ValueError, TypeError):
+            return jsonify({'error': 'El grado debe ser un número válido'}), 400
+            
+        # Verificar si el documento ya existe
+        if Usuario.query.filter_by(documento=data['documento']).first():
+            return jsonify({
+                'error': 'El número de documento ya está registrado',
+                'documento': data['documento']
+            }), 400
+            
+        # Crear username único
         base_username = f"{data['nombres'].split()[0].lower()}.{data['apellidos'].split()[0].lower()}"
         username = base_username
         counter = 1
         while Usuario.query.filter_by(username=username).first():
             username = f"{base_username}{counter}"
             counter += 1
-        
-        # Crear nuevo estudiante
-        estudiante = Usuario(
-            username=username,
-            email=data.get('email', ''),
-            rol='alumno',
-            nombre=data['nombres'],
-            apellido=data['apellidos'],
-            documento=data['documento'],
-            tipo_documento=data.get('tipo_documento', 'CC'),
-            grado=int(data['grado']),
-            seccion=data['seccion'],
-            fecha_nacimiento=datetime.strptime(data['fecha_nacimiento'], '%Y-%m-%d').date() if data.get('fecha_nacimiento') else None,
-            genero=data.get('genero', ''),
-            telefono=data.get('telefono', ''),
-            direccion=data.get('direccion', ''),
-            activo=data.get('activo', True),
-            fecha_creacion=datetime.utcnow()
-        )
-        
-        # Establecer contraseña por defecto (documento)
-        estudiante.set_password(data['documento'])
-        
-        db.session.add(estudiante)
-        db.session.commit()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Estudiante creado exitosamente',
-            'estudiante': {
-                'id': estudiante.id,
-                'nombre': estudiante.nombre,
-                'apellido': estudiante.apellido,
-                'username': estudiante.username
-            }
-        }), 201
-        
+            
+        try:
+            # Crear nuevo estudiante
+            estudiante = Usuario(
+                username=username,
+                email=data.get('email', ''),
+                rol='alumno',
+                nombre=data['nombres'],
+                apellido=data['apellidos'],
+                documento=data['documento'],
+                tipo_documento=data['tipo_documento'],
+                grado=grado,
+                seccion=data['seccion'],
+                fecha_nacimiento=datetime.strptime(data['fecha_nacimiento'], '%Y-%m-%d').date(),
+                genero=data['genero'],
+                telefono=data.get('telefono', ''),
+                direccion=data['direccion'],
+                ciudad=data['ciudad'],
+                barrio=data['barrio'],
+                nacionalidad=data['nacionalidad'],
+                estrato=data['estrato'],
+                activo=True,
+                fecha_creacion=datetime.utcnow()
+            )
+            
+            # Establecer contraseña por defecto (documento)
+            estudiante.set_password(data['documento'])
+            
+            db.session.add(estudiante)
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'message': 'Estudiante creado exitosamente',
+                'estudiante': {
+                    'id': estudiante.id,
+                    'nombre': estudiante.nombre,
+                    'apellido': estudiante.apellido,
+                    'username': estudiante.username
+                }
+            }), 201
+            
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error al crear el estudiante: {str(e)}")
+            return jsonify({
+                'error': f'Error al crear el estudiante: {str(e)}',
+                'details': str(e)
+            }), 500
+            
     except Exception as e:
-        db.session.rollback()
-        print(f"Error creando estudiante: {e}")
-        return jsonify({'error': 'Error al crear el estudiante'}), 500
+        print(f"Error general: {str(e)}")
+        return jsonify({
+            'error': 'Error interno del servidor',
+            'details': str(e)
+        }), 500
 
 @admin_bp.route('/api/estudiantes/<int:id>', methods=['DELETE'])
 @login_required
 def api_eliminar_estudiante(id):
-    """API endpoint para eliminar estudiante"""
+    """API endpoint para eliminar estudiante - ELIMINACIÓN REAL CORREGIDA"""
     if not verificar_admin():
         return jsonify({'error': 'Acceso no autorizado'}), 403
     
     try:
+        print(f"🔍 Intentando eliminar estudiante con ID: {id}")
+        
+        # Buscar el estudiante
         estudiante = Usuario.query.filter_by(id=id, rol='alumno').first()
         if not estudiante:
+            print(f"❌ Estudiante con ID {id} no encontrado")
             return jsonify({'error': 'Estudiante no encontrado'}), 404
         
-        # Soft delete - marcar como inactivo
-        estudiante.activo = False
+        print(f"📄 Estudiante encontrado: {estudiante.nombre} {estudiante.apellido}")
+        nombre_completo = f"{estudiante.nombre} {estudiante.apellido}"
+        
+        # ELIMINACIÓN REAL - Eliminar completamente de la base de datos
+        print("🗑️ Eliminando estudiante de la base de datos...")
+        db.session.delete(estudiante)
+        
+        print("💾 Realizando commit...")
         db.session.commit()
+        
+        # Verificar que realmente se eliminó
+        verificacion = Usuario.query.filter_by(id=id).first()
+        if verificacion is None:
+            print("✅ Verificación: Estudiante eliminado correctamente de la BD")
+        else:
+            print("❌ ERROR: Estudiante AÚN EXISTE en la BD después del commit")
+            return jsonify({'error': 'Error: El estudiante no se eliminó correctamente'}), 500
+        
+        print(f"✅ Estudiante {nombre_completo} eliminado exitosamente")
         
         return jsonify({
             'success': True,
-            'message': f'Estudiante {estudiante.nombre} {estudiante.apellido} eliminado exitosamente'
-        })
+            'message': f'Estudiante {nombre_completo} eliminado exitosamente'
+        }), 200
         
     except Exception as e:
         db.session.rollback()
-        print(f"Error eliminando estudiante: {e}")
-        return jsonify({'error': 'Error al eliminar el estudiante'}), 500
+        print(f"❌ Error eliminando estudiante: {e}")
+        print(f"❌ Tipo de error: {type(e).__name__}")
+        print(f"❌ Detalles: {str(e)}")
+        return jsonify({'error': f'Error al eliminar el estudiante: {str(e)}'}), 500
 
 @admin_bp.route('/api/verificar-documento/<documento>')
 @login_required
@@ -531,15 +755,35 @@ def api_crear_acudiente():
             username = f"{base_username}{counter}"
             counter += 1
         
+        # Generar email por defecto si no se proporciona
+        documento = str(data['documento'])
+        email = data.get('email')
+        if not email:
+            # Generar email basado en el documento
+            email = f"padre.{documento}@educontrol.com"
+            
+            # Verificar si el email ya existe y generar uno único
+            counter = 1
+            base_email = email
+            while Usuario.query.filter_by(email=email).first():
+                email = f"padre.{documento}{counter}@educontrol.com"
+                counter += 1
+        
         # Crear acudiente
         acudiente = Usuario(
             username=username,
-            email=data.get('email', ''),
+            email=email,
             rol='padre',
             nombre=data['nombres'],
             apellido=data['apellidos'],
             documento=data['documento'],
+            tipo_documento=data.get('tipo_documento', 'CC'),
             telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
+            ciudad=data.get('ciudad', ''),
+            barrio=data.get('barrio', ''),
+            nacionalidad=data.get('nacionalidad', ''),
+            estrato=data.get('estrato', ''),
             activo=True,
             fecha_creacion=datetime.utcnow()
         )

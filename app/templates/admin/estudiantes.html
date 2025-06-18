@@ -14,6 +14,46 @@
 {% block content %}
 <div class="row">
     <div class="col-12">
+        <!-- Estadísticas Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-primary">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                        <h4 class="card-title text-primary" id="totalEstudiantes">0</h4>
+                        <p class="card-text text-muted">Total Estudiantes</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-success">
+                    <div class="card-body">
+                        <i class="fas fa-user-check fa-2x text-success mb-3"></i>
+                        <h4 class="card-title text-success" id="estudiantesActivos">0</h4>
+                        <p class="card-text text-muted">Activos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-warning">
+                    <div class="card-body">
+                        <i class="fas fa-user-clock fa-2x text-warning mb-3"></i>
+                        <h4 class="card-title text-warning" id="estudiantesInactivos">0</h4>
+                        <p class="card-text text-muted">Inactivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-info">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x text-info mb-3"></i>
+                        <h4 class="card-title text-info" id="estudiantesGraduados">0</h4>
+                        <p class="card-text text-muted">Graduados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Filtros y Búsqueda -->
         <div class="card mb-4">
             <div class="card-header">
@@ -26,12 +66,18 @@
                 <form class="row g-4" id="filtrosForm">
                     <div class="col-md-3">
                         <label for="busqueda" class="form-label">Buscar</label>
-                        <div class="input-group">
+                        <div class="input-group position-relative">
                             <input type="text" class="form-control" id="busqueda" placeholder="Nombre o documento...">
-                            <button class="btn btn-primary" type="button" onclick="buscarEstudiantes()">
+                            <button class="btn btn-outline-secondary" type="button" onclick="aplicarFiltros()">
                                 <i class="fas fa-search"></i>
                             </button>
+                            <!-- Indicador de búsqueda -->
+                            <div class="search-indicator d-none" id="searchIndicator">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
                         </div>
+                        <!-- Mensaje de resultados -->
+                        <small class="text-muted d-none" id="searchResults"></small>
                     </div>
                     <div class="col-md-2">
                         <label for="grado" class="form-label">Grado</label>
@@ -84,46 +130,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Estadísticas Rápidas -->
-        <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card text-center border-primary">
-                    <div class="card-body">
-                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
-                        <h4 class="card-title text-primary" id="totalEstudiantes">0</h4>
-                        <p class="card-text text-muted">Total Estudiantes</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center border-success">
-                    <div class="card-body">
-                        <i class="fas fa-user-check fa-2x text-success mb-3"></i>
-                        <h4 class="card-title text-success" id="estudiantesActivos">0</h4>
-                        <p class="card-text text-muted">Activos</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center border-warning">
-                    <div class="card-body">
-                        <i class="fas fa-user-clock fa-2x text-warning mb-3"></i>
-                        <h4 class="card-title text-warning" id="estudiantesInactivos">0</h4>
-                        <p class="card-text text-muted">Inactivos</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card text-center border-info">
-                    <div class="card-body">
-                        <i class="fas fa-graduation-cap fa-2x text-info mb-3"></i>
-                        <h4 class="card-title text-info" id="estudiantesGraduados">0</h4>
-                        <p class="card-text text-muted">Graduados</p>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -193,7 +199,7 @@
                 <div id="noDataMessage" class="text-center py-5" style="display: none;">
                     <i class="fas fa-users fa-3x text-muted mb-3"></i>
                     <h5 class="text-muted">No se encontraron estudiantes</h5>
-                    <p class="text-muted">Intenta ajustar los filtros de búsqueda o agrega nuevos estudiantes</p>
+                    <p class="text-muted" id="noDataText">Intenta ajustar los filtros de búsqueda o agrega nuevos estudiantes</p>
                     <a href="{{ url_for('admin.estudiantes_nuevo') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>
                         Agregar Primer Estudiante
@@ -249,12 +255,96 @@
     let paginaActual = 1;
     let estudiantesPorPagina = 10;
     let estudiantesSeleccionados = [];
+    let searchTimeout = null; // Para el debounce
+    let isSearching = false; // Para evitar búsquedas múltiples
 
     // Inicializar cuando cargue la página
     document.addEventListener('DOMContentLoaded', function() {
         cargarEstudiantes();
-        actualizarEstadisticas();
+        inicializarEventos();
     });
+
+    // Inicializar todos los eventos
+    function inicializarEventos() {
+        // Eventos de búsqueda
+        const busquedaInput = document.getElementById('busqueda');
+        const btnBuscar = document.querySelector('.btn-outline-secondary');
+        
+        // Verificar que los elementos existen
+        if (!busquedaInput) {
+            console.error('No se encontró el campo de búsqueda');
+            return;
+        }
+
+        // Búsqueda en tiempo real con debounce
+        busquedaInput.addEventListener('input', function(e) {
+            console.log('Input detectado:', e.target.value); // Debug
+            
+            clearTimeout(searchTimeout);
+            const valor = this.value.trim();
+            
+            // Mostrar indicador de búsqueda
+            if (valor.length > 0) {
+                mostrarIndicadorBusqueda(true);
+            }
+            
+            // Aplicar filtros después de 300ms sin escribir
+            searchTimeout = setTimeout(() => {
+                console.log('Aplicando filtros por input:', valor); // Debug
+                aplicarFiltros();
+                mostrarIndicadorBusqueda(false);
+            }, 300);
+        });
+
+        // Búsqueda al presionar Enter
+        busquedaInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                console.log('Enter presionado, aplicando filtros'); // Debug
+                clearTimeout(searchTimeout);
+                aplicarFiltros();
+                mostrarIndicadorBusqueda(false);
+            }
+        });
+
+        // Búsqueda al hacer clic en el botón
+        if (btnBuscar) {
+            btnBuscar.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Botón de búsqueda clickeado'); // Debug
+                clearTimeout(searchTimeout);
+                aplicarFiltros();
+                mostrarIndicadorBusqueda(false);
+            });
+        }
+
+        // Eventos de filtros
+        document.getElementById('grado').addEventListener('change', function() {
+            console.log('Grado cambiado:', this.value); // Debug
+            cargarSecciones();
+            aplicarFiltros();
+        });
+
+        document.getElementById('seccion').addEventListener('change', function() {
+            console.log('Sección cambiada:', this.value); // Debug
+            aplicarFiltros();
+        });
+
+        document.getElementById('estado').addEventListener('change', function() {
+            console.log('Estado cambiado:', this.value); // Debug
+            aplicarFiltros();
+        });
+    }
+
+    // Mostrar/ocultar indicador de búsqueda
+    function mostrarIndicadorBusqueda(mostrar) {
+        const indicator = document.getElementById('searchIndicator');
+        if (mostrar) {
+            indicator.classList.remove('d-none');
+        } else {
+            indicator.classList.add('d-none');
+        }
+    }
 
     // Función para cargar estudiantes
     async function cargarEstudiantes() {
@@ -281,14 +371,42 @@
 
     // Mostrar/ocultar loading
     function mostrarLoading(mostrar) {
-        document.getElementById('loadingIndicator').style.display = mostrar ? 'block' : 'none';
-        document.querySelector('.table-responsive').style.display = mostrar ? 'none' : 'block';
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const tableResponsive = document.querySelector('.table-responsive');
+        
+        if (mostrar) {
+            loadingIndicator.style.display = 'block';
+            tableResponsive.style.opacity = '0.5';
+        } else {
+            loadingIndicator.style.display = 'none';
+            tableResponsive.style.opacity = '1';
+        }
     }
 
     // Mostrar mensaje cuando no hay datos
     function mostrarNoData() {
-        document.getElementById('noDataMessage').style.display = 'block';
-        document.querySelector('.table-responsive').style.display = 'none';
+        const noDataMessage = document.getElementById('noDataMessage');
+        const tableResponsive = document.querySelector('.table-responsive');
+        const noDataText = document.getElementById('noDataText');
+        const busqueda = document.getElementById('busqueda').value.trim();
+        
+        let mensaje = 'Intenta ajustar los filtros de búsqueda o agrega nuevos estudiantes';
+        
+        if (busqueda) {
+            mensaje = `No se encontraron estudiantes que coincidan con "${busqueda}". Verifica la ortografía o intenta con otros términos.`;
+        } else if (estudiantesData.length === 0) {
+            mensaje = 'Aún no hay estudiantes registrados en el sistema. ¡Agrega el primer estudiante!';
+        }
+        
+        noDataText.textContent = mensaje;
+        
+        if (estudiantesFiltrados.length === 0) {
+            noDataMessage.style.display = 'block';
+            tableResponsive.style.display = 'none';
+        } else {
+            noDataMessage.style.display = 'none';
+            tableResponsive.style.display = 'block';
+        }
     }
 
     // Renderizar tabla de estudiantes
@@ -299,8 +417,15 @@
         const estudiantesPagina = estudiantesFiltrados.slice(inicio, fin);
 
         if (estudiantesPagina.length === 0) {
-            mostrarNoData();
-            return;
+            if (estudiantesFiltrados.length === 0) {
+                mostrarNoData();
+                return;
+            } else {
+                // Si hay estudiantes filtrados pero no en esta página, ir a la primera página
+                paginaActual = 1;
+                renderizarTabla();
+                return;
+            }
         }
 
         tbody.innerHTML = estudiantesPagina.map(estudiante => `
@@ -354,6 +479,31 @@
         generarPaginacion();
         document.getElementById('noDataMessage').style.display = 'none';
         document.querySelector('.table-responsive').style.display = 'block';
+        
+        // Mostrar resultados de búsqueda
+        mostrarResultadosBusqueda();
+    }
+
+    // Mostrar resultados de búsqueda
+    function mostrarResultadosBusqueda() {
+        const searchResults = document.getElementById('searchResults');
+        const busqueda = document.getElementById('busqueda').value.trim();
+        
+        if (busqueda) {
+            const total = estudiantesData.length;
+            const encontrados = estudiantesFiltrados.length;
+            
+            if (encontrados === 0) {
+                searchResults.textContent = `No se encontraron resultados para "${busqueda}"`;
+                searchResults.className = 'text-danger small';
+            } else {
+                searchResults.textContent = `${encontrados} de ${total} estudiantes encontrados`;
+                searchResults.className = 'text-success small';
+            }
+            searchResults.classList.remove('d-none');
+        } else {
+            searchResults.classList.add('d-none');
+        }
     }
 
     // Obtener color del estado
@@ -428,43 +578,106 @@
         }
     }
 
-    // Aplicar filtros
+    // Aplicar filtros MEJORADO - Sin bucles infinitos
     function aplicarFiltros() {
-        const busqueda = document.getElementById('busqueda').value.toLowerCase();
-        const grado = document.getElementById('grado').value;
-        const seccion = document.getElementById('seccion').value;
-        const estado = document.getElementById('estado').value;
+        // Evitar múltiples ejecuciones simultáneas
+        if (isSearching) {
+            console.log('Ya se está ejecutando una búsqueda, saltando...'); // Debug
+            return;
+        }
+        
+        isSearching = true;
+        
+        try {
+            const busquedaElement = document.getElementById('busqueda');
+            const gradoElement = document.getElementById('grado');
+            const seccionElement = document.getElementById('seccion');
+            const estadoElement = document.getElementById('estado');
 
-        estudiantesFiltrados = estudiantesData.filter(estudiante => {
-            const coincideBusqueda = !busqueda || 
-                estudiante.nombre.toLowerCase().includes(busqueda) ||
-                estudiante.apellido.toLowerCase().includes(busqueda) ||
-                estudiante.documento.includes(busqueda);
+            // Verificar que los elementos existen
+            if (!busquedaElement || !gradoElement || !seccionElement || !estadoElement) {
+                console.error('Algunos elementos de filtro no se encontraron');
+                return;
+            }
 
-            const coincideGrado = !grado || estudiante.grado.toString() === grado;
-            const coincideSeccion = !seccion || estudiante.seccion === seccion;
-            const coincideEstado = !estado || estudiante.estado === estado;
+            const busqueda = busquedaElement.value.trim().toLowerCase();
+            const grado = gradoElement.value;
+            const seccion = seccionElement.value;
+            const estado = estadoElement.value;
 
-            return coincideBusqueda && coincideGrado && coincideSeccion && coincideEstado;
-        });
+            console.log('Filtros aplicados:', { busqueda, grado, seccion, estado }); // Debug
+            console.log('Total estudiantes:', estudiantesData.length); // Debug
 
-        paginaActual = 1;
-        renderizarTabla();
-        actualizarEstadisticas();
+            estudiantesFiltrados = estudiantesData.filter(estudiante => {
+                // Filtro por búsqueda mejorado - busca en nombre, apellido Y documento
+                let coincideBusqueda = true;
+                if (busqueda) {
+                    const nombreCompleto = `${estudiante.nombre || ''} ${estudiante.apellido || ''}`.toLowerCase().trim();
+                    const documento = (estudiante.documento || '').toString().toLowerCase();
+                    const email = (estudiante.email || '').toLowerCase();
+                    
+                    coincideBusqueda = 
+                        nombreCompleto.includes(busqueda) ||
+                        documento.includes(busqueda) ||
+                        email.includes(busqueda);
+                    
+                    console.log(`Estudiante: ${nombreCompleto}, Documento: ${documento}, Coincide: ${coincideBusqueda}`); // Debug
+                }
+
+                // Filtros adicionales
+                const coincideGrado = !grado || (estudiante.grado && estudiante.grado.toString() === grado);
+                const coincideSeccion = !seccion || (estudiante.seccion === seccion);
+                const coincideEstado = !estado || (estudiante.estado === estado);
+
+                const resultado = coincideBusqueda && coincideGrado && coincideSeccion && coincideEstado;
+                
+                return resultado;
+            });
+
+            console.log('Estudiantes filtrados:', estudiantesFiltrados.length); // Debug
+
+            // Reiniciar la paginación
+            paginaActual = 1;
+            
+            // Actualizar la tabla y estadísticas
+            renderizarTabla();
+            actualizarEstadisticas();
+            
+        } catch (error) {
+            console.error('Error en aplicarFiltros:', error);
+        } finally {
+            // Asegurar que el flag se resetee
+            setTimeout(() => {
+                isSearching = false;
+            }, 100);
+        }
     }
 
     // Limpiar filtros
     function limpiarFiltros() {
+        console.log('Limpiando filtros...'); // Debug
+        
+        // Evitar bucles al limpiar
+        clearTimeout(searchTimeout);
+        isSearching = false;
+        
+        // Limpiar el formulario
         document.getElementById('filtrosForm').reset();
+        
+        // Restaurar datos originales
         estudiantesFiltrados = [...estudiantesData];
         paginaActual = 1;
+        
+        // Actualizar interfaz
         renderizarTabla();
         actualizarEstadisticas();
-    }
-
-    // Buscar estudiantes (búsqueda en tiempo real)
-    function buscarEstudiantes() {
-        aplicarFiltros();
+        cargarSecciones();
+        
+        // Limpiar indicadores
+        document.getElementById('searchResults').classList.add('d-none');
+        mostrarIndicadorBusqueda(false);
+        
+        console.log('Filtros limpiados, mostrando', estudiantesFiltrados.length, 'estudiantes'); // Debug
     }
 
     // Cargar secciones basadas en el grado
@@ -481,10 +694,17 @@
         });
 
         const select = document.getElementById('seccion');
+        const valorActual = select.value;
         select.innerHTML = '<option value="">Todas las secciones</option>';
         
         Array.from(secciones).sort().forEach(seccion => {
-            select.innerHTML += `<option value="${seccion}">${seccion}</option>`;
+            const option = document.createElement('option');
+            option.value = seccion;
+            option.textContent = seccion;
+            if (seccion === valorActual) {
+                option.selected = true;
+            }
+            select.appendChild(option);
         });
     }
 
@@ -535,40 +755,152 @@
 
     // Ver estudiante
     function verEstudiante(id) {
+        console.log('Ver estudiante:', id); // Debug
         window.location.href = `/admin/estudiantes/${id}`;
     }
 
     // Editar estudiante
     function editarEstudiante(id) {
+        console.log('Editar estudiante:', id); // Debug
         window.location.href = `/admin/estudiantes/${id}/editar`;
     }
 
     // Eliminar estudiante
     function eliminarEstudiante(id) {
-        const estudiante = estudiantesData.find(e => e.id === id);
-        if (!estudiante) return;
-
-        if (confirm(`¿Está seguro de eliminar al estudiante ${estudiante.nombre} ${estudiante.apellido}?`)) {
-            // Implementar eliminación
-            fetch(`/admin/api/estudiantes/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    showNotification('Estudiante eliminado correctamente', 'success');
-                    cargarEstudiantes();
-                } else {
-                    throw new Error('Error al eliminar estudiante');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Error al eliminar el estudiante', 'error');
-            });
+        console.log('Intentando eliminar estudiante con ID:', id); // Debug
+        
+        const estudiante = estudiantesData.find(e => e.id == id);
+        if (!estudiante) {
+            console.error('Estudiante no encontrado con ID:', id);
+            showNotification('Error: Estudiante no encontrado', 'error');
+            return;
         }
+
+        console.log('Estudiante encontrado:', estudiante); // Debug
+
+        // Usar un modal de Bootstrap en lugar de confirm() nativo
+        mostrarModalConfirmacion(
+            `¿Está seguro de eliminar al estudiante ${estudiante.nombre} ${estudiante.apellido}?`,
+            'Esta acción no se puede deshacer.',
+            () => {
+                // Función que se ejecuta si confirma
+                console.log('Confirmación de eliminación recibida'); // Debug
+                ejecutarEliminacion(id);
+            }
+        );
+    }
+
+    // Función separada para ejecutar la eliminación
+    function ejecutarEliminacion(id) {
+        // Mostrar loading
+        mostrarLoading(true);
+        
+        // Implementar eliminación
+        fetch(`/admin/api/estudiantes/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            console.log('Respuesta del servidor:', response.status, response.statusText); // Debug
+            
+            if (response.ok) {
+                // Si la eliminación fue exitosa
+                showNotification('Estudiante eliminado correctamente', 'success');
+                
+                // Recargar los datos
+                return cargarEstudiantes();
+            } else {
+                // Si hubo un error HTTP
+                return response.text().then(text => {
+                    console.error('Error del servidor:', text);
+                    throw new Error(`Error ${response.status}: ${text || 'Error al eliminar estudiante'}`);
+                });
+            }
+        })
+        .then(() => {
+            console.log('Estudiante eliminado y datos recargados'); // Debug
+        })
+        .catch(error => {
+            console.error('Error en la eliminación:', error);
+            showNotification(`Error al eliminar el estudiante: ${error.message}`, 'error');
+        })
+        .finally(() => {
+            mostrarLoading(false);
+        });
+    }
+
+    // Modal de confirmación personalizado
+    function mostrarModalConfirmacion(titulo, mensaje, onConfirmar) {
+        // Remover modal existente si existe
+        const modalExistente = document.getElementById('modalConfirmacionEliminar');
+        if (modalExistente) {
+            modalExistente.remove();
+        }
+
+        // Crear modal
+        const modal = document.createElement('div');
+        modal.id = 'modalConfirmacionEliminar';
+        modal.className = 'modal fade';
+        modal.setAttribute('tabindex', '-1');
+        modal.innerHTML = `
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                            Confirmar Eliminación
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-2"><strong>${titulo}</strong></p>
+                        <p class="text-muted mb-0">${mensaje}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>
+                            Cancelar
+                        </button>
+                        <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">
+                            <i class="fas fa-trash me-2"></i>
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Agregar modal al DOM
+        document.body.appendChild(modal);
+
+        // Configurar evento del botón confirmar
+        const btnConfirmar = modal.querySelector('#btnConfirmarEliminar');
+        btnConfirmar.addEventListener('click', function() {
+            // Cerrar modal
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+            
+            // Ejecutar función de confirmación
+            setTimeout(() => {
+                onConfirmar();
+                // Remover modal del DOM
+                modal.remove();
+            }, 300);
+        });
+
+        // Mostrar modal
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+
+        // Limpiar modal cuando se cierre
+        modal.addEventListener('hidden.bs.modal', function() {
+            modal.remove();
+        });
     }
 
     // Exportar estudiantes
@@ -581,57 +913,36 @@
         window.location.href = '/admin/estudiantes/importar';
     }
 
-    // Búsqueda en tiempo real
-    document.getElementById('busqueda').addEventListener('input', function() {
-        clearTimeout(this.searchTimeout);
-        this.searchTimeout = setTimeout(() => {
-            buscarEstudiantes();
-        }, 300);
-    });
-
-    // Datos de ejemplo (remover cuando se conecte con el backend)
-    if (estudiantesData.length === 0) {
-        estudiantesData = [
-            {
-                id: 1,
-                nombre: 'Juan Carlos',
-                apellido: 'Pérez García',
-                documento: '1234567890',
-                tipo_documento: 'CC',
-                email: 'juan.perez@ejemplo.com',
-                grado: 10,
-                seccion: 'A',
-                estado: 'activo',
-                fecha_ingreso: '2024-01-15'
-            },
-            {
-                id: 2,
-                nombre: 'María Fernanda',
-                apellido: 'González López',
-                documento: '0987654321',
-                tipo_documento: 'TI',
-                email: 'maria.gonzalez@ejemplo.com',
-                grado: 9,
-                seccion: 'B',
-                estado: 'activo',
-                fecha_ingreso: '2024-02-01'
-            },
-            {
-                id: 3,
-                nombre: 'Carlos Alberto',
-                apellido: 'Martínez Ruiz',
-                documento: '1122334455',
-                tipo_documento: 'CC',
-                email: null,
-                grado: 11,
-                seccion: 'A',
-                estado: 'inactivo',
-                fecha_ingreso: '2023-08-20'
+    // Función para mostrar notificaciones (necesaria para el código original)
+    function showNotification(mensaje, tipo) {
+        // Crear elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${tipo === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        notification.innerHTML = `
+            ${mensaje}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remover después de 5 segundos
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
             }
-        ];
-        estudiantesFiltrados = [...estudiantesData];
-        renderizarTabla();
-        actualizarEstadisticas();
+        }, 5000);
+    }
+
+    // Funciones para acciones masivas (stubs - mantener compatibilidad)
+    function mostrarBotonAccionesMasivas() {
+        // Implementar según necesidad
+        console.log('Mostrar botón acciones masivas');
+    }
+
+    function ocultarBotonAccionesMasivas() {
+        // Implementar según necesidad
+        console.log('Ocultar botón acciones masivas');
     }
 </script>
 
@@ -702,6 +1013,37 @@
 
     .spinner-border {
         animation: spinner-border 0.75s linear infinite;
+    }
+
+    /* Estilos para el indicador de búsqueda mejorado */
+    .search-indicator {
+        position: absolute;
+        right: 50px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-color);
+        z-index: 10;
+    }
+
+    .input-group.position-relative {
+        position: relative;
+    }
+
+    /* Mejoras visuales para resultados de búsqueda */
+    #searchResults {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+    }
+
+    /* Animación suave para cambios */
+    .table-responsive {
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    /* Estilo mejorado para el loading */
+    #loadingIndicator {
+        transition: all 0.3s ease-in-out;
     }
 </style>
 {% endblock %}
