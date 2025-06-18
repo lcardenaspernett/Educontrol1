@@ -1,98 +1,707 @@
-{% extends "base.html" %}
+{% extends "admin/base_admin.html" %}
 
 {% block title %}Estudiantes - EduControl{% endblock %}
 
+{% block page_title %}Gestión de Estudiantes{% endblock %}
+
+{% block breadcrumb %}
+<i class="fas fa-chevron-right"></i>
+<span>Usuarios</span>
+<i class="fas fa-chevron-right"></i>
+<span>Estudiantes</span>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-12">
-            <h2><i class="fas fa-user-graduate"></i> Gestión de Estudiantes</h2>
-            <hr>
-            
-            <!-- Filtros y Búsqueda -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <form class="row g-3">
-                        <div class="col-md-3">
-                            <label for="grado" class="form-label">Grado</label>
-                            <select class="form-select" id="grado">
-                                <option value="">Todos los grados</option>
-                                <!-- Opciones dinámicas de grados -->
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="seccion" class="form-label">Sección</label>
-                            <select class="form-select" id="seccion">
-                                <option value="">Todas las secciones</option>
-                                <!-- Opciones dinámicas de secciones -->
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="estado" class="form-label">Estado</label>
-                            <select class="form-select" id="estado">
-                                <option value="">Todos los estados</option>
-                                <option value="activo">Activo</option>
-                                <option value="inactivo">Inactivo</option>
-                                <option value="graduado">Graduado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-primary" onclick="cargarEstudiantes()">
-                                <i class="fas fa-search"></i> Buscar
+<div class="row">
+    <div class="col-12">
+        <!-- Filtros y Búsqueda -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-filter me-2"></i>
+                    Filtros de Búsqueda
+                </h5>
+            </div>
+            <div class="card-body">
+                <form class="row g-4" id="filtrosForm">
+                    <div class="col-md-3">
+                        <label for="busqueda" class="form-label">Buscar</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="busqueda" placeholder="Nombre o documento...">
+                            <button class="btn btn-primary" type="button" onclick="buscarEstudiantes()">
+                                <i class="fas fa-search"></i>
                             </button>
                         </div>
-                    </form>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="grado" class="form-label">Grado</label>
+                        <select class="form-select" id="grado" onchange="cargarSecciones()">
+                            <option value="">Todos los grados</option>
+                            <option value="1">1°</option>
+                            <option value="2">2°</option>
+                            <option value="3">3°</option>
+                            <option value="4">4°</option>
+                            <option value="5">5°</option>
+                            <option value="6">6°</option>
+                            <option value="7">7°</option>
+                            <option value="8">8°</option>
+                            <option value="9">9°</option>
+                            <option value="10">10°</option>
+                            <option value="11">11°</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="seccion" class="form-label">Sección</label>
+                        <select class="form-select" id="seccion">
+                            <option value="">Todas las secciones</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="estado" class="form-label">Estado</label>
+                        <select class="form-select" id="estado">
+                            <option value="">Todos los estados</option>
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                            <option value="graduado">Graduado</option>
+                            <option value="retirado">Retirado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn btn-primary flex-fill" onclick="aplicarFiltros()">
+                                <i class="fas fa-search me-2"></i>
+                                Buscar
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="limpiarFiltros()">
+                                <i class="fas fa-eraser me-2"></i>
+                                Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center border-primary">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-2x text-primary mb-3"></i>
+                        <h4 class="card-title text-primary" id="totalEstudiantes">0</h4>
+                        <p class="card-text text-muted">Total Estudiantes</p>
+                    </div>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="card text-center border-success">
+                    <div class="card-body">
+                        <i class="fas fa-user-check fa-2x text-success mb-3"></i>
+                        <h4 class="card-title text-success" id="estudiantesActivos">0</h4>
+                        <p class="card-text text-muted">Activos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-warning">
+                    <div class="card-body">
+                        <i class="fas fa-user-clock fa-2x text-warning mb-3"></i>
+                        <h4 class="card-title text-warning" id="estudiantesInactivos">0</h4>
+                        <p class="card-text text-muted">Inactivos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center border-info">
+                    <div class="card-body">
+                        <i class="fas fa-graduation-cap fa-2x text-info mb-3"></i>
+                        <h4 class="card-title text-info" id="estudiantesGraduados">0</h4>
+                        <p class="card-text text-muted">Graduados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <!-- Lista de Estudiantes -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Estudiantes</h5>
+        <!-- Lista de Estudiantes -->
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-graduate me-2"></i>
+                        Lista de Estudiantes
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success" onclick="exportarEstudiantes()">
+                            <i class="fas fa-file-excel me-2"></i>
+                            Exportar
+                        </button>
+                        <button class="btn btn-info" onclick="importarEstudiantes()">
+                            <i class="fas fa-file-import me-2"></i>
+                            Importar
+                        </button>
                         <a href="{{ url_for('admin.estudiantes_nuevo') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Nuevo Estudiante
+                            <i class="fas fa-plus me-2"></i>
+                            Nuevo Estudiante
                         </a>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>Grado</th>
-                                    <th>Sección</th>
-                                    <th>Estado</th>
-                                    <th>Fecha de Ingreso</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="estudiantes-table">
-                                <!-- Datos dinámicos de estudiantes -->
-                            </tbody>
-                        </table>
+            </div>
+            <div class="card-body">
+                <!-- Loading indicator -->
+                <div id="loadingIndicator" class="text-center py-4" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
                     </div>
+                    <p class="mt-2 text-muted">Cargando estudiantes...</p>
+                </div>
+
+                <!-- Tabla de estudiantes -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" class="form-check-input" id="selectAll" onchange="toggleSelectAll()">
+                                </th>
+                                <th>Estudiante</th>
+                                <th>Documento</th>
+                                <th>Grado/Sección</th>
+                                <th>Estado</th>
+                                <th>Fecha de Ingreso</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="estudiantes-table">
+                            <!-- Los datos se cargarán dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <nav aria-label="Paginación de estudiantes" class="mt-4">
+                    <ul class="pagination justify-content-center" id="paginacion">
+                        <!-- Se genera dinámicamente -->
+                    </ul>
+                </nav>
+
+                <!-- Mensaje cuando no hay datos -->
+                <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No se encontraron estudiantes</h5>
+                    <p class="text-muted">Intenta ajustar los filtros de búsqueda o agrega nuevos estudiantes</p>
+                    <a href="{{ url_for('admin.estudiantes_nuevo') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>
+                        Agregar Primer Estudiante
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal para acciones masivas -->
+<div class="modal fade" id="accionesMasivasModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-tasks me-2"></i>
+                    Acciones Masivas
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Qué acción deseas realizar con los <span id="estudiantesSeleccionados">0</span> estudiantes seleccionados?</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" onclick="cambiarEstadoMasivo('activo')">
+                        <i class="fas fa-user-check me-2"></i>
+                        Activar Estudiantes
+                    </button>
+                    <button class="btn btn-warning" onclick="cambiarEstadoMasivo('inactivo')">
+                        <i class="fas fa-user-times me-2"></i>
+                        Desactivar Estudiantes
+                    </button>
+                    <button class="btn btn-info" onclick="exportarSeleccionados()">
+                        <i class="fas fa-file-export me-2"></i>
+                        Exportar Seleccionados
+                    </button>
+                    <button class="btn btn-danger" onclick="eliminarSeleccionados()">
+                        <i class="fas fa-trash me-2"></i>
+                        Eliminar Seleccionados
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block additional_js %}
 <script>
-// Funciones para manejar estudiantes
-function cargarEstudiantes() {
-    // Implementar carga de estudiantes
-}
+    // Variables globales
+    let estudiantesData = [];
+    let estudiantesFiltrados = [];
+    let paginaActual = 1;
+    let estudiantesPorPagina = 10;
+    let estudiantesSeleccionados = [];
 
-function editarEstudiante(id) {
-    // Implementar edición de estudiante
-}
+    // Inicializar cuando cargue la página
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarEstudiantes();
+        actualizarEstadisticas();
+    });
 
-function eliminarEstudiante(id) {
-    if (confirm('¿Está seguro de eliminar este estudiante?')) {
-        // Implementar eliminación de estudiante
+    // Función para cargar estudiantes
+    async function cargarEstudiantes() {
+        mostrarLoading(true);
+        
+        try {
+            const response = await fetch('/admin/api/estudiantes');
+            if (response.ok) {
+                estudiantesData = await response.json();
+                estudiantesFiltrados = [...estudiantesData];
+                renderizarTabla();
+                actualizarEstadisticas();
+            } else {
+                throw new Error('Error al cargar estudiantes');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarNoData();
+            showNotification('Error al cargar los estudiantes', 'error');
+        } finally {
+            mostrarLoading(false);
+        }
     }
-}
+
+    // Mostrar/ocultar loading
+    function mostrarLoading(mostrar) {
+        document.getElementById('loadingIndicator').style.display = mostrar ? 'block' : 'none';
+        document.querySelector('.table-responsive').style.display = mostrar ? 'none' : 'block';
+    }
+
+    // Mostrar mensaje cuando no hay datos
+    function mostrarNoData() {
+        document.getElementById('noDataMessage').style.display = 'block';
+        document.querySelector('.table-responsive').style.display = 'none';
+    }
+
+    // Renderizar tabla de estudiantes
+    function renderizarTabla() {
+        const tbody = document.getElementById('estudiantes-table');
+        const inicio = (paginaActual - 1) * estudiantesPorPagina;
+        const fin = inicio + estudiantesPorPagina;
+        const estudiantesPagina = estudiantesFiltrados.slice(inicio, fin);
+
+        if (estudiantesPagina.length === 0) {
+            mostrarNoData();
+            return;
+        }
+
+        tbody.innerHTML = estudiantesPagina.map(estudiante => `
+            <tr>
+                <td>
+                    <input type="checkbox" class="form-check-input estudiante-checkbox" 
+                           value="${estudiante.id}" onchange="actualizarSeleccion()">
+                </td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-inicial me-3">
+                            ${estudiante.nombre.charAt(0)}${estudiante.apellido.charAt(0)}
+                        </div>
+                        <div>
+                            <div class="fw-bold">${estudiante.nombre} ${estudiante.apellido}</div>
+                            <div class="text-muted small">${estudiante.email || 'Sin email'}</div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span class="fw-bold">${estudiante.documento}</span>
+                    <div class="text-muted small">${estudiante.tipo_documento || 'CC'}</div>
+                </td>
+                <td>
+                    <span class="badge bg-info">${estudiante.grado}° ${estudiante.seccion || ''}</span>
+                </td>
+                <td>
+                    <span class="badge bg-${getEstadoColor(estudiante.estado)}">
+                        ${estudiante.estado.charAt(0).toUpperCase() + estudiante.estado.slice(1)}
+                    </span>
+                </td>
+                <td>
+                    <span class="fw-bold">${formatearFecha(estudiante.fecha_ingreso)}</span>
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="verEstudiante(${estudiante.id})" title="Ver">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editarEstudiante(${estudiante.id})" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarEstudiante(${estudiante.id})" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        generarPaginacion();
+        document.getElementById('noDataMessage').style.display = 'none';
+        document.querySelector('.table-responsive').style.display = 'block';
+    }
+
+    // Obtener color del estado
+    function getEstadoColor(estado) {
+        const colores = {
+            'activo': 'success',
+            'inactivo': 'warning',
+            'graduado': 'info',
+            'retirado': 'danger'
+        };
+        return colores[estado] || 'secondary';
+    }
+
+    // Formatear fecha
+    function formatearFecha(fecha) {
+        if (!fecha) return 'No registrado';
+        return new Date(fecha).toLocaleDateString('es-ES');
+    }
+
+    // Generar paginación
+    function generarPaginacion() {
+        const totalPaginas = Math.ceil(estudiantesFiltrados.length / estudiantesPorPagina);
+        const paginacion = document.getElementById('paginacion');
+        
+        if (totalPaginas <= 1) {
+            paginacion.innerHTML = '';
+            return;
+        }
+
+        let html = '';
+        
+        // Botón anterior
+        html += `
+            <li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="cambiarPagina(${paginaActual - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+        `;
+
+        // Páginas
+        for (let i = 1; i <= totalPaginas; i++) {
+            if (i === 1 || i === totalPaginas || (i >= paginaActual - 2 && i <= paginaActual + 2)) {
+                html += `
+                    <li class="page-item ${i === paginaActual ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="cambiarPagina(${i})">${i}</a>
+                    </li>
+                `;
+            } else if (i === paginaActual - 3 || i === paginaActual + 3) {
+                html += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+            }
+        }
+
+        // Botón siguiente
+        html += `
+            <li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
+                <a class="page-link" href="#" onclick="cambiarPagina(${paginaActual + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        `;
+
+        paginacion.innerHTML = html;
+    }
+
+    // Cambiar página
+    function cambiarPagina(nuevaPagina) {
+        const totalPaginas = Math.ceil(estudiantesFiltrados.length / estudiantesPorPagina);
+        if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+            paginaActual = nuevaPagina;
+            renderizarTabla();
+        }
+    }
+
+    // Aplicar filtros
+    function aplicarFiltros() {
+        const busqueda = document.getElementById('busqueda').value.toLowerCase();
+        const grado = document.getElementById('grado').value;
+        const seccion = document.getElementById('seccion').value;
+        const estado = document.getElementById('estado').value;
+
+        estudiantesFiltrados = estudiantesData.filter(estudiante => {
+            const coincideBusqueda = !busqueda || 
+                estudiante.nombre.toLowerCase().includes(busqueda) ||
+                estudiante.apellido.toLowerCase().includes(busqueda) ||
+                estudiante.documento.includes(busqueda);
+
+            const coincideGrado = !grado || estudiante.grado.toString() === grado;
+            const coincideSeccion = !seccion || estudiante.seccion === seccion;
+            const coincideEstado = !estado || estudiante.estado === estado;
+
+            return coincideBusqueda && coincideGrado && coincideSeccion && coincideEstado;
+        });
+
+        paginaActual = 1;
+        renderizarTabla();
+        actualizarEstadisticas();
+    }
+
+    // Limpiar filtros
+    function limpiarFiltros() {
+        document.getElementById('filtrosForm').reset();
+        estudiantesFiltrados = [...estudiantesData];
+        paginaActual = 1;
+        renderizarTabla();
+        actualizarEstadisticas();
+    }
+
+    // Buscar estudiantes (búsqueda en tiempo real)
+    function buscarEstudiantes() {
+        aplicarFiltros();
+    }
+
+    // Cargar secciones basadas en el grado
+    function cargarSecciones() {
+        const grado = document.getElementById('grado').value;
+        const secciones = new Set();
+        
+        estudiantesData.forEach(estudiante => {
+            if (!grado || estudiante.grado.toString() === grado) {
+                if (estudiante.seccion) {
+                    secciones.add(estudiante.seccion);
+                }
+            }
+        });
+
+        const select = document.getElementById('seccion');
+        select.innerHTML = '<option value="">Todas las secciones</option>';
+        
+        Array.from(secciones).sort().forEach(seccion => {
+            select.innerHTML += `<option value="${seccion}">${seccion}</option>`;
+        });
+    }
+
+    // Actualizar estadísticas
+    function actualizarEstadisticas() {
+        const stats = {
+            total: estudiantesFiltrados.length,
+            activos: estudiantesFiltrados.filter(e => e.estado === 'activo').length,
+            inactivos: estudiantesFiltrados.filter(e => e.estado === 'inactivo').length,
+            graduados: estudiantesFiltrados.filter(e => e.estado === 'graduado').length
+        };
+
+        document.getElementById('totalEstudiantes').textContent = stats.total;
+        document.getElementById('estudiantesActivos').textContent = stats.activos;
+        document.getElementById('estudiantesInactivos').textContent = stats.inactivos;
+        document.getElementById('estudiantesGraduados').textContent = stats.graduados;
+    }
+
+    // Selección de estudiantes
+    function toggleSelectAll() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.estudiante-checkbox');
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAll.checked;
+        });
+        
+        actualizarSeleccion();
+    }
+
+    function actualizarSeleccion() {
+        const checkboxes = document.querySelectorAll('.estudiante-checkbox:checked');
+        estudiantesSeleccionados = Array.from(checkboxes).map(cb => cb.value);
+        
+        const selectAll = document.getElementById('selectAll');
+        const totalCheckboxes = document.querySelectorAll('.estudiante-checkbox');
+        
+        selectAll.checked = checkboxes.length === totalCheckboxes.length;
+        selectAll.indeterminate = checkboxes.length > 0 && checkboxes.length < totalCheckboxes.length;
+
+        // Mostrar/ocultar botón de acciones masivas
+        if (estudiantesSeleccionados.length > 0) {
+            mostrarBotonAccionesMasivas();
+        } else {
+            ocultarBotonAccionesMasivas();
+        }
+    }
+
+    // Ver estudiante
+    function verEstudiante(id) {
+        window.location.href = `/admin/estudiantes/${id}`;
+    }
+
+    // Editar estudiante
+    function editarEstudiante(id) {
+        window.location.href = `/admin/estudiantes/${id}/editar`;
+    }
+
+    // Eliminar estudiante
+    function eliminarEstudiante(id) {
+        const estudiante = estudiantesData.find(e => e.id === id);
+        if (!estudiante) return;
+
+        if (confirm(`¿Está seguro de eliminar al estudiante ${estudiante.nombre} ${estudiante.apellido}?`)) {
+            // Implementar eliminación
+            fetch(`/admin/api/estudiantes/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showNotification('Estudiante eliminado correctamente', 'success');
+                    cargarEstudiantes();
+                } else {
+                    throw new Error('Error al eliminar estudiante');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error al eliminar el estudiante', 'error');
+            });
+        }
+    }
+
+    // Exportar estudiantes
+    function exportarEstudiantes() {
+        window.location.href = '/admin/estudiantes/exportar';
+    }
+
+    // Importar estudiantes
+    function importarEstudiantes() {
+        window.location.href = '/admin/estudiantes/importar';
+    }
+
+    // Búsqueda en tiempo real
+    document.getElementById('busqueda').addEventListener('input', function() {
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(() => {
+            buscarEstudiantes();
+        }, 300);
+    });
+
+    // Datos de ejemplo (remover cuando se conecte con el backend)
+    if (estudiantesData.length === 0) {
+        estudiantesData = [
+            {
+                id: 1,
+                nombre: 'Juan Carlos',
+                apellido: 'Pérez García',
+                documento: '1234567890',
+                tipo_documento: 'CC',
+                email: 'juan.perez@ejemplo.com',
+                grado: 10,
+                seccion: 'A',
+                estado: 'activo',
+                fecha_ingreso: '2024-01-15'
+            },
+            {
+                id: 2,
+                nombre: 'María Fernanda',
+                apellido: 'González López',
+                documento: '0987654321',
+                tipo_documento: 'TI',
+                email: 'maria.gonzalez@ejemplo.com',
+                grado: 9,
+                seccion: 'B',
+                estado: 'activo',
+                fecha_ingreso: '2024-02-01'
+            },
+            {
+                id: 3,
+                nombre: 'Carlos Alberto',
+                apellido: 'Martínez Ruiz',
+                documento: '1122334455',
+                tipo_documento: 'CC',
+                email: null,
+                grado: 11,
+                seccion: 'A',
+                estado: 'inactivo',
+                fecha_ingreso: '2023-08-20'
+            }
+        ];
+        estudiantesFiltrados = [...estudiantesData];
+        renderizarTabla();
+        actualizarEstadisticas();
+    }
 </script>
+
+<style>
+    .avatar-inicial {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
+    }
+
+    .table th {
+        background: rgba(142, 45, 226, 0.1);
+        color: var(--primary-color);
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+        border: none;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-color: rgba(226, 232, 240, 0.3);
+    }
+
+    .table-hover tbody tr:hover {
+        background: rgba(142, 45, 226, 0.05);
+    }
+
+    .btn-group .btn {
+        margin: 0 2px;
+    }
+
+    .page-link {
+        border-radius: 8px;
+        margin: 0 2px;
+        border: 2px solid rgba(142, 45, 226, 0.2);
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .page-item.active .page-link {
+        background: var(--gradient-primary);
+        border-color: var(--primary-color);
+        color: white;
+    }
+
+    .page-link:hover {
+        background: rgba(142, 45, 226, 0.1);
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .card.border-primary { border-left: 4px solid var(--primary-color) !important; }
+    .card.border-success { border-left: 4px solid var(--success-color) !important; }
+    .card.border-warning { border-left: 4px solid var(--warning-color) !important; }
+    .card.border-info { border-left: 4px solid var(--info-color) !important; }
+
+    .spinner-border {
+        animation: spinner-border 0.75s linear infinite;
+    }
+</style>
 {% endblock %}

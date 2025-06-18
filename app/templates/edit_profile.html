@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">Editar Perfil</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.home') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('main.profile') }}">Mi Perfil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Editar</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" class="forms-sample">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group">
+                            {{ form.nombre.label }}
+                            {{ form.nombre(class="form-control", placeholder="Nombre") }}
+                            {% for error in form.nombre.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.apellido.label }}
+                            {{ form.apellido(class="form-control", placeholder="Apellido") }}
+                            {% for error in form.apellido.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.email.label }}
+                            {{ form.email(class="form-control", placeholder="Email") }}
+                            {% for error in form.email.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.telefono.label }}
+                            {{ form.telefono(class="form-control", placeholder="Teléfono") }}
+                            {% for error in form.telefono.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="form-group">
+                            {{ form.password.label }}
+                            {{ form.password(class="form-control", placeholder="Nueva contraseña") }}
+                            <small class="text-muted">Dejar en blanco para mantener la contraseña actual</small>
+                            {% for error in form.password.errors %}
+                            <span class="text-danger">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary mr-2">Guardar Cambios</button>
+                        <a href="{{ url_for('main.profile') }}" class="btn btn-light">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">Mi Perfil</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.home') }}">Inicio</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row">
+        <div class="col-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="profile-picture text-center">
+                                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                                     alt="Avatar" 
+                                     class="img-fluid rounded-circle mb-3" 
+                                     style="width: 150px; height: 150px; object-fit: cover;">
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h4>{{ current_user.nombre }} {{ current_user.apellido }}</h4>
+                            <p class="text-muted">{{ current_user.rol }}</p>
+                            <div class="profile-info">
+                                <p><i class="fas fa-envelope"></i> {{ current_user.email }}</p>
+                                <p><i class="fas fa-phone"></i> {{ current_user.telefono }}</p>
+                                <p><i class="fas fa-calendar"></i> Registrado: {{ current_user.fecha_registro.strftime('%d/%m/%Y') }}</p>
+                                <p><i class="fas fa-user-shield"></i> Estado: 
+                                    {% if current_user.activo %}
+                                        <span class="badge badge-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge badge-danger">Inactivo</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('main.edit_profile') }}" class="btn btn-primary">Editar Perfil</a>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-light">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

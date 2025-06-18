@@ -145,7 +145,7 @@ def verificar_admin():
     return True
 
 # ============================================
-# RUTAS DE API PARA GRÁFICOS (EXISTENTES)
+# RUTAS DE API PARA GRÁFICOS
 # ============================================
 
 @admin_bp.route('/api/dashboard-stats')
@@ -295,6 +295,275 @@ def calificaciones_chart():
         return jsonify({'error': 'Error interno del servidor'}), 500
 
 # ============================================
+# RUTAS API PARA ESTUDIANTES
+# ============================================
+
+@admin_bp.route('/api/estudiantes')
+@login_required
+def api_estudiantes():
+    """API endpoint para obtener lista de estudiantes en formato JSON"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        # Obtener parámetros de filtro
+        grado = request.args.get('grado', '')
+        seccion = request.args.get('seccion', '')
+        estado = request.args.get('estado', '')
+        busqueda = request.args.get('busqueda', '')
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+        
+        # Query base
+        query = Usuario.query.filter_by(rol='alumno')
+        
+        # Aplicar filtros
+        if grado:
+            query = query.filter(Usuario.grado == grado)
+        if seccion:
+            query = query.filter(Usuario.seccion == seccion)
+        if estado:
+            if estado == 'activo':
+                query = query.filter(Usuario.activo == True)
+            elif estado == 'inactivo':
+                query = query.filter(Usuario.activo == False)
+        if busqueda:
+            search_term = f"%{busqueda}%"
+            query = query.filter(
+                (Usuario.nombre.ilike(search_term)) |
+                (Usuario.apellido.ilike(search_term)) |
+                (Usuario.documento.ilike(search_term))
+            )
+        
+        # Obtener estudiantes
+        estudiantes = query.order_by(Usuario.apellido, Usuario.nombre).all()
+        
+        # Formatear datos para JSON
+        estudiantes_data = []
+        for estudiante in estudiantes:
+            estudiantes_data.append({
+                'id': estudiante.id,
+                'nombre': estudiante.nombre,
+                'apellido': estudiante.apellido,
+                'documento': getattr(estudiante, 'documento', ''),
+                'tipo_documento': getattr(estudiante, 'tipo_documento', 'CC'),
+                'email': estudiante.email,
+                'grado': getattr(estudiante, 'grado', 1),
+                'seccion': getattr(estudiante, 'seccion', 'A'),
+                'estado': 'activo' if estudiante.activo else 'inactivo',
+                'fecha_ingreso': estudiante.fecha_creacion.strftime('%Y-%m-%d') if estudiante.fecha_creacion else ''
+            })
+        
+        return jsonify(estudiantes_data)
+        
+    except Exception as e:
+        print(f"Error obteniendo estudiantes: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@admin_bp.route('/api/estudiantes', methods=['POST'])
+@login_required
+def api_crear_estudiante():
+    """API endpoint para crear nuevo estudiante"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        data = request.get_json()
+        
+        # Validar campos requeridos
+        campos_requeridos = ['nombres', 'apellidos', 'documento', 'grado', 'seccion']
+        for campo in campos_requeridos:
+            if not data.get(campo):
+                return jsonify({'error': f'El campo {campo} es requerido'}), 400
+        
+        # Verificar si el documento ya existe
+        estudiante_existente = Usuario.query.filter_by(documento=data['documento']).first()
+        if estudiante_existente:
+            return jsonify({'error': 'El número de documento ya está registrado'}), 400
+        
+        # Crear username único basado en nombres
+        base_username = f"{data['nombres'].split()[0].lower()}.{data['apellidos'].split()[0].lower()}"
+        username = base_username
+        counter = 1
+        while Usuario.query.filter_by(username=username).first():
+            username = f"{base_username}{counter}"
+            counter += 1
+        
+        # Crear nuevo estudiante
+        estudiante = Usuario(
+            username=username,
+            email=data.get('email', ''),
+            rol='alumno',
+            nombre=data['nombres'],
+            apellido=data['apellidos'],
+            documento=data['documento'],
+            tipo_documento=data.get('tipo_documento', 'CC'),
+            grado=int(data['grado']),
+            seccion=data['seccion'],
+            fecha_nacimiento=datetime.strptime(data['fecha_nacimiento'], '%Y-%m-%d').date() if data.get('fecha_nacimiento') else None,
+            genero=data.get('genero', ''),
+            telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
+            activo=data.get('activo', True),
+            fecha_creacion=datetime.utcnow()
+        )
+        
+        # Establecer contraseña por defecto (documento)
+        estudiante.set_password(data['documento'])
+        
+        db.session.add(estudiante)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Estudiante creado exitosamente',
+            'estudiante': {
+                'id': estudiante.id,
+                'nombre': estudiante.nombre,
+                'apellido': estudiante.apellido,
+                'username': estudiante.username
+            }
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creando estudiante: {e}")
+        return jsonify({'error': 'Error al crear el estudiante'}), 500
+
+@admin_bp.route('/api/estudiantes/<int:id>', methods=['DELETE'])
+@login_required
+def api_eliminar_estudiante(id):
+    """API endpoint para eliminar estudiante"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        estudiante = Usuario.query.filter_by(id=id, rol='alumno').first()
+        if not estudiante:
+            return jsonify({'error': 'Estudiante no encontrado'}), 404
+        
+        # Soft delete - marcar como inactivo
+        estudiante.activo = False
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Estudiante {estudiante.nombre} {estudiante.apellido} eliminado exitosamente'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error eliminando estudiante: {e}")
+        return jsonify({'error': 'Error al eliminar el estudiante'}), 500
+
+@admin_bp.route('/api/verificar-documento/<documento>')
+@login_required
+def api_verificar_documento(documento):
+    """API endpoint para verificar si un documento ya existe"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        usuario_existente = Usuario.query.filter_by(documento=documento).first()
+        return jsonify({
+            'exists': usuario_existente is not None,
+            'usuario': {
+                'nombre': f"{usuario_existente.nombre} {usuario_existente.apellido}",
+                'rol': usuario_existente.rol
+            } if usuario_existente else None
+        })
+        
+    except Exception as e:
+        print(f"Error verificando documento: {e}")
+        return jsonify({'error': 'Error en la verificación'}), 500
+
+@admin_bp.route('/api/acudientes')
+@login_required
+def api_acudientes():
+    """API endpoint para obtener lista de acudientes"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        acudientes = Usuario.query.filter_by(rol='padre', activo=True).all()
+        
+        acudientes_data = []
+        for acudiente in acudientes:
+            acudientes_data.append({
+                'id': acudiente.id,
+                'nombres': acudiente.nombre,
+                'apellidos': acudiente.apellido,
+                'documento': getattr(acudiente, 'documento', ''),
+                'telefono': getattr(acudiente, 'telefono', ''),
+                'email': acudiente.email
+            })
+        
+        return jsonify(acudientes_data)
+        
+    except Exception as e:
+        print(f"Error obteniendo acudientes: {e}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
+
+@admin_bp.route('/api/acudientes', methods=['POST'])
+@login_required
+def api_crear_acudiente():
+    """API endpoint para crear nuevo acudiente"""
+    if not verificar_admin():
+        return jsonify({'error': 'Acceso no autorizado'}), 403
+    
+    try:
+        data = request.get_json()
+        
+        # Validar campos requeridos
+        if not all([data.get('nombres'), data.get('apellidos'), data.get('documento')]):
+            return jsonify({'error': 'Nombres, apellidos y documento son requeridos'}), 400
+        
+        # Verificar si el documento ya existe
+        acudiente_existente = Usuario.query.filter_by(documento=data['documento']).first()
+        if acudiente_existente:
+            return jsonify({'error': 'El documento ya está registrado'}), 400
+        
+        # Crear username único
+        base_username = f"padre.{data['apellidos'].split()[0].lower()}"
+        username = base_username
+        counter = 1
+        while Usuario.query.filter_by(username=username).first():
+            username = f"{base_username}{counter}"
+            counter += 1
+        
+        # Crear acudiente
+        acudiente = Usuario(
+            username=username,
+            email=data.get('email', ''),
+            rol='padre',
+            nombre=data['nombres'],
+            apellido=data['apellidos'],
+            documento=data['documento'],
+            telefono=data.get('telefono', ''),
+            activo=True,
+            fecha_creacion=datetime.utcnow()
+        )
+        
+        # Contraseña por defecto
+        acudiente.set_password(data['documento'])
+        
+        db.session.add(acudiente)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'id': acudiente.id,
+            'nombres': acudiente.nombre,
+            'apellidos': acudiente.apellido,
+            'documento': acudiente.documento
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error creando acudiente: {e}")
+        return jsonify({'error': 'Error al crear el acudiente'}), 500
+
+# ============================================
 # DASHBOARD PRINCIPAL
 # ============================================
 
@@ -423,6 +692,48 @@ def estudiantes_nuevo():
             flash('Error al crear el estudiante. Inténtalo de nuevo.', 'error')
     
     return render_template('admin/estudiantes_nuevo.html', form=form)
+
+@admin_bp.route('/estudiantes/<int:id>')
+@login_required
+def ver_estudiante(id):
+    """Ver detalles de un estudiante específico"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    estudiante = Usuario.query.filter_by(id=id, rol='alumno').first_or_404()
+    return render_template('admin/ver_estudiante.html', estudiante=estudiante)
+
+@admin_bp.route('/estudiantes/<int:id>/editar')
+@login_required
+def editar_estudiante(id):
+    """Editar un estudiante específico"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    estudiante = Usuario.query.filter_by(id=id, rol='alumno').first_or_404()
+    return render_template('admin/editar_estudiante.html', estudiante=estudiante)
+
+@admin_bp.route('/estudiantes/exportar')
+@login_required
+def exportar_estudiantes():
+    """Exportar lista de estudiantes a Excel"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    # Por ahora, redirigir de vuelta con mensaje
+    flash('Funcionalidad de exportación en desarrollo', 'info')
+    return redirect(url_for('admin.estudiantes'))
+
+@admin_bp.route('/estudiantes/importar')
+@login_required
+def importar_estudiantes():
+    """Importar estudiantes desde Excel"""
+    if not verificar_admin():
+        return redirect(url_for('admin.dashboard'))
+    
+    # Por ahora, redirigir de vuelta con mensaje
+    flash('Funcionalidad de importación en desarrollo', 'info')
+    return redirect(url_for('admin.estudiantes'))
 
 # ============================================
 # GESTIÓN DE DOCENTES
@@ -682,7 +993,7 @@ def asignaturas_nueva():
     return render_template('admin/asignaturas_nueva.html', form=form)
 
 # ============================================
-# RUTAS DE MENÚ GENERAL (SIN CAMBIOS)
+# RUTAS DE MENÚ GENERAL
 # ============================================
 
 @admin_bp.route('/agregar_usuario')
@@ -704,7 +1015,7 @@ def nuevo():
     return render_template('admin/nuevo.html')
 
 # ============================================
-# RUTAS EXISTENTES MANTENIDAS
+# RUTAS EXISTENTES DEL MENÚ
 # ============================================
 
 @admin_bp.route('/evaluaciones')

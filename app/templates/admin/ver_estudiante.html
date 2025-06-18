@@ -1,0 +1,310 @@
+{% extends "../base_admin.html" %}
+
+{% block title %}Ver Estudiante - EduControl{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.estudiantes') }}">Estudiantes</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ estudiante.nombre }} {{ estudiante.apellido }}</li>
+        </ol>
+    </nav>
+
+    <!-- Header con acciones -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0">
+                <i class="fas fa-user-graduate text-primary me-2"></i>
+                {{ estudiante.nombre }} {{ estudiante.apellido }}
+            </h1>
+            <p class="text-muted mb-0">
+                <span class="badge bg-{{ 'success' if estudiante.activo else 'danger' }} me-2">
+                    {{ 'Activo' if estudiante.activo else 'Inactivo' }}
+                </span>
+                Grado {{ estudiante.grado or 'N/A' }}{{ estudiante.seccion or '' }}
+            </p>
+        </div>
+        <div class="btn-group">
+            <a href="{{ url_for('admin.editar_estudiante', id=estudiante.id) }}" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i> Editar
+            </a>
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#"><i class="fas fa-file-pdf me-2"></i>Generar Reporte</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-chart-line me-2"></i>Ver Calificaciones</a></li>
+                <li><a class="dropdown-item" href="#"><i class="fas fa-calendar-check me-2"></i>Ver Asistencia</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="#" onclick="toggleEstudianteStatus('{{ estudiante.id }}')">
+                    <i class="fas fa-{{ 'ban' if estudiante.activo else 'check' }} me-2"></i>
+                    {{ 'Desactivar' if estudiante.activo else 'Activar' }}
+                </a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información Personal -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>Información Personal
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Nombres</label>
+                            <p class="fw-medium">{{ estudiante.nombre }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Apellidos</label>
+                            <p class="fw-medium">{{ estudiante.apellido }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Tipo de Documento</label>
+                            <p class="fw-medium">{{ estudiante.tipo_documento or 'CC' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Número de Documento</label>
+                            <p class="fw-medium">{{ estudiante.documento or 'No registrado' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Fecha de Nacimiento</label>
+                            <p class="fw-medium">
+                                {% if estudiante.fecha_nacimiento %}
+                                    {{ estudiante.fecha_nacimiento.strftime('%d/%m/%Y') }}
+                                    <small class="text-muted">({{ estudiante.edad }} años)</small>
+                                {% else %}
+                                    No registrada
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Género</label>
+                            <p class="fw-medium">
+                                {% if estudiante.genero == 'M' %}
+                                    Masculino
+                                {% elif estudiante.genero == 'F' %}
+                                    Femenino
+                                {% else %}
+                                    No registrado
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de Contacto -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-address-book me-2"></i>Información de Contacto
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Email</label>
+                            <p class="fw-medium">
+                                {% if estudiante.email %}
+                                    <a href="mailto:{{ estudiante.email }}">{{ estudiante.email }}</a>
+                                {% else %}
+                                    No registrado
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Teléfono</label>
+                            <p class="fw-medium">
+                                {% if estudiante.telefono %}
+                                    <a href="tel:{{ estudiante.telefono }}">{{ estudiante.telefono }}</a>
+                                {% else %}
+                                    No registrado
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label text-muted small">Dirección</label>
+                            <p class="fw-medium">{{ estudiante.direccion or 'No registrada' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Académica -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-graduation-cap me-2"></i>Información Académica
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-muted small">Grado</label>
+                            <p class="fw-medium">{{ estudiante.grado or 'No asignado' }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-muted small">Sección</label>
+                            <p class="fw-medium">{{ estudiante.seccion or 'No asignada' }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-muted small">Username</label>
+                            <p class="fw-medium">{{ estudiante.username }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Fecha de Ingreso</label>
+                            <p class="fw-medium">
+                                {% if estudiante.fecha_creacion %}
+                                    {{ estudiante.fecha_creacion.strftime('%d/%m/%Y') }}
+                                {% else %}
+                                    No registrada
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small">Estado</label>
+                            <p class="fw-medium">
+                                <span class="badge bg-{{ 'success' if estudiante.activo else 'danger' }}">
+                                    {{ 'Activo' if estudiante.activo else 'Inactivo' }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar con estadísticas y acciones rápidas -->
+        <div class="col-lg-4">
+            <!-- Estadísticas rápidas -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Resumen Académico
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-primary bg-opacity-10 rounded">
+                                <h4 class="text-primary mb-1">0</h4>
+                                <small class="text-muted">Cursos Inscritos</small>
+                            </div>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <div class="p-3 bg-success bg-opacity-10 rounded">
+                                <h4 class="text-success mb-1">0.0</h4>
+                                <small class="text-muted">Promedio General</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-info bg-opacity-10 rounded">
+                                <h4 class="text-info mb-1">0%</h4>
+                                <small class="text-muted">Asistencia</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-warning bg-opacity-10 rounded">
+                                <h4 class="text-warning mb-1">0</h4>
+                                <small class="text-muted">Observaciones</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Acciones rápidas -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Acciones Rápidas
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>Agregar Calificación
+                        </button>
+                        <button type="button" class="btn btn-outline-info">
+                            <i class="fas fa-check me-2"></i>Registrar Asistencia
+                        </button>
+                        <button type="button" class="btn btn-outline-warning">
+                            <i class="fas fa-sticky-note me-2"></i>Agregar Observación
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary">
+                            <i class="fas fa-users me-2"></i>Ver Acudientes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actividad reciente -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>Actividad Reciente
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-inbox fa-2x mb-2"></i>
+                        <p class="mb-0">No hay actividad reciente</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmación para cambiar estado -->
+<div class="modal fade" id="statusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Acción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas cambiar el estado de este estudiante?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmStatusChange">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEstudianteStatus(id) {
+    if (confirm('¿Estás seguro de que deseas cambiar el estado de este estudiante?')) {
+        fetch(`/admin/usuario/${id}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cambiar el estado del estudiante');
+        });
+    }
+}
+</script>
+{% endblock %}
